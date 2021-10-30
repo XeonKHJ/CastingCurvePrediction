@@ -10,13 +10,13 @@ section{
     left: 0px;
     right: 0px;
     top: 0px;
-    opacity: 0.4;
+    /* opacity: 0.4; */
 }
 #inputDiv{
     position: absolute;
     /*width: 85%;*/
-    background-color: black;
-    opacity: 0.4;
+    background-color: transparent;
+    /* opacity: 0.4; */
     top: 10px;
     left: 10px;
     right: 10px;
@@ -63,5 +63,4 @@ section{
     bottom: 10px;
     /* padding-left: 5px; */
     background-color: black;
-
 } 

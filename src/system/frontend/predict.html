@@ -8,10 +8,19 @@
     <title>Document</title>
     <link href="styles/predict.css" type="text/css" rel="stylesheet" />
 </head>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
 <body>
     <section id="headerSection">
-        <div id="inputDiv"></div>
+        <div id="inputDiv">
+            <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
+                <p style="color: red; opacity: 1;">{{steelType}}：<input id="steelInfoInput"></input></p>
+                <p>{{castingWidth}}：<input id="castingWidthInput"></input></p>
+                <input type="submit" value="submit"></input>
+            </form>
+        </div>
     </section>
     <section id="animationSection">
         <div id="animationDiv"></div>
@@ -25,5 +34,53 @@
         <div id="chartDiv"></div>
     </section> -->
 </body>
+<script type="text/javascript">
+    function generatingCastingChart(data) {
+        var myChart = echarts.init(document.getElementById('echartDiv'));
+
+        var option = {
+            title: {
+                text: 'echart intro'
+            },
+            tooltip: {},
+            legend: {
+                data: ['销量']
+            },
+            xAxis: {
+                data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: '销量',
+                    type: 'bar',
+                    data: [5, 20, 36, 10, 10, 20]
+                }
+            ]
+        };
+
+        myChart.setOption(option)
+
+        window.onresize = function(){
+        myChart.resize()
+        }
+    }
+</script>
+<script>
+    formVm = Vue.createApp({
+        data() {
+            return {
+                steelType: "钢种",
+                castingWidth: "灌注宽度"
+            }
+        }
+    }).mount('#steelInfoForm')
+
+    function submitCastingPriorInfo(form) {
+        axios.get('https://yesno.wtf/api').then(response => {
+            generatingCastingChart(1)
+        })
+    }
+</script>
 
 </html>
