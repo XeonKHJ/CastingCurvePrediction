@@ -1,0 +1,67 @@
+section{
+    background-color: transparent;
+}
+
+#headerSection{
+    position: absolute;
+    /* background-color: red; */
+    height: 150px;
+    /* width: 100%; */
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    opacity: 0.4;
+}
+#inputDiv{
+    position: absolute;
+    /*width: 85%;*/
+    background-color: black;
+    opacity: 0.4;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 5px;
+}
+
+#chartSection, #animationSection{
+    position: absolute;
+    top:150px;
+    /* background-color: red; */
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    opacity: 0.4;
+}
+
+#animationSection{
+    left: 0px;
+    width: 30%;
+    /* background-color: blue; */
+}
+
+#chartSection{
+    right: 0px;
+    width: 70%;
+    /* background-color: rgb(154, 158, 154); */
+}
+
+#animationDiv{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    right: 5px;
+    bottom: 10px;
+    /* padding-left: 5px; */
+    background-color: black;
+}
+
+#echartDiv{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 10px;
+    bottom: 10px;
+    /* padding-left: 5px; */
+    background-color: black;
+
+} 

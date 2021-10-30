@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>响应式布局</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no" />
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            font-family: "微软雅黑";
+        }
+
+        #head{
+            height: 100px;
+            width: 1200px;
+            /*width: 85%;*/
+            background-color: goldenrod;
+            text-align: center;
+            font-size: 48px;
+            line-height: 100px;
+            margin: 0 auto;
+        }
+        
+        #foot {
+            position: absolute;
+            height: auto;
+            /* width: 1200px; */
+            /*width: 85%;*/
+            background-color: goldenrod;
+            
+        }
+
+        #main {
+            /* height: 100px; */
+            /* width: 1200px; */
+            /*width: 85%;*/
+            background-color: goldenrod;
+            text-align: center;
+            font-size: 48px;
+            /* line-height: 100px; */
+            margin: 0 auto;
+        }
+
+        #head div {
+            display: none;
+            font-size: 20px;
+            height: 30px;
+            width: 100px;
+            background-color: green;
+            float: right;
+            line-height: 30px;
+            margin-top: 35px;
+        }
+
+        #head ul {
+            width: 80%;
+        }
+
+        #head ul li {
+            width: 20%;
+            float: left;
+            text-align: center;
+            list-style: none;
+            font-size: 20px;
+        }
+
+        #main {
+            /* height: auto; */
+            margin: 10px auto;
+            overflow: hidden;
+
+            bottom: 0%;
+        }
+
+        .left,
+        .center,
+        .right {
+            min-height: 600px;
+            /* line-height: 600px; */
+            position: relative;
+            float: left;
+            /* width: 20%; */
+            background-color: red;
+            align-self:flex-end;
+            top:0%;
+            bottom: 0%;
+            left: 0%;
+            right: 80;
+            position: absolute;
+        }
+
+        .center {
+            left: 30%;
+            border-left: 10px solid #FFF;
+            border-right: 10px solid #FFF;
+            box-sizing: border-box;
+            width: auto;
+            right: 30%
+        }
+
+        @media only screen and (max-width: 1200px) {
+
+            #head,
+            #foot,
+            #main {
+                width: 100%;
+            }
+        }
+
+        @media only screen and (max-width: 980px) {
+            .right {
+                display: none;
+            }
+
+            .left {
+                width: 30%;
+            }
+
+            .center {
+                width: 70%;
+                border-right: hidden;
+            }
+        }
+
+        @media only screen and (max-width: 640px) {
+
+            .left,
+            .center,
+            .right {
+                width: 100%;
+                display: block;
+                /* height: 200px; */
+                /* line-height: 200px; */
+            }
+
+            .center {
+                border: hidden;
+                border-top: 10px solid #FFFFFF;
+                border-bottom: 10px solid #FFFFFF;
+                /* height: 600px; */
+                /* line-height: 600px; */
+            }
+
+            #head ul {
+                display: none;
+            }
+
+            #head div {
+                display: block;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
+</head>
+
+<body>
+    <div>
+        <header id="head">
+            <ul>
+                <li>header1</li>
+                <li>header2</li>
+                <li>header2</li>
+                <li>header2</li>
+                <li>header2</li>
+            </ul>
+            <div>icon</div>
+        </header>
+        <section id="main">
+            <div class="left">
+                left
+            </div>
+            <div class="center" id="chart">
+                center
+            </div>
+            <div class="right">
+                right
+            </div>
+        </section>
+        <!-- <footer id="foot">
+            footer
+        </footer> -->
+    </div>
+</body>
+
+<script>
+    var myChart = echarts.init(document.getElementById('chart'));
+
+    var option = {
+        title: {
+            text: '开浇曲线'
+        },
+        tooltip: {},
+        legend: {
+            data: ['销量']
+        },
+        xAxis: {
+            data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        },
+        yAxis: {},
+        series: [
+            {
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }
+        ]
+    };
+
+    myChart.setOption(option)
+</script>
+
+</html>
