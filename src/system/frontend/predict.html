@@ -39,30 +39,25 @@
         var myChart = echarts.init(document.getElementById('echartDiv'));
 
         var option = {
-            title: {
-                text: 'echart intro'
-            },
-            tooltip: {},
-            legend: {
-                data: ['销量']
-            },
             xAxis: {
-                data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+                type: 'category',
+                data: data.times
             },
-            yAxis: {},
+            yAxis: {
+                type: 'value'
+            },
             series: [
                 {
-                    name: '销量',
-                    type: 'bar',
-                    data: [5, 20, 36, 10, 10, 20]
+                    data: data.values,
+                    type: 'line'
                 }
             ]
         };
 
         myChart.setOption(option)
 
-        window.onresize = function(){
-        myChart.resize()
+        window.onresize = function () {
+            myChart.resize()
         }
     }
 </script>
@@ -77,8 +72,8 @@
     }).mount('#steelInfoForm')
 
     function submitCastingPriorInfo(form) {
-        axios.get('https://yesno.wtf/api').then(response => {
-            generatingCastingChart(1)
+        axios.get('https://raw.githubusercontent.com/XeonKHJ/CastingCurvePrediction/main/datasets/data.json').then(response => {
+            generatingCastingChart(response.data.CastingCurveValues)
         })
     }
 </script>
