@@ -33,13 +33,14 @@ section{
     bottom: 0px;
     padding: 0px;
     margin: 0px;
+    min-height: 500px;
     /* opacity: 0.4; */
-
 }
 
 #animationSection{
     left: 0px;
     width: 30%;
+    
     /* background-color: blue; */
 }
 
@@ -71,3 +72,36 @@ section{
     border-radius: 5px;
     /* padding-left: 5px; */
 } 
+
+@media only screen and (max-width: 980px) {
+    #echartDiv{
+        top: 5px;
+        left: 10px;
+        right: 10px;
+        bottom: 5px;
+    }
+
+    #animationDiv{
+        top: 5px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    #chartSection{
+        position: absolute;
+        top:150px;
+        padding: 0px;
+        margin: 0px;
+        height: 300px;
+        width: 100%;
+    }
+    #animationSection{
+        position: absolute;
+        top: 450px;
+        bottom: 0px;
+        width: 100%;
+        height: 300px;
+    }
+    
+}
