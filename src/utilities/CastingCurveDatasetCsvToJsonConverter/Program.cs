@@ -22,6 +22,8 @@ namespace CastingCurveDatasetCsvToJsonConverter
             }
             List<CastingCurveJsonItem> jsonItems = new List<CastingCurveJsonItem>();
             CastingCurveJsonModel jsonModel = new CastingCurveJsonModel();
+            List<string> times = new List<string>();
+            List<double> values = new List<double>();
             for (int i = 0; i < datasets.Count; ++i)
             {
                 jsonItems.Add(
@@ -31,9 +33,14 @@ namespace CastingCurveDatasetCsvToJsonConverter
                     datetime = datasets[i].ds,
                     value = datasets[i].y
                 });
+                times.Add(datasets[i].ds);
+                values.Add(datasets[i].y);
             }
-            jsonModel.CastingCurveValues = jsonItems.ToArray();
-            var jsonString = JsonConvert.SerializeObject(jsonModel);
+            jsonModel.times = times.ToArray();
+            jsonModel.values = values.ToArray();
+            var jsonString = JsonConvert.SerializeObject(new {
+                CastingCurveValues = jsonModel
+            });
 
             File.WriteAllText(_datasetFolder + "data.json", jsonString);
         }
