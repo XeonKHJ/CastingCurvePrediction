@@ -17,7 +17,7 @@ public class CastingResultModel {
         resultItems.add(resultItem);
     }
 
-    public List<CastingResultItemModel> getResultItems()
+    public ArrayList<CastingResultItemModel> getResultItems()
     {
         return resultItems;
     }

@@ -3,6 +3,10 @@ package xjtuse.castingcurvepredict.restservice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import xjtuse.castingcurvepredict.castingpredictiors.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.interfaces.ICastingGenerator;
+import xjtuse.castingcurvepredict.models.CastingModel;
+import xjtuse.castingcurvepredict.models.CastingResultModel;
 import xjtuse.castingcurvepredict.viewmodels.DiagramViewModel;
 
 @RestController
@@ -11,9 +15,13 @@ public class CastingCurveServiceController {
     public DiagramViewModel GetCastingCurveFromInput()
     {
         // Construct a diagram view model;
-        // Stab
-        
+        ICastingGenerator generator = new ConstCastingGenerator();
 
-        return new DiagramViewModel();
+        // Stab
+        CastingModel castingModel = new CastingModel(generator);
+
+        CastingResultModel resultModel = castingModel.PredictCastingCurve(null);
+
+        return new DiagramViewModel(resultModel);
     }
 }
