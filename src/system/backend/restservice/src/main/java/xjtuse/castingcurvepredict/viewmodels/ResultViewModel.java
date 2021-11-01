@@ -6,7 +6,7 @@ import xjtuse.castingcurvepredict.models.CastingResultItemModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
 
 public class ResultViewModel {
-    private ArrayList<String> _dates;
+    private ArrayList<String> _times;
     private ArrayList<Double> _values;
     private CastingResultModel _resultModel;
 
@@ -14,20 +14,20 @@ public class ResultViewModel {
     {
         _resultModel = resultModel;
         ArrayList<CastingResultItemModel> results = resultModel.getResultItems();
-        ArrayList<String> dates = new ArrayList<String>();
+        ArrayList<String> times = new ArrayList<String>();
         ArrayList<Double> values = new ArrayList<Double>();
         for (CastingResultItemModel resultItem : results) {
-            dates.add(resultItem.getDatetime());
+            times.add(resultItem.getDatetime());
             values.add(resultItem.getValue());
         }
-        _dates = dates;
+        _times = times;
         _values = values;
     }
 
     
-    public ArrayList<String> getDates()
+    public ArrayList<String> getTimes()
     {
-        return _dates;
+        return _times;
     }
 
     public ArrayList<Double> getValues()

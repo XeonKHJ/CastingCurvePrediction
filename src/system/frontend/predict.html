@@ -72,9 +72,13 @@
     }).mount('#steelInfoForm')
 
     function submitCastingPriorInfo(form) {
-        axios.get('https://raw.githubusercontent.com/XeonKHJ/CastingCurvePrediction/main/datasets/data.json').then(response => {
-            generatingCastingChart(response.data.CastingCurveValues)
-        })
+        axios.get('http://localhost:8080/getcastingcurvefrominput', {Headers:{
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }}).then(response => {
+            generatingCastingChart(response.data.castingCurveValues)
+        }).then().catch(
+            err => console.log(err))
     }
 </script>
 
