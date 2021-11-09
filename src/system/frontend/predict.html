@@ -15,29 +15,34 @@
 <body>
     <section id="headerSection">
         <div id="inputDiv">
-            <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
-                <table>
+            <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm"
+                action="javascript:submitCastingPriorInfo(this)" method="post">
+                <table style="border-spacing: 10px;">
                     <tr>
-                        <td>
-                            <span style="color: red; opacity: 1;">{{steelType}}：</span>
-                        </td>
-                        <td>
-                            <input id="steelInfoInput"></input>
-                        </td>
+                        <td><span>{{steelType}}：</span></td>
+                        <td><input id="steelTypeInput"></input></td>
+                        <td><span>{{billetWidth}}：</span></td>
+                        <td><input id="billetWidthInput"></input></td>
+                        <td><span>{{billetThickness}}：</span></td>
+                        <td><input id="billetThicknessInput"></input></td>
+                        <td rowspan="2"><input type="submit" v-bind:value="predictButton"></input></td>
                     </tr>
                     <tr>
                         <td><span>{{castingWidth}}：</span></td>
                         <td><input id="castingWidthInput"></input></td>
-                    </tr>
-                    <tr>
-                        <td><input type="submit" value="submit"></input></td>
+                        <td><span>{{mode}}：</span></td>
+                        <td><input id="modeInput"></input></td>
+                        <td><span>{{targetLV}}：</span></td>
+                        <td><input id="targetLVInput"></input></td>
                     </tr>
                 </table>
             </form>
         </div>
     </section>
     <section id="animationSection">
-        <div id="animationDiv"></div>
+        <div id="animationDiv">
+            <canvas id="animationCanvas"></canvas>
+        </div>
     </section>
     <section id="chartSection">
         <div id="echartDiv"></div>
@@ -47,6 +52,7 @@
         <div id="animationDiv"></div>
         <div id="chartDiv"></div>
     </section> -->
+    <script src="src/predictView.js"></script>
 </body>
 <script type="text/javascript">
     function generatingCastingChart(data) {
@@ -58,7 +64,8 @@
                 data: data.times
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                min: -2
             },
             series: [
                 {
@@ -73,26 +80,6 @@
         window.onresize = function () {
             myChart.resize()
         }
-    }
-</script>
-<script>
-    formVm = Vue.createApp({
-        data() {
-            return {
-                steelType: "钢种",
-                castingWidth: "灌注宽度"
-            }
-        }
-    }).mount('#steelInfoForm')
-
-    function submitCastingPriorInfo(form) {
-        axios.get('http://localhost:8080/getcastingcurvefrominput', {Headers:{
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json"
-        }}).then(response => {
-            generatingCastingChart(response.data.castingCurveValues)
-        }).then().catch(
-            err => console.log(err))
     }
 </script>
 

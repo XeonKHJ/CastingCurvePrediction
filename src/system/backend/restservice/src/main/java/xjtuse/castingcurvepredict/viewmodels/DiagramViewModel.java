@@ -10,9 +10,7 @@ public class DiagramViewModel {
         _resultModel = model;
         _resultViewModel =  new ResultViewModel(model);
     }
-
-
-
+    
     public ResultViewModel getCastingCurveValues()
     {
         return _resultViewModel;
