@@ -25,7 +25,7 @@ public class ConstCastingGenerator implements ICastingGenerator {
 
         BufferedReader bfReader;
         try {
-            bfReader = new BufferedReader(new FileReader("C:/Users/redal/source/repos/CastingCurvePrediction/datasets/data.csv"));
+            bfReader = new BufferedReader(new FileReader("C:/Users/redal/source/repos/CastingCurvePrediction/datasets/data2.csv"));
             Boolean firstLine = true;
             String line;
             while((line = bfReader.readLine()) != null)

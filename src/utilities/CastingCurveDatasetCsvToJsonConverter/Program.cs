@@ -14,7 +14,7 @@ namespace CastingCurveDatasetCsvToJsonConverter
         {
             Console.WriteLine("Hello World!");
             List<CastingCurveCsvItem> datasets = null;
-            using (var reader = new StreamReader(_datasetFolder + "data.csv"))
+            using (var reader = new StreamReader(_datasetFolder + "data2.csv"))
             using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture))
             {
                 var records = csv.GetRecords<CastingCurveCsvItem>();
@@ -42,7 +42,7 @@ namespace CastingCurveDatasetCsvToJsonConverter
                 CastingCurveValues = jsonModel
             });
 
-            File.WriteAllText(_datasetFolder + "data.json", jsonString);
+            File.WriteAllText(_datasetFolder + "data2.json", jsonString);
         }
     }
 }
