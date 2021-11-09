@@ -16,9 +16,23 @@
     <section id="headerSection">
         <div id="inputDiv">
             <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
-                <p style="color: red; opacity: 1;">{{steelType}}：<input id="steelInfoInput"></input></p>
-                <p>{{castingWidth}}：<input id="castingWidthInput"></input></p>
-                <input type="submit" value="submit"></input>
+                <table>
+                    <tr>
+                        <td>
+                            <span style="color: red; opacity: 1;">{{steelType}}：</span>
+                        </td>
+                        <td>
+                            <input id="steelInfoInput"></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>{{castingWidth}}：</span></td>
+                        <td><input id="castingWidthInput"></input></td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="submit"></input></td>
+                    </tr>
+                </table>
             </form>
         </div>
     </section>
