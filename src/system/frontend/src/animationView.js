@@ -1,8 +1,12 @@
 function startAnimation() {
     // Init webgl context.
-    var canvas = document.getElementById('webgl');
+    var canvas = document.getElementById('animationCanvas');
+    var canvasDiv = document.getElementById('animationDiv');
+    canvas.height = canvasDiv.clientHeight;
+    canvas.width = canvasDiv.clientWidth;
     var gl = getWebGLContext(canvas);
-
+    height = canvasDiv.clientHeight;
+    width = canvasDiv.clientWidth;
     startDrawing(gl);
 }
 
@@ -13,11 +17,10 @@ function startDrawing(gl) {
     drawSTP(gl);
 }
 
-
 function drawSTP(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
-        '//uniform mat4 u_ModelMatrix; \n' +
+        'uniform mat4 u_ModelMatrix; \n' +
         'void main() {\n' +
         '  gl_Position = a_Position;\n' +
         '}\n';

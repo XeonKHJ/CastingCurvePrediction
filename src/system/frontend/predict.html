@@ -12,7 +12,7 @@
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
-<body>
+<body onload="startAnimation()">
     <section id="headerSection">
         <div id="inputDiv">
             <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm"
@@ -41,7 +41,7 @@
     </section>
     <section id="animationSection">
         <div id="animationDiv">
-            <canvas id="animationCanvas"></canvas>
+            <canvas id="animationCanvas" v-bind:height="canvasHeight" v-bind:width="canvasWidth"></canvas>
         </div>
     </section>
     <section id="chartSection">
@@ -53,6 +53,10 @@
         <div id="chartDiv"></div>
     </section> -->
     <script src="src/predictView.js"></script>
+    <script src="src/animationView.js"></script>
+    <script src="src/lib/webgl-utils.js"></script>
+    <script src="src/lib/webgl-debug.js"></script>
+    <script src="src/lib/cuon-utils.js"></script>
 </body>
 <script type="text/javascript">
     function generatingCastingChart(data) {
@@ -79,6 +83,10 @@
 
         window.onresize = function () {
             myChart.resize()
+            // var canvas = document.getElementById('animationCanvas');
+            // var canvasDiv = document.getElementById('animationDiv');
+            // canvas.Height = canvasDiv.Height;
+            startAnimation()
         }
     }
 </script>
