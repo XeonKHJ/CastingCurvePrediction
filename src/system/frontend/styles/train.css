@@ -1,0 +1,52 @@
+section{
+    background-color: transparent;
+}
+
+#trainningControlSection{
+    position: absolute;
+    /* background-color: red; */
+    height: 150px;
+    /* width: 100%; */
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    /* opacity: 0.4; */
+}
+
+#uploadDatasetDiv{
+    position: absolute;
+    /*width: 85%;*/
+    background-color: transparent;
+    /* opacity: 0.4; */
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    box-sizing:border-box;
+    border-radius: 5px;
+}
+
+#trainningInfoSection{
+    position: absolute;
+    top:150px;
+    /* background-color: red; */
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    min-height: 500px;
+    left: 0px;
+    right: 0px;
+    /* width: 100%; */
+}
+
+#trainningInfoDiv{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    box-sizing:border-box;
+    border-radius: 5px;
+}

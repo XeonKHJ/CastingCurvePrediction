@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,11 +7,12 @@
     <title>Document</title>
     <link href="styles/predict.css" type="text/css" rel="stylesheet" />
 </head>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
-<script src="https://unpkg.com/vue@next"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
 <body onload="startAnimation()">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+
     <section id="headerSection">
         <div id="inputDiv">
             <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm"
@@ -57,38 +57,37 @@
     <script src="src/lib/webgl-utils.js"></script>
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>
-</body>
-<script type="text/javascript">
-    function generatingCastingChart(data) {
-        var myChart = echarts.init(document.getElementById('echartDiv'));
+    <script type="text/javascript">
+        function generatingCastingChart(data) {
+            var myChart = echarts.init(document.getElementById('echartDiv'));
 
-        var option = {
-            xAxis: {
-                type: 'category',
-                data: data.times
-            },
-            yAxis: {
-                type: 'value',
-                min: -2
-            },
-            series: [
-                {
-                    data: data.values,
-                    type: 'line'
-                }
-            ]
-        };
+            var option = {
+                xAxis: {
+                    type: 'category',
+                    data: data.times
+                },
+                yAxis: {
+                    type: 'value',
+                    min: -2
+                },
+                series: [
+                    {
+                        data: data.values,
+                        type: 'line'
+                    }
+                ]
+            };
 
-        myChart.setOption(option)
+            myChart.setOption(option)
 
-        window.onresize = function () {
-            myChart.resize()
-            // var canvas = document.getElementById('animationCanvas');
-            // var canvasDiv = document.getElementById('animationDiv');
-            // canvas.Height = canvasDiv.Height;
-            startAnimation()
+            window.onresize = function () {
+                myChart.resize()
+                // var canvas = document.getElementById('animationCanvas');
+                // var canvasDiv = document.getElementById('animationDiv');
+                // canvas.Height = canvasDiv.Height;
+                startAnimation()
+            }
         }
-    }
-</script>
-
+    </script>
+</body>
 </html>
