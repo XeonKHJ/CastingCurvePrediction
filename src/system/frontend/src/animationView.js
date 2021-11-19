@@ -161,21 +161,8 @@ function initTudishVertexBuffers(gl, vertices) {
 }
 
 
-function initCoolingPipeBuffers(gl)
+function initCoolingPipeBuffers(gl, vertices)
 {
-    var vertices = new Float32Array([
-        -120 / width, -44 / height,
-        -120 / width, 0 / height,
-        
-        -110 / width, -44 / height,
-        -40 / width, 0 / height,
-        
-        -90 / width, -400 / height,
-        -40 / width, -400 / height,
-    ]);
-
-    var n = vertices.length / 2;
-
     var vertexBuffer = gl.createBuffer();
     if (!vertexBuffer) {
         console.log('Failed to create the buffer object');
@@ -193,7 +180,7 @@ function initCoolingPipeBuffers(gl)
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(a_Position)
 
-    return n;
+    return vertices.length / 2;
 }
 
 function drawCoolingPipe(gl) {
@@ -215,11 +202,41 @@ function drawCoolingPipe(gl) {
         return;
     }
 
-    var n = initCoolingPipeBuffers(gl);
+    var coolingPipeLeftVertices = new Float32Array([
+        -120 / width, -44 / height,
+        -120 / width, 0 / height,
+        
+        -110 / width, -44 / height,
+        -40 / width, 0 / height,
+        
+        -90 / width, -400 / height,
+        -40 / width, -400 / height,
+    ]);
+
+    var coolingPipeRightVertices = new Float32Array(coolingPipeLeftVertices.length);
+    for (var i = 0; i < coolingPipeLeftVertices.length; i++) {
+        if (i % 2) {
+            coolingPipeRightVertices[i] = coolingPipeLeftVertices[i];
+        }
+        else {
+            coolingPipeRightVertices[i] = -1 * coolingPipeLeftVertices[i];
+        }
+    }
+
+    // Initialize gl and start drawing
+
+    var n = initCoolingPipeBuffers(gl, coolingPipeLeftVertices);
     if (n < 0) {
         console.log('Failed to set the positions of the vertices');
         return;
     }
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
 
+
+    var n = initCoolingPipeBuffers(gl, coolingPipeRightVertices);
+    if (n < 0) {
+        console.log('Failed to set the positions of the vertices');
+        return;
+    }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
 }
