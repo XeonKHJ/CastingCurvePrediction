@@ -7,8 +7,11 @@
     <title>Document</title>
 </head>
 <body onload="startAnimation()">
-    <canvas id="webgl" height="2000" width="1000"></canvas>
-    <script src="src/animation.js"></script>
+    <div id="animationDiv">
+        <canvas id="animationCanvas" height="2000" width="1000"></canvas>
+    </div>
+    
+    <script src="src/animationView.js"></script>
     <script src="src/lib/webgl-utils.js"></script>
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>

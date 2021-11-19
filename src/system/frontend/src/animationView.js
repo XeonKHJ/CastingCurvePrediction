@@ -1,3 +1,4 @@
+
 function startAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
@@ -14,7 +15,7 @@ function startDrawing(gl) {
     gl.clearColor(0, 0, 0, 0.5);
     gl.clear(gl.COLOR_BUFFER_BIT);
     drawTudish(gl);
-    drawSTP(gl);
+    drawNewSTP(gl);
     drawCoolingPipe(gl);
 }
 
@@ -44,6 +45,42 @@ function drawSTP(gl) {
     }
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+}
+
+function drawNewSTP(gl) {
+    var VSHADER_SOURCE =
+        'attribute vec4 a_Position;\n' +
+        'uniform mat4 u_ModelMatrix; \n' +
+        'void main() {\n' +
+        '  gl_Position = a_Position;\n' +
+        '}\n';
+
+    // Fragment shader program
+    var FSHADER_SOURCE =
+        'void main() {\n' +
+        '  gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n' +
+        '}\n';
+
+    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+        console.log('Failed to intialize shaders.');
+        return;
+    }
+
+    var n = initNewSTPVertexBuffers(gl);
+    if (n < 0) {
+        console.log('Failed to set the positions of the vertices');
+        return;
+    }
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+
+
+    var n = initSTPBottomVerticeBuffer(gl, 40);
+    if (n < 0) {
+        console.log('Failed to set the positions of the vertices');
+        return;
+    }
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, n)
 }
 
 function initSTPVertexBuffers(gl) {
@@ -77,8 +114,74 @@ function initSTPVertexBuffers(gl) {
     return n;
 }
 
+function initNewSTPVertexBuffers(gl) {
+    var vertices = new Float32Array([
+        -63.5 / width, 300 / height,
+        63.5 / width, 300 / height,
+        -63.5 / width, 40 / height,
+        63.5 / width, 40 / height,
+        -40 / width, 0,
+        40 / width, 0
+    ]);
+
+    var n = vertices.length / 2;
+
+    var vertexBuffer = gl.createBuffer();
+    if (!vertexBuffer) {
+        console.log('Failed to create the buffer object');
+        return -1;
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+
+    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+    if (a_Position < 0) {
+        console.log('Filed to get the strorage location of a_Position')
+        return -1;
+    }
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position)
+
+    return n;
+}
+
+function initSTPBottomVerticeBuffer(gl, r) {
+    var vertices = new Float32Array(104);
+    vertices[0] = 0;
+    vertices[1] = 0;
+    index = 2;
+    for (i = -50; i <= 0; i++) {
+        vertices[index] = r * Math.cos(i * 2 * Math.PI / 100) / width;
+        vertices[index + 1] = r * Math.sin(i * 2 * Math.PI / 100) / height;
+        index += 2;
+    }
+
+    var n = vertices.length / 2;
+
+    var vertexBuffer = gl.createBuffer();
+    if (!vertexBuffer) {
+        console.log('Failed to create the buffer object');
+        return -1;
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+
+    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+    if (a_Position < 0) {
+        console.log('Filed to get the strorage location of a_Position')
+        return -1;
+    }
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(a_Position)
+
+    return n;
+}
+
 var height = 2000;
 var width = 1000;
+var offset = 0;
 function drawTudish(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
@@ -161,8 +264,7 @@ function initTudishVertexBuffers(gl, vertices) {
 }
 
 
-function initCoolingPipeBuffers(gl, vertices)
-{
+function initCoolingPipeBuffers(gl, vertices) {
     var vertexBuffer = gl.createBuffer();
     if (!vertexBuffer) {
         console.log('Failed to create the buffer object');
@@ -203,14 +305,17 @@ function drawCoolingPipe(gl) {
     }
 
     var coolingPipeLeftVertices = new Float32Array([
-        -120 / width, -44 / height,
-        -120 / width, 0 / height,
-        
-        -110 / width, -44 / height,
         -40 / width, 0 / height,
+        -120 / width, 0 / height,
+        -120 / width, -44 / height,
         
+
+        -110 / width, -44 / height,
+        
+
         -90 / width, -400 / height,
-        -40 / width, -400 / height,
+        -90 / width, -800 / height,
+        -32.5/width, -800 / height
     ]);
 
     var coolingPipeRightVertices = new Float32Array(coolingPipeLeftVertices.length);
@@ -230,7 +335,7 @@ function drawCoolingPipe(gl) {
         console.log('Failed to set the positions of the vertices');
         return;
     }
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 
 
     var n = initCoolingPipeBuffers(gl, coolingPipeRightVertices);
@@ -238,5 +343,5 @@ function drawCoolingPipe(gl) {
         console.log('Failed to set the positions of the vertices');
         return;
     }
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 }
