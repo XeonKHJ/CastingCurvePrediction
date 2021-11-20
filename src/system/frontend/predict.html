@@ -58,6 +58,7 @@
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>
     <script type="text/javascript">
+        var myChart = null;
         function generatingCastingChart(data) {
             var myChart = echarts.init(document.getElementById('echartDiv'));
 
@@ -82,7 +83,10 @@
         }
 
         window.onresize = function () {
-                //myChart.resize()
+                if(myChart != null)
+                {
+                    myChart.resize();
+                }
                 // var canvas = document.getElementById('animationCanvas');
                 // var canvasDiv = document.getElementById('animationDiv');
                 // canvas.Height = canvasDiv.Height;

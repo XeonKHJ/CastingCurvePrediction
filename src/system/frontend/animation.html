@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body onload="startAnimation()">
-    <div id="animationDiv">
-        <canvas id="animationCanvas" height="2000" width="1000"></canvas>
+
+<body onload="startAnimation()" style="margin: 0%; padding: 0%;">
+    <div id="animationDiv" style="bottom: 0%; top: 0%; left: 0%; right: 0;; position: absolute;">
+        <canvas id="animationCanvas"></canvas>
     </div>
-    
+
     <script src="src/animationView.js"></script>
     <script src="src/lib/webgl-utils.js"></script>
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>
+
+
 </body>
 <script>
+
+    window.onresize = function () {
+        var canvas = document.getElementById('animationCanvas');
+        var canvasDiv = document.getElementById('animationDiv');
+        canvas.height = canvasDiv.clientHeight;
+        canvas.width = canvasDiv.clientWidth;
+        //startAnimation()
+    }
+
 </script>
+
 </html>
