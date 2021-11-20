@@ -1,4 +1,6 @@
-function startAnimation() {
+var _animationStarted = false;
+
+function drawAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
     var canvasDiv = document.getElementById('animationDiv');
@@ -28,7 +30,7 @@ function drawSTP(gl) {
         'attribute vec4 a_Position;\n' +
         'uniform mat4 u_ModelMatrix; \n' +
         'void main() {\n' +
-        '  gl_Position = a_Position;\n' +
+        '  gl_Position = u_ModelMatrix * a_Position;\n' +
         '}\n';
 
     // Fragment shader program
@@ -51,12 +53,15 @@ function drawSTP(gl) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
 }
 
+var startTime = null;
+var translateData = null;
+var abc = 0;
 function drawNewSTP(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
         'uniform mat4 u_ModelMatrix; \n' +
         'void main() {\n' +
-        '  gl_Position = a_Position;\n' +
+        '  gl_Position = u_ModelMatrix * a_Position;\n' +
         '}\n';
 
     // Fragment shader program
@@ -69,6 +74,13 @@ function drawNewSTP(gl) {
         console.log('Failed to intialize shaders.');
         return;
     }
+
+    var modelMatrix = new Matrix4();
+    abc += 0.001
+    modelMatrix.translate(0, abc, 0);        // Multiply modelMatrix by the calculated translation matrix
+
+    var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+    gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
     var n = initNewSTPVertexBuffers(gl);
     if (n < 0) {
@@ -130,22 +142,9 @@ function initNewSTPVertexBuffers(gl) {
 
     var n = vertices.length / 2;
 
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
+    if (!initArrayBuffer(gl, 'a_Position', vertices, 2, gl.FLOAT)) {
         return -1;
     }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
-
-    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-    if (a_Position < 0) {
-        console.log('Filed to get the strorage location of a_Position')
-        return -1;
-    }
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position)
 
     return n;
 }
@@ -163,22 +162,9 @@ function initSTPBottomVerticeBuffer(gl, r) {
 
     var n = vertices.length / 2;
 
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
+    if (!initArrayBuffer(gl, 'a_Position', vertices, 2, gl.FLOAT)) {
         return -1;
     }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
-
-    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-    if (a_Position < 0) {
-        console.log('Filed to get the strorage location of a_Position')
-        return -1;
-    }
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position)
 
     return n;
 }
@@ -348,4 +334,29 @@ function drawCoolingPipe(gl) {
         return;
     }
     gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
+}
+
+function initArrayBuffer(gl, attribute, data, num, type) {
+    // Create a buffer object
+    var buffer = gl.createBuffer();
+    if (!buffer) {
+        console.log('Failed to create the buffer object');
+        return false;
+    }
+    // Write date into the buffer object
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    // Assign the buffer object to the attribute variable
+    var a_attribute = gl.getAttribLocation(gl.program, attribute);
+    if (a_attribute < 0) {
+        console.log('Failed to get the storage location of ' + attribute);
+        return false;
+    }
+    gl.vertexAttribPointer(a_attribute, num, type, false, 0, 0);
+    // Enable the assignment of the buffer object to the attribute variable
+    gl.enableVertexAttribArray(a_attribute);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    return true;
 }

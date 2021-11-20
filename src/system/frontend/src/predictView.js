@@ -18,6 +18,9 @@ function submitCastingPriorInfo(form) {
         Accept: "application/json"
     }}).then(response => {
         generatingCastingChart(response.data.castingCurveValues)
+        translateData = response.data.castingCurveValues;
+        startTime = Date.now();
+        _animationStarted = true;
     }).then().catch(
         err => console.log(err))
 }
