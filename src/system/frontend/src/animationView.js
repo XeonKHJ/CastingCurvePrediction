@@ -1,4 +1,3 @@
-
 function startAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
@@ -6,6 +5,7 @@ function startAnimation() {
     canvas.height = canvasDiv.clientHeight;
     canvas.width = canvasDiv.clientWidth;
     var gl = getWebGLContext(canvas);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     height = canvasDiv.clientHeight;
     width = canvasDiv.clientWidth;
     startDrawing(gl);
