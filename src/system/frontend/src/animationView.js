@@ -55,7 +55,7 @@ function drawSTP(gl) {
 
 var startTime = null;
 var translateData = null;
-var abc = 0;
+
 function drawNewSTP(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
@@ -76,8 +76,15 @@ function drawNewSTP(gl) {
     }
 
     var modelMatrix = new Matrix4();
-    abc += 0.001
-    modelMatrix.translate(0, abc, 0);        // Multiply modelMatrix by the calculated translation matrix
+
+    if(startTime != null)
+    {
+        var deltaTime = Date.now() - startTime;
+        deltaNo = parseInt(deltaTime / (250 / 25)); 
+        console.log(deltaNo)
+        console.log(translateData.values[deltaNo])
+        modelMatrix.translate(0, translateData.values[deltaNo] / height, 0);        // Multiply modelMatrix by the calculated translation matrix
+    }
 
     var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
