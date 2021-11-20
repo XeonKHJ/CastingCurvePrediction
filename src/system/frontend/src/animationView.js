@@ -2,13 +2,18 @@ function startAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
     var canvasDiv = document.getElementById('animationDiv');
-    canvas.height = canvasDiv.clientHeight;
-    canvas.width = canvasDiv.clientWidth;
     var gl = getWebGLContext(canvas);
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    height = canvasDiv.clientHeight;
-    width = canvasDiv.clientWidth;
-    startDrawing(gl);
+    var tick = function () {
+        canvas.height = canvasDiv.clientHeight;
+        canvas.width = canvasDiv.clientWidth;
+    
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        height = canvasDiv.clientHeight;
+        width = canvasDiv.clientWidth;
+        startDrawing(gl);
+        requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+    };
+    tick();
 }
 
 function startDrawing(gl) {
@@ -308,14 +313,14 @@ function drawCoolingPipe(gl) {
         -40 / width, 0 / height,
         -120 / width, 0 / height,
         -120 / width, -44 / height,
-        
+
 
         -110 / width, -44 / height,
-        
+
 
         -90 / width, -400 / height,
         -90 / width, -800 / height,
-        -32.5/width, -800 / height
+        -32.5 / width, -800 / height
     ]);
 
     var coolingPipeRightVertices = new Float32Array(coolingPipeLeftVertices.length);
