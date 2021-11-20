@@ -3,9 +3,9 @@ function startAnimation() {
     var canvas = document.getElementById('animationCanvas');
     var canvasDiv = document.getElementById('animationDiv');
     var gl = getWebGLContext(canvas);
+    canvas.height = canvasDiv.clientHeight;
+    canvas.width = canvasDiv.clientWidth;
     var tick = function () {
-        canvas.height = canvasDiv.clientHeight;
-        canvas.width = canvasDiv.clientWidth;
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         height = canvasDiv.clientHeight;
         width = canvasDiv.clientWidth;

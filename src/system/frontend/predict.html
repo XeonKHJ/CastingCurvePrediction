@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -83,15 +84,18 @@
         }
 
         window.onresize = function () {
-                if(myChart != null)
-                {
-                    myChart.resize();
-                }
-                // var canvas = document.getElementById('animationCanvas');
-                // var canvasDiv = document.getElementById('animationDiv');
-                // canvas.Height = canvasDiv.Height;
-                //startAnimation()
+            if (myChart != null) {
+                myChart.resize();
             }
+            var canvas = document.getElementById('animationCanvas');
+            var canvasDiv = document.getElementById('animationDiv');
+            // canvas.Height = canvasDiv.Height;
+            //startAnimation()
+
+            canvas.height = canvasDiv.clientHeight;
+            canvas.width = canvasDiv.clientWidth;
+        }
     </script>
 </body>
+
 </html>
