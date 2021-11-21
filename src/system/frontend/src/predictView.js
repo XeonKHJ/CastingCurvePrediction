@@ -12,12 +12,12 @@ formVm = Vue.createApp({
     }
 }).mount('#steelInfoForm')
 
-function submitCastingPriorInfo(form) {
+function submitCastingPriorInfo(form, title="预测结果") {
     axios.get('http://localhost:8080/getcastingcurvefrominput', {Headers:{
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json"
     }}).then(response => {
-        generatingCastingChart(response.data.castingCurveValues)
+        generatingCastingChart(response.data.castingCurveValues, title)
         translateData = response.data.castingCurveValues;
         startTime = Date.now();
         _animationStarted = true;

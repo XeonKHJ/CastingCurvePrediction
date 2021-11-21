@@ -26,7 +26,8 @@
                         <td><input id="billetWidthInput"></input></td>
                         <td><span>{{billetThickness}}：</span></td>
                         <td><input id="billetThicknessInput"></input></td>
-                        <td rowspan="2"><input type="submit" v-bind:value="predictButton"></input></td>
+                        <td><input type="submit" v-bind:value="predictButton"></input></td>
+                        <td rowspan="2"><button>播放</button></td>
                     </tr>
                     <tr>
                         <td><span>{{castingWidth}}：</span></td>
@@ -36,9 +37,11 @@
                         <td><span>{{targetLV}}：</span></td>
                         <td><input id="targetLVInput"></input></td>
                     </tr>
+                    <tr><td><input id="openFileInput" type="file" onchange="javascript:openFile(this)"></input></td><td><button onclick="javascript:openFile()">打开</button></td></tr>
                 </table>
             </form>
         </div>
+        <button onclick="javascript:openFile()">打开</button>
     </section>
     <section id="animationSection">
         <div id="animationDiv">
@@ -47,6 +50,13 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv"></div>
+        <div id="tabDiv">
+            <table>
+                <tr id="tabRow">
+                    <!-- <button>sdfsdf</button><button>sdfsdf</button><button>sdfsdf</button> -->
+                </tr>
+            </table>
+        </div>
     </section>
     <!-- <section id="charSection"></section>
     <section id="mainSection">
@@ -61,7 +71,9 @@
     <script src="src/lib/cuon-matrix.js"></script>
     <script type="text/javascript">
         var myChart = null;
-        function generatingCastingChart(data) {
+        function generatingCastingChart(data, title) {
+            
+
             myChart = echarts.init(document.getElementById('echartDiv'));
 
             var option = {
@@ -97,6 +109,16 @@
 
             canvas.height = canvasDiv.clientHeight;
             canvas.width = canvasDiv.clientWidth;
+        }
+        
+        function openFile()
+        {
+            var openFileInput = document.getElementById('openFileInput');
+            var filePath = openFileInput.value;
+            console.log("fuckcukl")
+            intsdf = input;
+
+            submitCastingPriorInfo(null);
         }
     </script>
 </body>

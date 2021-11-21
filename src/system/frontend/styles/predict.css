@@ -61,6 +61,18 @@ section{
     border-radius: 5px;
 }
 
+#tabDiv
+{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 10px;
+    height: 30px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
 #echartDiv{
     position: absolute;
     top: 5px;
