@@ -26,18 +26,18 @@ function submitCastingPriorInfo(form, title = "预测结果") {
         }
         vmId = hashCode(title, seedCounter++);
         var filePaths = title.split('\\');
-        var fileName = filePaths[filePaths.length -1]
+        var fileName = filePaths[filePaths.length - 1]
         var newDataViewModel = {
-            chartId:vmId,
-            title:fileName,
-            data:response.data.castingCurveValues,
-            isPredictResult:false,
-            isSelected: true
+            chartId: vmId,
+            title: fileName,
+            data: response.data.castingCurveValues,
+            isPredictResult: false,
+            isSelected: true,
+            echart: null
         }
-        
+
         chartCollectionViewModel.chartViewModels.push(newDataViewModel);
-        chartCollectionViewModel.$nextTick(()=>
-        {
+        chartCollectionViewModel.$nextTick(() => {
             generatingCastingChart(newDataViewModel);
             selectItem(vmId);
             startTime = Date.now();
@@ -58,20 +58,29 @@ var chartListViewModel = Vue.createApp({
     }
 })
 
+var defaultChartViewModel = {
+    chartId: 0,
+    title: "没数据",
+    data: null,
+    isPredictResult: false,
+    isSelected: true
+};
+
 var chartCollectionViewModel = Vue.createApp({
     data() {
         return {
-            isEmpty : true,
+            isEmpty: true,
             chartViewModels: [
                 {
-                    chartId:0,
+                    chartId: 0,
                     title: "没数据",
                     data: null,
-                    isPredictResult : false,
+                    isPredictResult: false,
                     isSelected: true,
+                    echart: null
                 }
             ],
-            currentId:0
+            currentId: 0
         }
     }
 }).mount("#chartSection");
@@ -89,21 +98,23 @@ function hashCode(str, seed = 0) {
         h1 = Math.imul(h1 ^ ch, 2654435761);
         h2 = Math.imul(h2 ^ ch, 1597334677);
     }
-    h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-    return 4294967296 * (2097151 & h2) + (h1>>>0);
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-function selectItem(id)
-{
+function selectItem(id) {
     chartCollectionViewModel.chartViewModels.forEach(element => {
-        if(element.chartId == id)
-        {
+        if (element.chartId == id) {
             element.isSelected = true;
+            chartCollectionViewModel.currentId = element.chartId;
         }
-        else
-        {
+        else {
             element.isSelected = false;
         }
     });
+    chartCollectionViewModel.$nextTick(() => {
+        resizeEverything();
+    });
+    
 }

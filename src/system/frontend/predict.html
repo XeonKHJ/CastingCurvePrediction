@@ -27,7 +27,7 @@
                         <td><span>{{billetThickness}}：</span></td>
                         <td><input id="billetThicknessInput"></input></td>
                         <td><input type="submit" v-bind:value="predictButton"></input></td>
-                        <td rowspan="2"><button>播放</button></td>
+
                     </tr>
                     <tr>
                         <td><span>{{castingWidth}}：</span></td>
@@ -36,9 +36,11 @@
                         <td><input id="modeInput"></input></td>
                         <td><span>{{targetLV}}：</span></td>
                         <td><input id="targetLVInput"></input></td>
+                        <td><button>播放</button></td>
                     </tr>
                 </table>
-                <input style="margin: 0px 0px 0px 10px;" id="openFileInput" type="file" onchange="javascript:openFile(this)"></input>
+                <input style="margin: 0px 0px 0px 10px;" id="openFileInput" type="file"
+                    onchange="javascript:openFile(this)"></input>
             </form>
         </div>
     </section>
@@ -49,13 +51,17 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv">
-            <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv" v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
+            <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
+                v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
         </div>
         <div id="tabDiv">
             <table>
                 <ul id="tabRow">
-                    <li v-for="(chartViewModel,index) in chartViewModels" @click="currentId=chartViewModel.chartId" onclick="clickTab()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">{{chartViewModel.title}}</li>
+                    <span style="float: right; margin: 5px;" onclick="closeTab()">❎</span>
+                    <li v-for="(chartViewModel,index) in chartViewModels" @click="currentId=chartViewModel.chartId"
+                        onclick="clickTab()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">
+                        {{chartViewModel.title}}</li>
                 </ul>
             </table>
         </div>
@@ -75,8 +81,9 @@
         var currentChart = null;
         function generatingCastingChart(dataViewModel) {
             var divId = createEchartContentDiv(dataViewModel.title, dataViewModel.chartId)
-            currentChart = echarts.init(document.getElementById(divId));
-
+            var echart = echarts.init(document.getElementById(divId));
+            currentChart = echart
+            dataViewModel.echart = echart;
             var option = {
                 xAxis: {
                     type: 'category',
@@ -94,45 +101,55 @@
                 ],
 
                 toolbox: {
-                    show : true,
-                    feature : {
-                        mark : {show: true},
-                        dataView : {
+                    show: true,
+                    feature: {
+                        mark: { show: true },
+                        dataView: {
                             show: true,
                             readOnly: false,
-							//修改数据视图格式
-							optionToContent: function (opt) {
-							//修改数据视图代码最后贴出，此处不做过多展示
-							}
-						},
-                        magicType : {show: true, type: ['line', 'bar']},
-                        restore : {show: true},
-                        saveAsImage : {show:true},
-						dataZoom : {
-							show : true,
-						}
+                            //修改数据视图格式
+                            optionToContent: function (opt) {
+                                //修改数据视图代码最后贴出，此处不做过多展示
+                            }
+                        },
+                        magicType: { show: true, type: ['line', 'bar'] },
+                        restore: { show: true },
+                        saveAsImage: { show: true },
+                        dataZoom: {
+                            show: true,
+                        }
                     }
                 }
             };
-            
-            currentChart.setOption(option)
+
+            echart.setOption(option)
 
             //_animationStarted = true;
         }
 
-        function createEchartContentDiv(name, chartId)
-        {
+        function createEchartContentDiv(name, chartId) {
             var divId = "echartContent" + chartId;
             // Create tab page
             //var echartDiv = document.getElementById("echartDiv");
             //echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\""+divId+"\"></div>";
             return divId;
         }
-        
+
         window.onresize = function () {
-            if (currentChart != null) {
-                currentChart.resize();
+            resizeEverything();
+        }
+
+        function resizeEverything() {
+
+            for (var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i) {
+                if (chartCollectionViewModel.chartViewModels[i].chartId == chartCollectionViewModel.currentId) {
+                    if (chartCollectionViewModel.chartViewModels[i].echart != null) {
+                        chartCollectionViewModel.chartViewModels[i].echart.resize();
+                    }
+                    break;
+                }
             }
+
             var canvas = document.getElementById('animationCanvas');
             var canvasDiv = document.getElementById('animationDiv');
             // canvas.Height = canvasDiv.Height;
@@ -141,18 +158,47 @@
             canvas.height = canvasDiv.clientHeight;
             canvas.width = canvasDiv.clientWidth;
         }
-        
-        function openFile()
-        {
+
+        function openFile() {
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
             var filePaths = filePath.split('\\');
-            var fileName = filePaths[filePaths.length -1]
+            var fileName = filePaths[filePaths.length - 1]
             submitCastingPriorInfo(null, fileName);
         }
 
-        function fuck()
-        {
+        function closeTab() {
+            var i = 0;
+            var length = chartCollectionViewModel.chartViewModels.length;
+
+            for (i = 0; i < length; ++i) {
+                if (chartCollectionViewModel.chartViewModels[i].chartId == chartCollectionViewModel.currentId) {
+                    var element = chartCollectionViewModel.chartViewModels[i];
+
+                    if (element.echart != null) {
+                        console.log("fuck you ")
+                        element.echart.clear();
+                        element.echart.dispose();
+                    }
+                        
+                    chartCollectionViewModel.chartViewModels.splice(i, 1);
+                    break;
+                }
+            }
+
+            if (length == 1) {
+                chartCollectionViewModel.chartViewModels.push(defaultChartViewModel);
+                chartCollectionViewModel.isEmpty = true;
+            }
+            else if (length == i + 1) {
+                selectItem(chartCollectionViewModel.chartViewModels[i - 1].chartId);
+            }
+            else {
+                selectItem(chartCollectionViewModel.chartViewModels[i].chartId);
+            }
+        }
+
+        function fuck() {
             console.log("dfsdf")
         }
     </script>
