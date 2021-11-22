@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        ul li {
+
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #app {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+        }
+
+        .tab-tilte {
+            width: 90%;
+        }
+
+        .tab-tilte li {
+            float: left;
+            width: 25%;
+            padding: 10px 0;
+            text-align: center;
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+
+        /* 点击对应的标题添加对应的背景颜色 */
+        .tab-tilte .active {
+            background-color: #09f;
+            color: #fff;
+        }
+
+        .tab-content div {
+            float: left;
+            width: 25%;
+            line-height: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://unpkg.com/vue@next"></script>
+    <div id="app">
+        <!-- 推荐这种写法-->
+        <ul class="tab-title">
+            <li v-for="(title,index) in tabTitle" @click="cur=index" :class="{active:cur==index}">{{title}}</li>
+        </ul>
+        <div class="tab-content">
+            <div v-for="(m,index) in tabMain" v-show="cur==index">{{m}}</div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.onload = function () {
+            var app = Vue.createApp({
+                data() {
+                    return {
+                        tabTitle: ['标题一', '标题二', '标题三', '标题四'],
+                        tabMain: ['内容一', '内容二', '内容三', '内容四'],
+                        cur: 0 //默认选中第一个tab
+                    }
+
+                }
+            }).mount('#app')
+        }
+    </script>
+</body>
+
+</html>

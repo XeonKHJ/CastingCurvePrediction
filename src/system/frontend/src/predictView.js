@@ -24,3 +24,20 @@ function submitCastingPriorInfo(form, title="预测结果") {
     }).then().catch(
         err => console.log(err))
 }
+
+var chartListViewModel = Vue.createApp({
+    data(){
+        return {
+            charts:[
+                {
+                    name:"fuck1",
+                    data:null
+                },
+                {
+                    name:"fuck2",
+                    data:null
+                },
+            ]
+        }
+    }
+})
