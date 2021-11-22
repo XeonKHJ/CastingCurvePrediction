@@ -88,10 +88,15 @@ section{
 .echartContentDiv{
     position: absolute;
     top: 35px;
-    left: 5px;
-    right: 10px;
-    bottom: 10px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     background-color: rgba(102, 51, 153, 0.151);
+}
+
+.tabItemSelected
+{
+    background-color: rgba(218, 124, 17, 0.267);
 }
 
 @media only screen and (max-width: 980px) {

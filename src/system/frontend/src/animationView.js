@@ -12,7 +12,10 @@ function drawAnimation() {
         height = canvasDiv.clientHeight;
         width = canvasDiv.clientWidth;
         startDrawing(gl);
-        requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+        if(_animationStarted)
+        {
+            requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+        }
     };
     tick();
 }

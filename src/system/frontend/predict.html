@@ -55,7 +55,7 @@
         <div id="tabDiv">
             <table>
                 <ul id="tabRow">
-                    <li v-for="(chartTitle,index) in tabTitles" @click="currentIndex=index" onclick="asfsdf()" :class="{active:currentIndex==index}">{{chartTitle}}</li>
+                    <li v-for="(chartViewModel,index) in chartViewModels" @click="currentId=chartViewModel.chartId" onclick="clickTab()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">{{chartViewModel.title}}</li>
                 </ul>
             </table>
         </div>
@@ -73,14 +73,14 @@
     <script src="src/lib/cuon-matrix.js"></script>
     <script type="text/javascript">
         var currentChart = null;
-        function generatingCastingChart(data, title) {
-            createEchartContentDiv("fuck")
-            currentChart = echarts.init(document.getElementById('fuckEchartDiv'));
+        function generatingCastingChart(dataViewModel) {
+            var divId = createEchartContentDiv(dataViewModel.title, dataViewModel.chartId)
+            currentChart = echarts.init(document.getElementById(divId));
 
             var option = {
                 xAxis: {
                     type: 'category',
-                    data: data.times
+                    data: dataViewModel.data.times
                 },
                 yAxis: {
                     type: 'value',
@@ -88,7 +88,7 @@
                 },
                 series: [
                     {
-                        data: data.values,
+                        data: dataViewModel.data.values,
                         type: 'line'
                     }
                 ],
@@ -117,14 +117,19 @@
             
             currentChart.setOption(option)
 
-            _animationStarted = true;
+            //_animationStarted = true;
         }
 
-        function createEchartContentDiv(name)
+        function createEchartContentDiv(name, chartId)
         {
+            var divId = "echartContent" + chartId;
+            // Create tab page
             var echartDiv = document.getElementById("echartDiv");
-            echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\"fuckEchartDiv\"></div>";
+            echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\""+divId+"\"></div>";
+            return divId;
+            
         }
+        
         window.onresize = function () {
             if (currentChart != null) {
                 currentChart.resize();
@@ -143,8 +148,9 @@
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
             console.log("fuckcukl")
-
-            submitCastingPriorInfo(null, "file1");
+            var filePaths = filePath.split('\\');
+            var fileName = filePaths[filePaths.length -1]
+            submitCastingPriorInfo(null, fileName);
         }
     </script>
 </body>
