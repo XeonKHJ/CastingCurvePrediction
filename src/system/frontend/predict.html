@@ -52,9 +52,9 @@
         <div id="echartDiv"></div>
         <div id="tabDiv">
             <table>
-                <tr id="tabRow">
-                    <!-- <button>sdfsdf</button><button>sdfsdf</button><button>sdfsdf</button> -->
-                </tr>
+                <ul id="tabRow">
+                    <li v-for="(chartTitle,index) in tabTitles" @click="cur=index" :class="{active:cur==index}">{{chartTitle}}</li>
+                </ul>
             </table>
         </div>
     </section>

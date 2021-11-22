@@ -28,16 +28,9 @@ function submitCastingPriorInfo(form, title="预测结果") {
 var chartListViewModel = Vue.createApp({
     data(){
         return {
-            charts:[
-                {
-                    name:"fuck1",
-                    data:null
-                },
-                {
-                    name:"fuck2",
-                    data:null
-                },
-            ]
+            tabTitles: ['标题一', '标题二', '标题三', '标题四'],
+            tabMains: ['内容一', '内容二', '内容三', '内容四'],
+            currentIndex:0
         }
     }
-})
+}).mount("#tabRow");

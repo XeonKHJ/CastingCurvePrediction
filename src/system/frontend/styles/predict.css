@@ -117,3 +117,15 @@ section{
     }
     
 }
+
+#tabRow{
+    margin: 0%;
+    padding: 0%;
+    list-style: none;
+}
+#tabRow li{
+    float: left;
+    margin: 5px;
+    border-style: ridge;
+    border-color: black;
+}
