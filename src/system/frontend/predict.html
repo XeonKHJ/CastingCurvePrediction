@@ -37,11 +37,10 @@
                         <td><span>{{targetLV}}：</span></td>
                         <td><input id="targetLVInput"></input></td>
                     </tr>
-                    <tr><td><input id="openFileInput" type="file" onchange="javascript:openFile(this)"></input></td><td><button onclick="javascript:openFile()">打开</button></td></tr>
                 </table>
+                <input style="margin: 0px 0px 0px 10px;" id="openFileInput" type="file" onchange="javascript:openFile(this)"></input>
             </form>
         </div>
-        <button onclick="javascript:openFile()">打开</button>
     </section>
     <section id="animationSection">
         <div id="animationDiv">
@@ -50,7 +49,8 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv">
-            
+            <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv" v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
+            </div>
         </div>
         <div id="tabDiv">
             <table>
@@ -124,10 +124,9 @@
         {
             var divId = "echartContent" + chartId;
             // Create tab page
-            var echartDiv = document.getElementById("echartDiv");
-            echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\""+divId+"\"></div>";
+            //var echartDiv = document.getElementById("echartDiv");
+            //echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\""+divId+"\"></div>";
             return divId;
-            
         }
         
         window.onresize = function () {
@@ -147,10 +146,14 @@
         {
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
-            console.log("fuckcukl")
             var filePaths = filePath.split('\\');
             var fileName = filePaths[filePaths.length -1]
             submitCastingPriorInfo(null, fileName);
+        }
+
+        function fuck()
+        {
+            console.log("dfsdf")
         }
     </script>
 </body>

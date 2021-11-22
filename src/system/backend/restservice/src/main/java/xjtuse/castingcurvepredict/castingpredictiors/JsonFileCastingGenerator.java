@@ -12,11 +12,12 @@ import xjtuse.castingcurvepredict.interfaces.*;
 import xjtuse.castingcurvepredict.models.CastingInputModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
 
-public class FileCastingGenerator implements ICastingGenerator {
+public class JsonFileCastingGenerator implements ICastingGenerator {
 
     @Override
     public CastingResultModel PredcitCastingCurve(CastingInputModel input) {
         // TODO Auto-generated method stub
+
         return null;
     }
     
