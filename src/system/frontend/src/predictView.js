@@ -17,6 +17,12 @@ function submitCastingPriorInfo(form, title="预测结果") {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json"
     }}).then(response => {
+        if(chartListViewModel.tabDatas.length == 0)
+        {
+            chartListViewModel.tabTitles.splice(0, 1);
+        }
+        chartListViewModel.tabTitles.push(title);
+        chartListViewModel.tabDatas.push(response.data.castingCurveValues)
         generatingCastingChart(response.data.castingCurveValues, title)
         translateData = response.data.castingCurveValues;
         startTime = Date.now();
@@ -28,9 +34,15 @@ function submitCastingPriorInfo(form, title="预测结果") {
 var chartListViewModel = Vue.createApp({
     data(){
         return {
-            tabTitles: ['标题一', '标题二', '标题三', '标题四'],
-            tabMains: ['内容一', '内容二', '内容三', '内容四'],
-            currentIndex:0
+            tabTitles: ['没有数据'],
+            tabDatas: [],
+            currentIndex:0,
         }
     }
 }).mount("#tabRow");
+
+function clickTab()
+{
+    console.log("Tab" + chartListViewModel.currentIndex + "is clicked");
+    
+}

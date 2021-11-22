@@ -49,11 +49,13 @@
         </div>
     </section>
     <section id="chartSection">
-        <div id="echartDiv"></div>
+        <div id="echartDiv">
+            
+        </div>
         <div id="tabDiv">
             <table>
                 <ul id="tabRow">
-                    <li v-for="(chartTitle,index) in tabTitles" @click="cur=index" :class="{active:cur==index}">{{chartTitle}}</li>
+                    <li v-for="(chartTitle,index) in tabTitles" @click="currentIndex=index" onclick="asfsdf()" :class="{active:currentIndex==index}">{{chartTitle}}</li>
                 </ul>
             </table>
         </div>
@@ -70,11 +72,10 @@
     <script src="src/lib/cuon-utils.js"></script>
     <script src="src/lib/cuon-matrix.js"></script>
     <script type="text/javascript">
-        var myChart = null;
+        var currentChart = null;
         function generatingCastingChart(data, title) {
-            
-
-            myChart = echarts.init(document.getElementById('echartDiv'));
+            createEchartContentDiv("fuck")
+            currentChart = echarts.init(document.getElementById('fuckEchartDiv'));
 
             var option = {
                 xAxis: {
@@ -90,17 +91,43 @@
                         data: data.values,
                         type: 'line'
                     }
-                ]
+                ],
+
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {
+                            show: true,
+                            readOnly: false,
+							//修改数据视图格式
+							optionToContent: function (opt) {
+							//修改数据视图代码最后贴出，此处不做过多展示
+							}
+						},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show:true},
+						dataZoom : {
+							show : true,
+						}
+                    }
+                }
             };
             
-            myChart.setOption(option)
+            currentChart.setOption(option)
 
             _animationStarted = true;
         }
 
+        function createEchartContentDiv(name)
+        {
+            var echartDiv = document.getElementById("echartDiv");
+            echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\"fuckEchartDiv\"></div>";
+        }
         window.onresize = function () {
-            if (myChart != null) {
-                myChart.resize();
+            if (currentChart != null) {
+                currentChart.resize();
             }
             var canvas = document.getElementById('animationCanvas');
             var canvasDiv = document.getElementById('animationDiv');
@@ -116,9 +143,8 @@
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
             console.log("fuckcukl")
-            intsdf = input;
 
-            submitCastingPriorInfo(null);
+            submitCastingPriorInfo(null, "file1");
         }
     </script>
 </body>

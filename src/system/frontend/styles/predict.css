@@ -85,6 +85,15 @@ section{
     /* padding-left: 5px; */
 } 
 
+.echartContentDiv{
+    position: absolute;
+    top: 35px;
+    left: 5px;
+    right: 10px;
+    bottom: 10px;
+    background-color: rgba(102, 51, 153, 0.151);
+}
+
 @media only screen and (max-width: 980px) {
     #echartDiv{
         top: 5px;
