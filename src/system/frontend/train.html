@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
     <section id="trainningControlSection">
         <div id="uploadDatasetDiv">
             <div>
@@ -19,9 +20,11 @@
                 <button id="trainButton" class="button" onclick="onTrainButtonClicked()">训练</button>
                 <p>{{status}}</p>
             </div>
-            
+
         </div>
-        <input id="uploadDatasetInput" onchange="javascript:onUploadDatasetInputChanged()" type="file" style="visibility:hidden;" value="上传数据集"></input>
+        <input id="uploadDatasetInput" onchange="onUploadDatasetInputChanged(this)"
+            action="http://localhost:8080/uploadAndTrainModel" type="file" style="visibility:hidden;"
+            value="上传数据集"></input>
     </section>
     <section id="trainningInfoSection">
         <div id="trainningInfoDiv">
@@ -41,11 +44,10 @@
         }).mount('#uploadDatasetDiv')
 
         var trainningStatusViewModel = Vue.createApp({
-            data()
-            {
+            data() {
                 return
                 {
-                    accuracy:"准确率"
+                    accuracy: "准确率"
                 }
             }
         })
@@ -55,17 +57,22 @@
             uploadDatasetInput.click();
         }
 
-        function onUploadDatasetInputChanged()
-        {
+        function onUploadDatasetInputChanged(event) {
             var uploadDatasetInput = document.getElementById("uploadDatasetInput");
             uploadInputViewModel.datasetPath = uploadDatasetInput.value;
 
-            uploadAndTrainUsingDataset();
+            uploadAndTrainUsingDataset(event.files);
         }
 
-        function uploadAndTrainUsingDataset()
-        {
+        function uploadAndTrainUsingDataset(files) {
+            const formData = new FormData();
+            formData.append("file", files[0]);
 
+            axios.post('http://localhost:8080/uploadAndTrainModel', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
         }
     </script>
 </body>
