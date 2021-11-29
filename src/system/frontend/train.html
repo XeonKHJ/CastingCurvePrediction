@@ -18,7 +18,7 @@
                 <input v-model="datasetPath" />
                 <button class="button" onclick="javascript:onUploadButtonClick()">选择数据集</button>
                 <button id="trainButton" class="button" onclick="onTrainButtonClicked()">训练</button>
-                <p>{{status}}</p>
+                <span>{{status}}</span>
             </div>
 
         </div>
@@ -28,7 +28,7 @@
     </section>
     <section id="trainningInfoSection">
         <div id="trainningInfoDiv">
-            <span style="font-size: xx-large;">训练数据</span>
+            <span style="font-size:large;">训练数据</span>
             </trainningInfoDiv>
     </section>
     <script src="https://unpkg.com/vue@next"></script>
@@ -52,6 +52,8 @@
             }
         })
 
+        var files = null;
+
         function onUploadButtonClick() {
             var uploadDatasetInput = document.getElementById("uploadDatasetInput");
             uploadDatasetInput.click();
@@ -60,19 +62,33 @@
         function onUploadDatasetInputChanged(event) {
             var uploadDatasetInput = document.getElementById("uploadDatasetInput");
             uploadInputViewModel.datasetPath = uploadDatasetInput.value;
-
-            uploadAndTrainUsingDataset(event.files);
+            files = event.files;
         }
 
-        function uploadAndTrainUsingDataset(files) {
+        var isUploading = true;
+        function getUploadStatus()
+        {
+            if(isUploading)
+            {
+                uploadInputViewModel.status = "正在上传……";
+            }
+        }
+
+        function onTrainButtonClicked()
+        {
             const formData = new FormData();
             formData.append("file", files[0]);
 
             axios.post('http://localhost:8080/uploadAndTrainModel', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    Accept: "application/json"
                 }
+            }).then(response=>{
+                var data = response.data;
+                uploadInputViewModel.status = data.status;
             })
+            getUploadStatus();
         }
     </script>
 </body>

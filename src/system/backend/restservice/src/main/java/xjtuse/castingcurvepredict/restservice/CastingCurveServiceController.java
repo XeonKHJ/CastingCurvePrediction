@@ -41,7 +41,7 @@ public class CastingCurveServiceController {
         }
 
         String fileName = file.getOriginalFilename();
-        String filePath = "C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\system\\backend\\file\\";
+        String filePath = CastingConfig.getModelFolderPath();
         File dest = new File(filePath + fileName);
         try {
             file.transferTo(dest);
