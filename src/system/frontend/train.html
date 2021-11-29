@@ -7,20 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>训练模型</title>
     <link href="styles/train.css" type="text/css" rel="stylesheet" />
+    <link href="styles/share.css" type="text/css" rel="stylesheet">
 </head>
 
 <body>
     <section id="trainningControlSection">
         <div id="uploadDatasetDiv">
             <div>
-                <input size="90px" v-model="datasetPath" />
-                <button onclick="uploadDataset()">上传数据集</button>
+                <input v-model="datasetPath" />
+                <button class="button" onclick="javascript:onUploadButtonClick()">选择数据集</button>
+                <button id="trainButton" class="button" onclick="onTrainButtonClicked()">训练</button>
+                <p>{{status}}</p>
             </div>
+            
         </div>
+        <input id="uploadDatasetInput" onchange="javascript:onUploadDatasetInputChanged()" type="file" style="visibility:hidden;" value="上传数据集"></input>
     </section>
     <section id="trainningInfoSection">
         <div id="trainningInfoDiv">
-            <span style="font-size: xx-large;">Trainning Status</span>
+            <span style="font-size: xx-large;">训练数据</span>
             </trainningInfoDiv>
     </section>
     <script src="https://unpkg.com/vue@next"></script>
@@ -29,12 +34,37 @@
             data() {
                 return {
                     datasetPath: "数据集路径",
-                    data: ""
+                    data: "",
+                    status: "无数据集"
                 }
             }
-        }).mount('#uploadDatasetSection')
+        }).mount('#uploadDatasetDiv')
 
-        function uploadDataset() {
+        var trainningStatusViewModel = Vue.createApp({
+            data()
+            {
+                return
+                {
+                    accuracy:"准确率"
+                }
+            }
+        })
+
+        function onUploadButtonClick() {
+            var uploadDatasetInput = document.getElementById("uploadDatasetInput");
+            uploadDatasetInput.click();
+        }
+
+        function onUploadDatasetInputChanged()
+        {
+            var uploadDatasetInput = document.getElementById("uploadDatasetInput");
+            uploadInputViewModel.datasetPath = uploadDatasetInput.value;
+
+            uploadAndTrainUsingDataset();
+        }
+
+        function uploadAndTrainUsingDataset()
+        {
 
         }
     </script>

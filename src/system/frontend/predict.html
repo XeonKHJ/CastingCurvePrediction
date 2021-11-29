@@ -17,7 +17,7 @@
 
     <section id="headerSection">
         <div id="inputDiv">
-            <form id="steelInfoForm" style="margin: 10px;" @submit="checkForm"
+            <form id="steelInfoForm" @submit="checkForm"
                 action="javascript:submitCastingPriorInfo(this)" method="post">
                 <table style="border-spacing: 10px;">
                     <tr>
@@ -54,16 +54,18 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv">
+            
             <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
                 v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
+            <button id="updateButton" style="top: 35px; position:absolute">update</button>
         </div>
         <div id="tabDiv">
             <table>
                 <ul id="tabRow">
                     <span style="float: right; margin: 5px;" onclick="closeTab()">❎</span>
                     <li v-for="(chartViewModel,index) in chartViewModels" @click="currentId=chartViewModel.chartId"
-                        onclick="clickTab()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">
+                        onclick="onTabClicked()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">
                         {{chartViewModel.title}}</li>
                 </ul>
             </table>

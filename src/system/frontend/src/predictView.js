@@ -1,4 +1,4 @@
-formVm = Vue.createApp({
+var formVm = Vue.createApp({
     data() {
         return {
             steelType: "粘度",
@@ -86,9 +86,14 @@ var chartCollectionViewModel = Vue.createApp({
 }).mount("#chartSection");
 
 
-function clickTab() {
+function onTabClicked() {
     console.log("Tab" + chartListViewModel.currentIndex + "is clicked");
     selectItem(chartCollectionViewModel.currentId)
+}
+
+function onUpdateClicked()
+{
+    console.log("Updating model");
 }
 
 function hashCode(str, seed = 0) {
