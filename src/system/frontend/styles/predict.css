@@ -15,7 +15,6 @@ section{
 #inputDiv{
     position: absolute;
     /*width: 85%;*/
-    background-color: transparent;
     /* opacity: 0.4; */
     top: 10px;
     left: 10px;

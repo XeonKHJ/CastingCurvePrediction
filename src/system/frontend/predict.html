@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="styles/predict.css" type="text/css" rel="stylesheet" />
+    <link href="styles/share.css" type="text/css" rel="stylesheet" />
 </head>
 
 <body onload="drawAnimation()">
@@ -21,26 +22,28 @@
                 <table style="border-spacing: 10px;">
                     <tr>
                         <td><span>{{steelType}}：</span></td>
-                        <td><input id="steelTypeInput"></input></td>
+                        <td><input class="boxText" id="steelTypeInput"></input></td>
                         <td><span>{{billetWidth}}：</span></td>
-                        <td><input id="billetWidthInput"></input></td>
+                        <td><input class="boxText" id="billetWidthInput"></input></td>
                         <td><span>{{billetThickness}}：</span></td>
-                        <td><input id="billetThicknessInput"></input></td>
-                        <td><input type="submit" v-bind:value="predictButton"></input></td>
+                        <td><input class="boxText" id="billetThicknessInput"></input></td>
+                        <td><input class="button text" type="submit" v-bind:value="predictButton"></input></td>
 
                     </tr>
                     <tr>
                         <td><span>{{castingWidth}}：</span></td>
-                        <td><input id="castingWidthInput"></input></td>
+                        <td><input class="boxText" id="castingWidthInput"></input></td>
                         <td><span>{{mode}}：</span></td>
-                        <td><input id="modeInput"></input></td>
+                        <td><input class="boxText" id="modeInput"></input></td>
                         <td><span>{{targetLV}}：</span></td>
-                        <td><input id="targetLVInput"></input></td>
-                        <td><button>播放</button></td>
+                        <td><input class="boxText" id="targetLVInput"></input></td>
+                        <td><button class="button text">播放</button></td>
                     </tr>
                 </table>
-                <input style="margin: 0px 0px 0px 10px;" id="openFileInput" type="file"
+                <button class="button text" style="margin: 0px 0px 0px 10px;" onclick="javascript:openFileThroughPicker()">打开文件</button>
+                <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput" type="file"
                     onchange="javascript:openFile(this)"></input>
+                
             </form>
         </div>
     </section>
@@ -138,6 +141,12 @@
         window.onresize = function () {
             resizeEverything();
         }
+        
+        function openFileThroughPicker()
+        {
+            var openFileButton = document.getElementById('openFileInput');
+            openFileButton.click();
+        }
 
         function resizeEverything() {
 
@@ -180,7 +189,7 @@
                         element.echart.clear();
                         element.echart.dispose();
                     }
-                        
+
                     chartCollectionViewModel.chartViewModels.splice(i, 1);
                     break;
                 }

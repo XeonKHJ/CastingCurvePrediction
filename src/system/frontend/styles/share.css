@@ -1,0 +1,36 @@
+section{
+    background-color: transparent;
+}
+
+body{
+    background-color: rbga(240,240,240,1);
+}
+
+div{
+    background-color: rbga(240,240,240,1);
+}
+
+.button{
+    background-color: rgba(24, 144, 255, 1);
+    border-radius: 4px;
+    border: 0px;
+    color: white;
+    font-size: 14px;
+    /* height: 32px; */
+}
+
+.text {
+    align-self:center;
+    padding:5px 16px 5px 16px;
+    box-sizing:border-box;
+    font-size: 14px;
+    font-family: 'Microsoft Tai Le', sans-serif;
+  }
+
+  .boxText{
+    /* align-self:center; */
+    /* padding:5px 16px 5px 16px; */
+    box-sizing:border-box;
+    font-size: 13px;
+    font-family: 'Microsoft Tai Le', sans-serif;
+  }
