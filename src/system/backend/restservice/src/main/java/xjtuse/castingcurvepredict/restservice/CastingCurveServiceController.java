@@ -49,6 +49,20 @@ public class CastingCurveServiceController {
         } catch (IOException e) {
             resultViewModel.setStatus("上传失败");
         }
+
+
+        ICastingGenerator generator = new ConstCastingGenerator();
+        // Stab
+        CastingModel castingModel = new CastingModel(generator);
+        
+        CastingResultModel resultModel = castingModel.PredictCastingCurve(null);
+
         return resultViewModel;
+    }
+
+    @GetMapping("/getUploadAndTrainningStatus")
+    public void getUploadAndTrainningStatus()
+    {
+
     }
 }
