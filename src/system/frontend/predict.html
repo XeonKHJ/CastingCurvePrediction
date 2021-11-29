@@ -40,9 +40,9 @@
                         <td><button class="button text">播放</button></td>
                     </tr>
                 </table>
-                <button class="button text" style="margin: 0px 0px 0px 10px;" onclick="javascript:openFileThroughPicker()">打开文件</button>
+                <button class="button text" style="margin: 0px 0px 0px 10px;" onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
                 <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput" type="file"
-                    onchange="javascript:openFile(this)"></input>
+                    onchange="javascript:onOnpenFileInputChanged(this)"></input>
                 
             </form>
         </div>
@@ -58,7 +58,7 @@
             <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
                 v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
-            <button id="updateButton" style="top: 35px; position:absolute">update</button>
+            <button id="updateButton" style="top: 35px; left: 5px; position:absolute">加入数据集</button>
         </div>
         <div id="tabDiv">
             <table>
@@ -144,7 +144,7 @@
             resizeEverything();
         }
         
-        function openFileThroughPicker()
+        function onOpenFileButtonClicked()
         {
             var openFileButton = document.getElementById('openFileInput');
             openFileButton.click();
@@ -170,7 +170,7 @@
             canvas.width = canvasDiv.clientWidth;
         }
 
-        function openFile() {
+        function onOnpenFileInputChanged() {
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
             var filePaths = filePath.split('\\');
@@ -187,7 +187,6 @@
                     var element = chartCollectionViewModel.chartViewModels[i];
 
                     if (element.echart != null) {
-                        console.log("fuck you ")
                         element.echart.clear();
                         element.echart.dispose();
                     }
@@ -207,10 +206,6 @@
             else {
                 selectItem(chartCollectionViewModel.chartViewModels[i].chartId);
             }
-        }
-
-        function fuck() {
-            console.log("dfsdf")
         }
     </script>
 </body>
