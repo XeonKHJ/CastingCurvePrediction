@@ -15,16 +15,18 @@
     <section id="trainningControlSection">
         <div id="uploadDatasetDiv">
             <div>
-                <input v-model="datasetPath" id="datasetPathInput"/>
+                <input v-model="datasetPath" id="datasetPathInput" />
                 <button class="button" onclick="javascript:onUploadButtonClick()">选择数据集</button>
                 <button id="trainButton" class="button" onclick="onTrainButtonClicked()">训练</button>
                 <span>{{status}}</span>
             </div>
-
+            <br>
+            <button class="button" id="stopTrainningButton" v-if="isTrainning" onclick="javascript:onStopTrainningClicked()">终止训练</button>
         </div>
         <input id="uploadDatasetInput" onchange="onUploadDatasetInputChanged(this)"
             action="http://localhost:8080/uploadAndTrainModel" type="file" style="visibility:hidden;"
             value="上传数据集"></input>
+        
     </section>
     <section id="trainningInfoSection">
         <div id="trainningInfoDiv">
@@ -43,7 +45,8 @@
                 return {
                     datasetPath: "数据集路径",
                     data: "",
-                    status: "无数据集"
+                    status: "无数据集",
+                    isTrainning: false
                 }
             }
         }).mount('#uploadDatasetDiv')
@@ -71,16 +74,14 @@
         }
 
         var isUploading = true;
-        function getUploadStatus()
-        {
-            if(isUploading)
-            {
+        function getUploadStatus() {
+            if (isUploading) {
                 uploadInputViewModel.status = "正在上传……";
+                uploadInputViewModel.isTrainning = true;
             }
         }
 
-        function onTrainButtonClicked()
-        {
+        function onTrainButtonClicked() {
             const formData = new FormData();
             formData.append("file", files[0]);
 
@@ -89,16 +90,18 @@
                     'Content-Type': 'multipart/form-data',
                     Accept: "application/json"
                 }
-            }).then(response=>{
+            }).then(response => {
                 var data = response.data;
                 uploadInputViewModel.status = data.status;
             })
             getUploadStatus();
         }
+
+        function onStopTrainningClicked()
+        {
+            console.log("正在停止训练");
+        }
     </script>
-    <div id="errorDiv">
-        
-    </div>
 </body>
 
 
