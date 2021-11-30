@@ -1,33 +1,35 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
 public class StatusViewModel {
-    private int _statusCode = 0;
-    private String _status;
+    private int _statusCode = 1;
     private String _message;
     public int getStatusCode() {
         return _statusCode;
     }
 
     public void setStatusCode(int statusCode) {
-        switch (statusCode) {
-            case 0:
-                _status = "成功";
-            case -1:
-                _status = "文件为空";
-                break;
-            case -2:
-                _status = "上传失败";
-                break;
-            case -3:
-                _status = "查询不到训练活动的状态";
-            default:
-                _status = "未知错误";
-        }
+
         _statusCode = statusCode;
     }
 
     public String getStatus() {
-        return _status;
+        String status;
+        switch (_statusCode) {
+            case 1:
+                status = "成功";
+                break;
+            case -1:
+                status = "文件为空";
+                break;
+            case -2:
+                status = "上传失败";
+                break;
+            case -3:
+                status = "查询不到训练活动的状态";
+            default:
+                status = "未知错误";
+        }
+        return status;
     }
 
     public void setMessage(String message)

@@ -187,6 +187,7 @@
                     chartCollectionViewModel.isEmpty = false;
                 }
                 vmId = hashCode(fileName, seedCounter++);
+                
                 showCastingCurve(response.data, fileName, vmId);
             }).then().catch(
                 err => console.log(err))
