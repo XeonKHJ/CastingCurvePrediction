@@ -13,6 +13,12 @@ section{
     /* opacity: 0.4; */
 }
 
+#datasetPathInput{
+    width: 70%;
+    height: 50px;
+    top: 50%;
+}
+
 #uploadDatasetDiv{
     position: absolute;
     /*width: 85%;*/
@@ -25,6 +31,7 @@ section{
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
     box-sizing:border-box;
     border-radius: 5px;
+    align-items: center;
 }
 
 #trainningInfoSection{

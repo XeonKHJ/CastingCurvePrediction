@@ -15,7 +15,7 @@
     <section id="trainningControlSection">
         <div id="uploadDatasetDiv">
             <div>
-                <input v-model="datasetPath" />
+                <input v-model="datasetPath" id="datasetPathInput"/>
                 <button class="button" onclick="javascript:onUploadButtonClick()">选择数据集</button>
                 <button id="trainButton" class="button" onclick="onTrainButtonClicked()">训练</button>
                 <span>{{status}}</span>
