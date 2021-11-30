@@ -33,33 +33,31 @@ public class CastingCurveServiceController {
     }
 
     @PostMapping("/openCastingCurveFile")
-    public DiagramViewModel OpenCastingCurveFile(MultipartFile multipartFile)
+    public DiagramViewModel openCastingCurveFile(MultipartFile file)
     {
         ICastingGenerator generator = new JsonFileCastingGenerator();
-        File file = null;
+        CastingResultModel resultModel = null;
+        File castFile = null;
         try {
-            file = File.createTempFile("castingcurve", "data");
-            multipartFile.transferTo(file);
+            castFile = File.createTempFile("castingcurve", "data");
+            file.transferTo(castFile);
 
             CastingInputModel inputModel = new CastingInputModel();
-            inputModel.getKeyValues().put("file", file);
+            inputModel.getKeyValues().put("file", castFile);
             generator.PredcitCastingCurve(inputModel);
             CastingModel castingModel = new CastingModel(generator);
-            castingModel.PredictCastingCurve(inputModel);
+            resultModel = castingModel.PredictCastingCurve(inputModel);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             
         }
 
-        if(file != null)
+        if(castFile != null)
         {
-            file.delete();
+            castFile.delete();
         }
         
-
-        CastingModel castingModel = new CastingModel(generator);
-        CastingResultModel resultModel = castingModel.PredictCastingCurve(null);
 
         return new DiagramViewModel(resultModel);
     }

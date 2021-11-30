@@ -17,8 +17,7 @@
 
     <section id="headerSection">
         <div id="inputDiv">
-            <form id="steelInfoForm" @submit="checkForm"
-                action="javascript:submitCastingPriorInfo(this)" method="post">
+            <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
                 <table style="border-spacing: 10px;">
                     <tr>
                         <td><span>{{steelType}}：</span></td>
@@ -40,11 +39,11 @@
                         <td><button class="button text">播放</button></td>
                     </tr>
                 </table>
-                <button class="button text" style="margin: 0px 0px 0px 10px;" onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
-                <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput" type="file"
-                    onchange="javascript:onOnpenFileInputChanged(this)"></input>
-                
             </form>
+            <button class="button text" style="margin: 0px 0px 0px 10px;"
+                onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
+            <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput"
+                type="file" onchange="javascript:onOpenFileInputChanged(this)"></input>
         </div>
     </section>
     <section id="animationSection">
@@ -54,7 +53,7 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv">
-            
+
             <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
                 v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
@@ -143,9 +142,8 @@
         window.onresize = function () {
             resizeEverything();
         }
-        
-        function onOpenFileButtonClicked()
-        {
+
+        function onOpenFileButtonClicked() {
             var openFileButton = document.getElementById('openFileInput');
             openFileButton.click();
         }
@@ -170,12 +168,43 @@
             canvas.width = canvasDiv.clientWidth;
         }
 
-        function onOnpenFileInputChanged() {
+        function onOpenFileInputChanged(event) {
             var openFileInput = document.getElementById('openFileInput');
             var filePath = openFileInput.value;
             var filePaths = filePath.split('\\');
             var fileName = filePaths[filePaths.length - 1]
-            submitCastingPriorInfo(null, fileName);
+            const formData = new FormData();
+            formData.append("file", event.files[0]);
+            axios.post('http://localhost:8080/openCastingCurveFile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                if (chartCollectionViewModel.isEmpty) {
+                    chartCollectionViewModel.chartViewModels.splice(0, 1);
+                    chartCollectionViewModel.isEmpty = false;
+                }
+                vmId = hashCode(title, seedCounter++);
+                var filePaths = title.split('\\');
+                var fileName = filePaths[filePaths.length - 1]
+                var newDataViewModel = {
+                    chartId: vmId,
+                    title: fileName,
+                    data: response.data.castingCurveValues,
+                    isPredictResult: false,
+                    isSelected: true,
+                    echart: null
+                }
+                chartCollectionViewModel.chartViewModels.push(newDataViewModel);
+                chartCollectionViewModel.$nextTick(() => {
+                    generatingCastingChart(newDataViewModel);
+                    selectItem(vmId);
+                    startTime = Date.now();
+                    //_animationStarted = true;
+                });
+            }).then().catch(
+                err => console.log(err))
         }
 
         function closeTab() {
