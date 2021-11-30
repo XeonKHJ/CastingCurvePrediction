@@ -27,23 +27,7 @@ function submitCastingPriorInfo(form, title = "预测结果") {
         vmId = hashCode(title, seedCounter++);
         var filePaths = title.split('\\');
         var fileName = filePaths[filePaths.length - 1]
-        var newDataViewModel = {
-            chartId: vmId,
-            title: fileName,
-            data: response.data.castingCurveValues,
-            isPredictResult: false,
-            isSelected: true,
-            echart: null
-        }
-
-        chartCollectionViewModel.chartViewModels.push(newDataViewModel);
-        chartCollectionViewModel.$nextTick(() => {
-            generatingCastingChart(newDataViewModel);
-            selectItem(vmId);
-            startTime = Date.now();
-            //_animationStarted = true;
-        });
-
+        showCastingCurve(response.data, fileName, vmId);
     }).then().catch(
         err => console.log(err))
 }
@@ -57,6 +41,33 @@ var chartListViewModel = Vue.createApp({
         }
     }
 })
+
+
+function onTabClicked() {
+    console.log("Tab" + chartListViewModel.currentIndex + "is clicked");
+    selectItem(chartCollectionViewModel.currentId)
+}
+
+function onUpdateClicked()
+{
+    console.log("Updating model");
+}
+
+function selectItem(id) {
+    chartCollectionViewModel.chartViewModels.forEach(element => {
+        if (element.chartId == id) {
+            element.isSelected = true;
+            chartCollectionViewModel.currentId = element.chartId;
+        }
+        else {
+            element.isSelected = false;
+        }
+    });
+    chartCollectionViewModel.$nextTick(() => {
+        resizeEverything();
+    });
+    
+}
 
 var defaultChartViewModel = {
     chartId: 0,
@@ -85,41 +96,22 @@ var chartCollectionViewModel = Vue.createApp({
     }
 }).mount("#chartSection");
 
-
-function onTabClicked() {
-    console.log("Tab" + chartListViewModel.currentIndex + "is clicked");
-    selectItem(chartCollectionViewModel.currentId)
-}
-
-function onUpdateClicked()
+function showCastingCurve(data, title, id)
 {
-    console.log("Updating model");
-}
-
-function hashCode(str, seed = 0) {
-    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-    for (let i = 0, ch; i < str.length; i++) {
-        ch = str.charCodeAt(i);
-        h1 = Math.imul(h1 ^ ch, 2654435761);
-        h2 = Math.imul(h2 ^ ch, 1597334677);
+    var newDataViewModel = {
+        chartId: vmId,
+        title: title,
+        data: data.castingCurveValues,
+        isPredictResult: false,
+        isSelected: true,
+        echart: null
     }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-};
 
-function selectItem(id) {
-    chartCollectionViewModel.chartViewModels.forEach(element => {
-        if (element.chartId == id) {
-            element.isSelected = true;
-            chartCollectionViewModel.currentId = element.chartId;
-        }
-        else {
-            element.isSelected = false;
-        }
-    });
+    chartCollectionViewModel.chartViewModels.push(newDataViewModel);
     chartCollectionViewModel.$nextTick(() => {
-        resizeEverything();
+        generatingCastingChart(newDataViewModel);
+        selectItem(vmId);
+        startTime = Date.now();
+        //_animationStarted = true;
     });
-    
 }

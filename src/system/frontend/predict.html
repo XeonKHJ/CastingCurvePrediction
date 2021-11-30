@@ -81,6 +81,7 @@
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>
     <script src="src/lib/cuon-matrix.js"></script>
+    <script src="src/lib/utils.js"></script>
     <script type="text/javascript">
         var currentChart = null;
         function generatingCastingChart(dataViewModel) {
@@ -185,26 +186,11 @@
                     chartCollectionViewModel.chartViewModels.splice(0, 1);
                     chartCollectionViewModel.isEmpty = false;
                 }
-                vmId = hashCode(title, seedCounter++);
-                var filePaths = title.split('\\');
-                var fileName = filePaths[filePaths.length - 1]
-                var newDataViewModel = {
-                    chartId: vmId,
-                    title: fileName,
-                    data: response.data.castingCurveValues,
-                    isPredictResult: false,
-                    isSelected: true,
-                    echart: null
-                }
-                chartCollectionViewModel.chartViewModels.push(newDataViewModel);
-                chartCollectionViewModel.$nextTick(() => {
-                    generatingCastingChart(newDataViewModel);
-                    selectItem(vmId);
-                    startTime = Date.now();
-                    //_animationStarted = true;
-                });
+                vmId = hashCode(fileName, seedCounter++);
+                showCastingCurve(response.data, fileName, vmId);
             }).then().catch(
                 err => console.log(err))
+
         }
 
         function closeTab() {
