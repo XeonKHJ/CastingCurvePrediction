@@ -24,11 +24,17 @@ public class CastingCurveServiceController {
     public DiagramViewModel GetCastingCurveFromInput() {
         // Construct a diagram view model;
         ICastingGenerator generator = new ConstCastingGenerator();
-
         CastingModel castingModel = new CastingModel(generator);
-
         CastingResultModel resultModel = castingModel.PredictCastingCurve(null);
+        return new DiagramViewModel(resultModel);
+    }
 
+    @PostMapping("/predictCastingCurve")
+    public DiagramViewModel PredictCastingCurve(InputViewModel input)
+    {
+        ICastingGenerator generator = new ConstCastingGenerator();
+        CastingModel castingModel = new CastingModel(generator);
+        CastingResultModel resultModel = castingModel.PredictCastingCurve(null);
         return new DiagramViewModel(resultModel);
     }
 
@@ -36,7 +42,7 @@ public class CastingCurveServiceController {
     public DiagramViewModel openCastingCurveFile(MultipartFile file)
     {
         ICastingGenerator generator = new JsonFileCastingGenerator();
-        CastingResultModel resultModel = null;
+        CastingResultModel resultModel = new CastingResultModel();
         File castFile = null;
         try {
             castFile = File.createTempFile("castingcurve", "data");
@@ -48,9 +54,7 @@ public class CastingCurveServiceController {
             CastingModel castingModel = new CastingModel(generator);
             resultModel = castingModel.PredictCastingCurve(inputModel);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            
+            resultModel.setStatusCode(-2);
         }
 
         if(castFile != null)
@@ -68,7 +72,7 @@ public class CastingCurveServiceController {
     {
         UploadResultViewModel resultViewModel = new UploadResultViewModel();
         if (file.isEmpty()) {
-            resultViewModel.setStatus("文件为空。");
+            resultViewModel.setStatusCode(-1);
         }
 
         
@@ -84,9 +88,8 @@ public class CastingCurveServiceController {
 
         try {
             file.transferTo(dest);
-            resultViewModel.setStatus("上传成功");
         } catch (IOException e) {
-            resultViewModel.setStatus("上传失败");
+            resultViewModel.setStatusCode(-2);
         }
 
         ICastingGenerator generator = new ConstCastingGenerator();
@@ -110,7 +113,7 @@ public class CastingCurveServiceController {
         }
         else{
             statusViewModel = new TrainningStatusViewModel();
-            statusViewModel.setStatus("查询不到训练活动的状态。");
+            statusViewModel.setStatusCode(-3);
         }
 
         return statusViewModel;

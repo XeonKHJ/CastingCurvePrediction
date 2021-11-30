@@ -2,7 +2,9 @@ package xjtuse.castingcurvepredict.models;
 
 import java.util.ArrayList;
 
-public class CastingResultModel {
+import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
+
+public class CastingResultModel extends StatusViewModel {
     
     ArrayList<CastingResultItemModel> resultItems = new ArrayList<CastingResultItemModel>();
     public CastingResultModel()

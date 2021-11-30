@@ -1,29 +1,16 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
-public class TrainningStatusViewModel {
-    private String _status;
-    public String getStatus()
-    {
-        return _status;
-    }
+import org.yaml.snakeyaml.external.com.google.gdata.util.common.base.PercentEscaper;
 
-    public void setStatus(String status)
+public class TrainningStatusViewModel extends StatusViewModel {
+    private double _percentage;
+    public void setPercentage(double percentage)
     {
-        _status = status;
-    }
-
-    private int _statusCode;
-    public int getStatusCode()
-    {
-        return _statusCode;
-    }
-    public void setStatusCode(int statusCode)
-    {
-        _statusCode = statusCode;
+        _percentage = percentage;
     }
 
     public double getPercentage()
     {
-        return 0.5;
+        return _percentage;
     }
 }

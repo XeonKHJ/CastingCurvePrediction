@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import xjtuse.castingcurvepredict.models.CastingResultItemModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
 
-public class ResultViewModel {
+public class ResultViewModel extends StatusViewModel {
     private ArrayList<String> _times;
     private ArrayList<Double> _values;
     private CastingResultModel _resultModel;
