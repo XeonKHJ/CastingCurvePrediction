@@ -1,6 +1,15 @@
 var body = document.getElementsByName("body");
 document.createElement()
 
+var chartCollectionViewModel = Vue.createApp({
+    data() {
+        return {
+            isError: false,
+            errorMessage:"empty",
+
+        }
+    }
+}).mount("#chartSection");
 
 function hasError(data)
 {
@@ -20,7 +29,8 @@ function hasError(data)
 
 function displayError(data)
 {
-    document.getElementsByName("body");
+    var htmlBody = document.getElementsByName("body");
+    
     
 }
 

@@ -34,3 +34,11 @@ div{
     font-size: 13px;
     font-family: 'Microsoft Tai Le', sans-serif;
   }
+
+#errorDiv{
+    width: 80%;
+    height: 80%;
+    opacity: 0.8;
+    position: absolute;
+    background-color: black;
+}
