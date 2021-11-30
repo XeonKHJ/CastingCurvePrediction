@@ -7,19 +7,15 @@ import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import xjtuse.castingcurvepredict.castingpredictiors.ConstCastingGenerator;
-import xjtuse.castingcurvepredict.interfaces.ICastingGenerator;
-import xjtuse.castingcurvepredict.models.CastingModel;
-import xjtuse.castingcurvepredict.models.CastingResultModel;
-import xjtuse.castingcurvepredict.viewmodels.DiagramViewModel;
-import xjtuse.castingcurvepredict.viewmodels.TrainningStatusViewModel;
-import xjtuse.castingcurvepredict.viewmodels.UploadResultViewModel;
+import xjtuse.castingcurvepredict.castingpredictiors.*;
+import xjtuse.castingcurvepredict.interfaces.*;
+import xjtuse.castingcurvepredict.models.*;
+import xjtuse.castingcurvepredict.viewmodels.*;
 
 @CrossOrigin
 @RestController

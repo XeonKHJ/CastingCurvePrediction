@@ -1,7 +1,6 @@
 package xjtuse.castingcurvepredict.models;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CastingResultModel {
     
