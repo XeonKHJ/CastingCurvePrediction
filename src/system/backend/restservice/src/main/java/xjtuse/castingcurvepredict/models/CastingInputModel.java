@@ -1,17 +1,17 @@
 package xjtuse.castingcurvepredict.models;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class CastingInputModel {
     private int param = 0;
-    private Dictionary<String, Object> _keyValues = new Hashtable<String, Object>();
+    private HashMap<String, Object> _keyValues = new HashMap<String, Object>();
     public CastingInputModel()
     {
         
     }
 
-    public Dictionary<String, Object> getKeyValues()
+    public HashMap<String, Object> getKeyValues()
     {
         return _keyValues;
     }

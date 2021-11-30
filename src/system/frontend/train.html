@@ -84,7 +84,7 @@
             const formData = new FormData();
             formData.append("file", files[0]);
 
-            axios.post('http://localhost:8080/uploadAndTrainModel', formData, {
+            axios.post('http://localhost:8080/uploadAndTrainModel', null, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Accept: "application/json"
