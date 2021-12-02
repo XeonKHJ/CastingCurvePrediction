@@ -48,8 +48,7 @@ function onTabClicked() {
     selectItem(chartCollectionViewModel.currentId)
 }
 
-function onUpdateClicked()
-{
+function onUpdateClicked() {
     console.log("Updating model");
 }
 
@@ -66,7 +65,7 @@ function selectItem(id) {
     chartCollectionViewModel.$nextTick(() => {
         resizeEverything();
     });
-    
+
 }
 
 var defaultChartViewModel = {
@@ -88,7 +87,7 @@ var chartCollectionViewModel = Vue.createApp({
                     data: null,
                     isPredictResult: false,
                     isSelected: true,
-                    echart: null
+                    echart: null,
                 }
             ],
             currentId: 0
@@ -96,8 +95,7 @@ var chartCollectionViewModel = Vue.createApp({
     }
 }).mount("#chartSection");
 
-function showCastingCurve(data, title, id)
-{
+function showCastingCurve(data, title, id) {
     var newDataViewModel = {
         chartId: vmId,
         title: title,
@@ -114,4 +112,43 @@ function showCastingCurve(data, title, id)
         startTime = Date.now();
         //_animationStarted = true;
     });
+}
+
+function exportToCsv() {
+    var viewModel = null;
+    for(var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i)
+    {
+        if(chartCollectionViewModel.currentId == chartCollectionViewModel.chartViewModels[i].chartId)
+        {
+            viewModel = chartCollectionViewModel.chartViewModels[i];
+            break;
+        }
+    }
+
+    save(viewModel.title, castingCurveDataToCsv(viewModel.data));
+}
+
+function castingCurveDataToCsv(data)
+{
+    var str = "times, values\n";
+    for(var i = 0; i < data.times.length; ++i)
+    {
+        str+=String(data.times[i]) + ", "+ String(data.values[i]) + "\n";
+    }
+    return str;
+}
+
+function save(filename, data) {
+    const blob = new Blob([data], {type: 'text/csv'});
+    if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+    }
+    else{
+        const elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;        
+        document.body.appendChild(elem);
+        elem.click();        
+        document.body.removeChild(elem);
+    }
 }

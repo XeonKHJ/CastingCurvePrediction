@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import xjtuse.castingcurvepredict.castingpredictiors.*;
 import xjtuse.castingcurvepredict.interfaces.*;
@@ -118,4 +119,27 @@ public class CastingCurveServiceController {
 
         return statusViewModel;
     }
+
+    // @GetMapping("/exportCastingCurveData")
+    // public StreamingResponseBody exportCastingCurveData()
+    // {
+
+    // }
+
+    // public StreamingResponseBody downloadFile(HttpServletResponse response, @PathVariable Long fileId) {
+
+    //     FileInfo fileInfo = fileService.findFileInfo(fileId);
+    //     response.setContentType(fileInfo.getContentType());
+    //     response.setHeader(
+    //         HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + fileInfo.getFilename() + "\"");
+    
+    //     return outputStream -> {
+    //         int bytesRead;
+    //         byte[] buffer = new byte[BUFFER_SIZE];
+    //         InputStream inputStream = fileInfo.getInputStream();
+    //         while ((bytesRead = inputStream.read(buffer)) != -1) {
+    //             outputStream.write(buffer, 0, bytesRead);
+    //         }
+    //     };
+    // }
 }
