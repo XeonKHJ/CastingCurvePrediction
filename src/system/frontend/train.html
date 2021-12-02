@@ -34,74 +34,8 @@
             </trainningInfoDiv>
     </section>
     <script src="https://unpkg.com/vue@next"></script>
-    <script>
-        // window.onload = (event)=>
-        // {
-        //     getTrainningStatus();
-        // }
-
-        var uploadInputViewModel = Vue.createApp({
-            data() {
-                return {
-                    datasetPath: "数据集路径",
-                    data: "",
-                    status: "无数据集",
-                    isTrainning: false
-                }
-            }
-        }).mount('#uploadDatasetDiv')
-
-        var trainningStatusViewModel = Vue.createApp({
-            data() {
-                return
-                {
-                    accuracy: "准确率"
-                }
-            }
-        })
-
-        var files = null;
-
-        function onUploadButtonClick() {
-            var uploadDatasetInput = document.getElementById("uploadDatasetInput");
-            uploadDatasetInput.click();
-        }
-
-        function onUploadDatasetInputChanged(event) {
-            var uploadDatasetInput = document.getElementById("uploadDatasetInput");
-            uploadInputViewModel.datasetPath = uploadDatasetInput.value;
-            files = event.files;
-        }
-
-        var isUploading = true;
-        function getUploadStatus() {
-            if (isUploading) {
-                uploadInputViewModel.status = "正在上传……";
-                uploadInputViewModel.isTrainning = true;
-            }
-        }
-
-        function onTrainButtonClicked() {
-            const formData = new FormData();
-            formData.append("file", files[0]);
-
-            axios.post('http://localhost:8080/uploadAndTrainModel', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                var data = response.data;
-                uploadInputViewModel.status = data.status;
-            })
-            getUploadStatus();
-        }
-
-        function onStopTrainningClicked()
-        {
-            console.log("正在停止训练");
-        }
-    </script>
+    <script src="src/trainView.js"></script>
+    <script src="src/config.js"></script>
 </body>
 
 
