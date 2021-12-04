@@ -3,14 +3,30 @@ from castingcurvemodel import LstmRNN
 
 def ReadData():
     datasetFolder = "../../../Datasets"
-    
+
+# hz
+sampleRate = 4
 
 
 if __name__ == '__main__':
     
     print ('now __name__ is %s' %__name__)
 
+    timeLimitForEveryStep = list(1,2,3,4,5,6)
+
+    attrs = list()
+    
+    # first layer
+    for stepLimit in timeLimitForEveryStep:
+        attrs.append(list(1,2,3,4))
+    
+
+    # second layer
+    attrs.append(list(1,2,3,4))
+
+    # third layer
+
     lstm_model = LstmRNN(4, 3200, 2)
 
-
+    # pipeline
 
