@@ -7,23 +7,25 @@ import torch.optim as optim
 class LstmRNN(nn.Module):
     """
         Parameters：
-        - input_size: feature size
+        - feature_nums: list of feature num for every detector.
         - hidden_size: number of hidden units
         - output_size: number of output
         - num_layers: layers of LSTM to stack
     """
-    def __init__(self, input_size, hidden_size=3600,  num_layers=1):
+    def __init__(self, feature_nums, hidden_size=3600,  num_layers=1):
         super().__init__()
         
-        # input_size is output_size
+        self.detectors = list()
 
-        # forward LSTM
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers,batch_first =True) # utilize the LSTM model in torch.nn 
+        # input_size is output_size
+        for i in range(feature_nums.len()):
+            self.detectors.append(nn.LSTM(feature_nums[i][0], feature_nums[i][1], feature_nums[i][2], batch_first = True))
+
         
-        # reveresd LSTM
-        self.rlstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True) 
         self.forwardCalculation = nn.Linear(12,6)
         self.finalCalculation = nn.Sigmoid()
+
+
 
     def forward(self, _x, xTimestampSizes):
         x = torchrnn.pack_padded_sequence(_x, xTimestampSizes, True)
@@ -61,4 +63,5 @@ class LstmRNN(nn.Module):
        
 
         return inputTensor.float(), dataTimestampLengths
+
                 
