@@ -370,3 +370,58 @@ function initArrayBuffer(gl, attribute, data, num, type) {
 
     return true;
 }
+
+function initVertices(gl)
+{
+    var tudishLeftVertices = new Float32Array(
+        [
+            -400 / width, (50 * tan) / height,
+            -350 / width, (50 * tan) / height,
+            -350 / width, 0,
+            (-350 + ((50 * tan - 50) / tan)) / width, 50 / height,
+            -50 / width, 0,
+            -50 / width, 50 / height
+        ]
+    );
+
+    var tudishRightVertices = new Float32Array(
+        12
+    );
+    for (var i = 0; i < tudishLeftVertices.length; i++) {
+        if (i % 2) {
+            tudishRightVertices[i] = tudishLeftVertices[i];
+        }
+        else {
+            tudishRightVertices[i] = -1 * tudishLeftVertices[i];
+        }
+    }
+
+    var stoperVertices = new Float32Array([
+        -63.5 / width, 300 / height,
+        63.5 / width, 300 / height,
+        -63.5 / width, 40 / height,
+        63.5 / width, 40 / height,
+        -40 / width, 0,
+        40 / width, 0
+    ]);
+
+    var coolingPipeLeftVertices = new Float32Array([
+        -40 / width, 0 / height,
+        -120 / width, 0 / height,
+        -120 / width, -44 / height,
+        -110 / width, -44 / height,
+        -90 / width, -400 / height,
+        -90 / width, -800 / height,
+        -32.5 / width, -800 / height
+    ]);
+    var coolingPipeRightVertices = new Float32Array(coolingPipeLeftVertices.length);
+    for (var i = 0; i < coolingPipeLeftVertices.length; i++) {
+        if (i % 2) {
+            coolingPipeRightVertices[i] = coolingPipeLeftVertices[i];
+        }
+        else {
+            coolingPipeRightVertices[i] = -1 * coolingPipeLeftVertices[i];
+        }
+    }
+
+}
