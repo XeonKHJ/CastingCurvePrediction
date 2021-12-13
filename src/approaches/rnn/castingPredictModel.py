@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.nn.utils.rnn as torchrnn
 import torch.optim as optim
 
-class LstmRNN(nn.Module):
+class CastingPredictModel(nn.Module):
     """
         Parameters：
         - feature_nums: list of feature num for every detector.
@@ -24,7 +24,6 @@ class LstmRNN(nn.Module):
         
         self.forwardCalculation = nn.Linear(12,6)
         self.finalCalculation = nn.Sigmoid()
-
 
 
     def forward(self, _x, xTimestampSizes):

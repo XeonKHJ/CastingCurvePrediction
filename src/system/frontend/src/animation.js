@@ -13,7 +13,6 @@ function startDrawing(gl) {
     drawSTP(gl);
 }
 
-
 function drawSTP(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
