@@ -28,34 +28,6 @@ function startDrawing(gl) {
     drawCoolingPipe(gl);
 }
 
-function drawSTP(gl) {
-    var VSHADER_SOURCE =
-        'attribute vec4 a_Position;\n' +
-        'uniform mat4 u_ModelMatrix; \n' +
-        'void main() {\n' +
-        '  gl_Position = u_ModelMatrix * a_Position;\n' +
-        '}\n';
-
-    // Fragment shader program
-    var FSHADER_SOURCE =
-        'void main() {\n' +
-        '  gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n' +
-        '}\n';
-
-    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-        console.log('Failed to intialize shaders.');
-        return;
-    }
-
-    var n = initSTPVertexBuffers(gl);
-    if (n < 0) {
-        console.log('Failed to set the positions of the vertices');
-        return;
-    }
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
-}
-
 var startTime = null;
 var translateData = null;
 
@@ -371,7 +343,7 @@ function initArrayBuffer(gl, attribute, data, num, type) {
     return true;
 }
 
-function initVertices(gl)
+function initVertices(gl, animObjs)
 {
     var tudishLeftVertices = new Float32Array(
         [
@@ -424,4 +396,37 @@ function initVertices(gl)
         }
     }
 
+    animObjs.leftTudish.vertices = tudishLeftVertices;
+    animObjs.leftTudish.drawMethod = gl.TRIANGLE_STRIP;
+    animObjs.rightTudish.vertices = tudishRightVertices;
+    animObjs.rightTudish.drawMethod = gl.TRIANGLE_STRIP;
+    animObjs.stoperVertices = stoperVertices;
+    animObjs.stoperVertices.drawMethod = gl.TRIANGLE_STRIP;
+    animObjs.leftCoolingPipe = coolingPipeLeftVertices;
+    animObjs.leftCoolingPipe = gl.TRIANGLE_FAN;
+    animObjs.rightCoolingPipe = coolingPipeRightVertices;
+    animObjs.rightCoolingPipe = gl.TRIANGLE_FAN;
+}
+
+function initArrayBufferForLaterUse(gl, num, type, animObj){
+    var buffer = gl.createBuffer();   // Create a buffer object
+    if (!buffer) {
+      console.log('Failed to create the buffer object');
+      return null;
+    }
+    // Write date into the buffer object
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, animObj.vertices, gl.STATIC_DRAW);
+    
+    // Store the necessary information to assign the object to the attribute variable later
+    buffer.num = num;
+    buffer.type = type;
+  
+    return buffer;
+}
+  
+
+function initDrawAnimObj(gl, animObj)
+{
+    
 }
