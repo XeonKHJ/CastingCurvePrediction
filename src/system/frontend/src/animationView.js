@@ -81,36 +81,6 @@ function drawNewSTP(gl) {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, n)
 }
 
-function initSTPVertexBuffers(gl) {
-    var vertices = new Float32Array([
-        -50 / width, 500 / height,
-        50 / width, 500 / height,
-        -50 / width, 50 / height,
-        50 / width, 50 / height,
-        0, 0
-    ]);
-
-    var n = vertices.length / 2;
-
-    var vertexBuffer = gl.createBuffer();
-    if (!vertexBuffer) {
-        console.log('Failed to create the buffer object');
-        return -1;
-    }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
-
-    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-    if (a_Position < 0) {
-        console.log('Filed to get the strorage location of a_Position')
-        return -1;
-    }
-    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_Position)
-
-    return n;
-}
 
 function initNewSTPVertexBuffers(gl) {
     var vertices = new Float32Array([
@@ -318,6 +288,7 @@ function drawCoolingPipe(gl) {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 }
 
+/// num 是每个元素的大小，二维就是2。
 function initArrayBuffer(gl, attribute, data, num, type) {
     // Create a buffer object
     var buffer = gl.createBuffer();
