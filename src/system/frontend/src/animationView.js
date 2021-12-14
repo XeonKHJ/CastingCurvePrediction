@@ -1,5 +1,18 @@
 var _animationStarted = false;
 
+var GLOBAL_VSHADER_SOURCE =
+    'attribute vec4 a_Position;\n' +
+    'uniform mat4 u_ModelMatrix; \n' +
+    'void main() {\n' +
+    '  gl_Position = u_ModelMatrix * a_Position;\n' +
+    '}\n';
+
+// Fragment shader program
+var GLOBAL_FSHADER_SOURCE =
+    'void main() {\n' +
+    '  gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n' +
+    '}\n';
+
 function drawAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
@@ -12,8 +25,7 @@ function drawAnimation() {
         height = canvasDiv.clientHeight;
         width = canvasDiv.clientWidth;
         startDrawing(gl);
-        if(_animationStarted)
-        {
+        if (_animationStarted) {
             requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
         }
     };
@@ -23,6 +35,14 @@ function drawAnimation() {
 function startDrawing(gl) {
     gl.clearColor(0, 0, 0, 0.5);
     gl.clear(gl.COLOR_BUFFER_BIT);
+
+    animObjs = initVertices(gl);
+    
+
+    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+    var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
+    var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
+
     drawTudish(gl);
     drawNewSTP(gl);
     drawCoolingPipe(gl);
@@ -52,10 +72,9 @@ function drawNewSTP(gl) {
 
     var modelMatrix = new Matrix4();
 
-    if(startTime != null)
-    {
+    if (startTime != null) {
         var deltaTime = Date.now() - startTime;
-        deltaNo = parseInt(deltaTime / (250 / 25)); 
+        deltaNo = parseInt(deltaTime / (250 / 25));
         console.log(deltaNo)
         console.log(translateData.values[deltaNo])
         modelMatrix.translate(0, translateData.values[deltaNo] / height, 0);        // Multiply modelMatrix by the calculated translation matrix
@@ -314,8 +333,7 @@ function initArrayBuffer(gl, attribute, data, num, type) {
     return true;
 }
 
-function initVertices(gl, animObjs)
-{
+function initVertices(gl) {
     var tudishLeftVertices = new Float32Array(
         [
             -400 / width, (50 * tan) / height,
@@ -369,35 +387,59 @@ function initVertices(gl, animObjs)
 
     animObjs.leftTudish.vertices = tudishLeftVertices;
     animObjs.leftTudish.drawMethod = gl.TRIANGLE_STRIP;
+    initArrayBufferForLaterUse(gl,2, animObjs.leftTudish);
+
     animObjs.rightTudish.vertices = tudishRightVertices;
     animObjs.rightTudish.drawMethod = gl.TRIANGLE_STRIP;
+    initArrayBufferForLaterUse(gl,2, animObjs.rightTudish);
+
     animObjs.stoperVertices = stoperVertices;
     animObjs.stoperVertices.drawMethod = gl.TRIANGLE_STRIP;
+    initArrayBufferForLaterUse(gl,2, animObjs.stoperVertices);
+
     animObjs.leftCoolingPipe = coolingPipeLeftVertices;
     animObjs.leftCoolingPipe = gl.TRIANGLE_FAN;
+    initArrayBufferForLaterUse(gl,2, animObjs.leftCoolingPipe);
+
     animObjs.rightCoolingPipe = coolingPipeRightVertices;
     animObjs.rightCoolingPipe = gl.TRIANGLE_FAN;
+    initArrayBufferForLaterUse(gl,2, animObjs.rightCoolingPipe);
+
+    return animObjs;
 }
 
-function initArrayBufferForLaterUse(gl, num, type, animObj){
+function initArrayBufferForLaterUse(gl, num, type, animObj) {
     var buffer = gl.createBuffer();   // Create a buffer object
     if (!buffer) {
-      console.log('Failed to create the buffer object');
-      return null;
+        console.log('Failed to create the buffer object');
+        return null;
     }
     // Write date into the buffer object
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, animObj.vertices, gl.STATIC_DRAW);
-    
+
     // Store the necessary information to assign the object to the attribute variable later
     buffer.num = num;
-    buffer.type = type;
-  
-    return buffer;
-}
-  
+    buffer.type = gl.FLOAT;
 
-function initDrawAnimObj(gl, animObj)
-{
-    
+    animObj.buffer = buffer;
 }
+
+function drawAnimObjs(gl, n, buffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix, animObjs, coordinateSize) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, animObjs.buffer);
+    // Assign the buffer object to the attribute variable
+    gl.vertexAttribPointer(a_Position, coordinateSize, gl.FLOAT, false, 0, 0);
+    // Enable the assignment of the buffer object to the attribute variable
+    gl.enableVertexAttribArray(a_Position);
+  
+    // Calculate the model view project matrix and pass it to u_MvpMatrix
+    g_mvpMatrix.set(viewProjMatrix);
+    g_mvpMatrix.multiply(g_modelMatrix);
+    gl.uniformMatrix4fv(u_MvpMatrix, false, g_mvpMatrix.elements);
+    // Calculate matrix for normal and pass it to u_NormalMatrix
+    g_normalMatrix.setInverseOf(g_modelMatrix);
+    g_normalMatrix.transpose();
+    gl.uniformMatrix4fv(u_NormalMatrix, false, g_normalMatrix.elements);
+    // Draw
+    gl.drawArrays(animObjs.drawMethod, 0, n);
+  }
