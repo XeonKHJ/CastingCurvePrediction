@@ -9,8 +9,10 @@ var GLOBAL_VSHADER_SOURCE =
 
 // Fragment shader program
 var GLOBAL_FSHADER_SOURCE =
+    'precision mediump float;\n' +
+    'uniform vec4 u_Color;\n' +
     'void main() {\n' +
-    '  gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n' +
+    '  gl_FragColor = u_Color;\n' +
     '}\n';
 
 function drawAnimation() {
@@ -49,9 +51,6 @@ function startDrawing(gl) {
     // var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
     // var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
 
-
-
-
     drawAnimObjs(gl, a_Position, animObjs);
 
     // drawTudish(gl);
@@ -67,14 +66,18 @@ function drawNewSTP(gl) {
     var VSHADER_SOURCE =
         'attribute vec4 a_Position;\n' +
         'uniform mat4 u_ModelMatrix; \n' +
+        'uniform vec4 u_Color; \n' +
+        'varying vec4 v_Color;\n' +
         'void main() {\n' +
         '  gl_Position = u_ModelMatrix * a_Position;\n' +
-        '}\n';
+        '  v_Color = u_Color'
+    '}\n';
 
     // Fragment shader program
     var FSHADER_SOURCE =
+        'varying vec4 v_Color;\n' +
         'void main() {\n' +
-        '  gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n' +
+        '  gl_FragColor = v_Color;\n' +
         '}\n';
 
     if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
@@ -345,11 +348,12 @@ function initArrayBuffer(gl, attribute, data, num, type) {
     return true;
 }
 
-function AnimObj(vertices, drawMethod, verticeSize) {
+function AnimObj(vertices, colors, drawMethod, verticeSize) {
     return {
         vertices: vertices,
         drawMethod: drawMethod,
         verticeSize: verticeSize,
+        colors: colors,
         buffer: null
     }
 }
@@ -418,12 +422,17 @@ function initVertices(gl) {
         index += 2;
     }
 
-    leftTudish = AnimObj(tudishLeftVertices, gl.TRIANGLE_STRIP, 2);
-    rightTudish = AnimObj(tudishRightVertices, gl.TRIANGLE_STRIP, 2);
-    stoper = AnimObj(stoperVertices, gl.TRIANGLE_STRIP, 2);
-    stoperBottom = AnimObj(stoperBottomVertices, gl.TRIANGLE_FAN, 2);
-    leftCoolingPipe = AnimObj(coolingPipeLeftVertices, gl.TRIANGLE_FAN, 2);
-    rightCoolingPipe = AnimObj(coolingPipeRightVertices, gl.TRIANGLE_FAN, 2);
+    // Define colors
+    var tudishColor = new Float32Array([1.0, 1.0, 0.0, 1.0]);
+    var stoperColor = new Float32Array([1.0, 0.0, 1.0, 1.0])
+    var coolingPipeColor = new Float32Array([0.0, 1.0, 1.0, 1.0]);
+
+    leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
+    rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
+    stoper = AnimObj(stoperVertices, stoperColor, gl.TRIANGLE_STRIP, 2);
+    stoperBottom = AnimObj(stoperBottomVertices, stoperColor, gl.TRIANGLE_FAN, 2);
+    leftCoolingPipe = AnimObj(coolingPipeLeftVertices, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    rightCoolingPipe = AnimObj(coolingPipeRightVertices, coolingPipeColor, gl.TRIANGLE_FAN, 2);
 
     var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe];
 
@@ -458,6 +467,10 @@ function drawAnimObjs(gl, a_Position, animObjs) {
 }
 
 function drawAnimObj(gl, a_Position, animObj) {
+
+    var u_Color = gl.getUniformLocation(gl.program, 'u_Color');
+    gl.uniform4fv(u_Color, animObj.colors);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, animObj.buffer);
     // Assign the buffer object to the attribute variable
     gl.vertexAttribPointer(a_Position, animObj.verticeSize, gl.FLOAT, false, 0, 0);
