@@ -1,10 +1,11 @@
-var _animationStarted = false;
+var _animationStarted = true;
 
 var GLOBAL_VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' +
     'uniform mat4 u_ModelMatrix; \n' +
+    'uniform mat4 u_GlobalModelMatrix; \n' +
     'void main() {\n' +
-    '  gl_Position = a_Position;\n' +
+    '  gl_Position = u_GlobalModelMatrix * u_ModelMatrix * a_Position;\n' +
     '}\n';
 
 // Fragment shader program
@@ -46,6 +47,14 @@ function startDrawing(gl) {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     animObjs = initVertices(gl);
+
+    // set global scale matrix
+    var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
+    var globalModelMatrix = new Matrix4();
+    globalModelMatrix.translate(0, 0.5, 0);
+    globalModelMatrix.scale(0.3,0.3, 1)
+    gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
+
 
     var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
     // var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
@@ -436,6 +445,19 @@ function initVertices(gl) {
 
     var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe];
 
+    // Animation
+    var modelMatrix = new Matrix4();
+    if (startTime != null) {
+        var deltaTime = Date.now() - startTime;
+        deltaNo = parseInt(deltaTime / (250 / 25));
+        console.log(deltaNo)
+        console.log(translateData.values[deltaNo])
+        modelMatrix.translate(0, translateData.values[deltaNo] / height, 0);        // Multiply modelMatrix by the calculated translation matrix
+    }
+    stoper.modelMatrix = modelMatrix;
+    stoperBottom.modelMatrix = modelMatrix;
+
+    // Init buffer for later use.
     animObjs.forEach(animObj => {
         initArrayBufferForLaterUse(gl, animObj.verticeSize, animObj);
     });
@@ -470,6 +492,17 @@ function drawAnimObj(gl, a_Position, animObj) {
 
     var u_Color = gl.getUniformLocation(gl.program, 'u_Color');
     gl.uniform4fv(u_Color, animObj.colors);
+
+    var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+    if (animObj.modelMatrix != undefined) {
+
+        gl.uniformMatrix4fv(u_ModelMatrix, false, animObj.modelMatrix.elements);
+    }
+    else {
+        var modelMatrix = new Matrix4();
+        modelMatrix.translate(0, 0, 0);
+        gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+    }
 
     gl.bindBuffer(gl.ARRAY_BUFFER, animObj.buffer);
     // Assign the buffer object to the attribute variable

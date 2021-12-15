@@ -94,7 +94,7 @@ function showCastingCurve(data, title, id) {
     chartCollectionViewModel.$nextTick(() => {
         generatingCastingChart(newDataViewModel);
         selectItem(vmId);
-        startTime = Date.now();
+        // startTime = Date.now();
         //_animationStarted = true;
     });
 }
@@ -231,7 +231,6 @@ function onOpenFileInputChanged(event) {
         showCastingCurve(response.data, fileName, vmId);
     }).then().catch(
         err => console.log(err))
-
 }
 
 window.onresize = function () {
@@ -301,4 +300,31 @@ function selectItem(id) {
     chartCollectionViewModel.$nextTick(() => {
         resizeEverything();
     });
+}
+
+function getChartViewModelById(id)
+{
+    var requestViewModel = null;
+    chartCollectionViewModel.chartViewModels.forEach(element => {
+        if (element.chartId == id) {
+            requestViewModel = element;
+        }
+    });
+
+    return requestViewModel;
+}
+
+function onPlayButtonClicked()
+{
+    currentViewModel = getChartViewModelById(chartCollectionViewModel.currentId);
+    if(currentViewModel.data != null)
+    {
+        playAnimation(currentViewModel.data);
+    }
+}
+
+function playAnimation(data)
+{
+    translateData = data;
+    startTime = Date.now();
 }

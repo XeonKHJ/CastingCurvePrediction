@@ -36,10 +36,11 @@
                         <td><input class="boxText" id="modeInput"></input></td>
                         <td><span>{{targetLV}}：</span></td>
                         <td><input class="boxText" id="targetLVInput"></input></td>
-                        <td><button class="button text">播放</button></td>
+                        <td></td>
                     </tr>
                 </table>
             </form>
+            <button id="playButton" class="button text" onclick="javascript:onPlayButtonClicked()">播放</button>
             <button class="button text" style="margin: 0px 0px 0px 10px;"
                 onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
             <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput"
