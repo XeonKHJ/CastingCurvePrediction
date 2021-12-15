@@ -407,15 +407,25 @@ function initVertices(gl) {
         }
     }
 
-    var animObjs = [];
+    var stoperBottomVertices = new Float32Array(104);
+    stoperBottomVertices[0] = 0;
+    stoperBottomVertices[1] = 0;
+    index = 2;
+    const r = 40;
+    for (i = -50; i <= 0; i++) {
+        stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100) / width;
+        stoperBottomVertices[index + 1] = r * Math.sin(i * 2 * Math.PI / 100) / height;
+        index += 2;
+    }
 
     leftTudish = AnimObj(tudishLeftVertices, gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObj(tudishRightVertices, gl.TRIANGLE_STRIP, 2);
     stoper = AnimObj(stoperVertices, gl.TRIANGLE_STRIP, 2);
+    stoperBottom = AnimObj(stoperBottomVertices, gl.TRIANGLE_FAN, 2);
     leftCoolingPipe = AnimObj(coolingPipeLeftVertices, gl.TRIANGLE_FAN, 2);
     rightCoolingPipe = AnimObj(coolingPipeRightVertices, gl.TRIANGLE_FAN, 2);
 
-    var animObjs = [leftTudish, rightTudish, stoper, leftCoolingPipe, rightCoolingPipe];
+    var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe];
 
     animObjs.forEach(animObj => {
         initArrayBufferForLaterUse(gl, animObj.verticeSize, animObj);
