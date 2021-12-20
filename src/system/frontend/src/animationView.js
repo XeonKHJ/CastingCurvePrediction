@@ -51,8 +51,8 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, 0.5, 0);
-    globalModelMatrix.scale(0.3,0.3, 1)
+    globalModelMatrix.translate(0, 0.7, 0);
+    globalModelMatrix.scale(0.7,0.7, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -69,32 +69,6 @@ var translateData = null;
 var height = 2000;
 var width = 1000;
 var offset = 0;
-
-/// num 是每个元素的大小，二维就是2。
-function initArrayBuffer(gl, attribute, data, num, type) {
-    // Create a buffer object
-    var buffer = gl.createBuffer();
-    if (!buffer) {
-        console.log('Failed to create the buffer object');
-        return false;
-    }
-    // Write date into the buffer object
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    // Assign the buffer object to the attribute variable
-    var a_attribute = gl.getAttribLocation(gl.program, attribute);
-    if (a_attribute < 0) {
-        console.log('Failed to get the storage location of ' + attribute);
-        return false;
-    }
-    gl.vertexAttribPointer(a_attribute, num, type, false, 0, 0);
-    // Enable the assignment of the buffer object to the attribute variable
-    gl.enableVertexAttribArray(a_attribute);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-    return true;
-}
 
 function AnimObj(vertices, colors, drawMethod, verticeSize) {
     return {
@@ -169,11 +143,25 @@ function initVertices(gl) {
         stoperBottomVertices[index + 1] = r * Math.sin(i * 2 * Math.PI / 100) / height;
         index += 2;
     }
+    
+    var moldLeftVertices = new Float32Array([
+        -180/width, -300/height,
+        -150/width, -300/height,
+        -180/width, -2000/height,
+        -150/width, -2000/height
+    ])
+    var moldRightVertices = new Float32Array([
+        180/width, -300/height,
+        150/width, -300/height,
+        180/width, -2000/height,
+        150/width, -2000/height
+    ])
 
     // Define colors
     var tudishColor = new Float32Array([1.0, 1.0, 0.0, 1.0]);
     var stoperColor = new Float32Array([1.0, 0.0, 1.0, 1.0])
     var coolingPipeColor = new Float32Array([0.0, 1.0, 1.0, 1.0]);
+    var moldColor = new Float32Array([0, 0, 0, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
@@ -181,8 +169,10 @@ function initVertices(gl) {
     stoperBottom = AnimObj(stoperBottomVertices, stoperColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipe = AnimObj(coolingPipeLeftVertices, coolingPipeColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipe = AnimObj(coolingPipeRightVertices, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    leftMoldPipe = AnimObj(moldLeftVertices, moldColor, gl.TRIANGLE_STRIP, 2);
+    rightMoldPipe = AnimObj(moldRightVertices, moldColor, gl.TRIANGLE_STRIP, 2);
 
-    var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe];
+    var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe, leftMoldPipe, rightMoldPipe];
 
     // Animation
     var modelMatrix = new Matrix4();
