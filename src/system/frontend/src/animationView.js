@@ -43,7 +43,7 @@ function drawAnimation() {
 }
 
 function startDrawing(gl) {
-    gl.clearColor(0, 0, 0, 0.5);
+    gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     animObjs = initVertices(gl);
@@ -52,7 +52,7 @@ function startDrawing(gl) {
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
     globalModelMatrix.translate(0, 0.7, 0);
-    globalModelMatrix.scale(0.7,0.7, 1)
+    globalModelMatrix.scale(0.5,0.5, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -158,9 +158,9 @@ function initVertices(gl) {
     ])
 
     // Define colors
-    var tudishColor = new Float32Array([1.0, 1.0, 0.0, 1.0]);
-    var stoperColor = new Float32Array([1.0, 0.0, 1.0, 1.0])
-    var coolingPipeColor = new Float32Array([0.0, 1.0, 1.0, 1.0]);
+    var tudishColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
+    var stoperColor = new Float32Array([0.8, 0.8, 0.8, 1.0])
+    var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
     var moldColor = new Float32Array([0, 0, 0, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
