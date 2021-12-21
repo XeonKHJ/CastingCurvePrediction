@@ -66,10 +66,10 @@ section{
     top: 5px;
     left: 5px;
     right: 10px;
-    height: 30px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
-    box-sizing: border-box;
-    border-radius: 5px;
+    height: 40px;
+    /* box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px; */
+    /* box-sizing: border-box; */
+    /* border-radius: 5px; */
 }
 
 #echartDiv{
@@ -90,15 +90,47 @@ section{
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background-color: rgba(102, 51, 153, 0.151);
+    background-color: #ddefff;
 }
 
 .tabItemSelected
 {
-    background-color: rgba(218, 124, 17, 0.267);
+    /* border-bottom:solid 2px #4888c7; */
+    /* color:#333; */
+    background-color: #ddefff;
 }
 
-@media only screen and (max-width: 980px) {
+.tabItemUnselected
+{
+    background: #fff;
+    border: 1px solid #fff;
+
+    background-color: #f6fbff;
+    /* color: #333; */
+}
+
+.tabLi
+{
+    padding: 0px 5px 5px 0px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgb(150 150 150 / 10%), 0 2px 4px rgb(150 150 150 / 22%);
+}
+
+.tabText
+{
+    /* box-shadow: 0 4px 6px rgba(150,150,150,0.10),
+    0 2px 4px rgba(150,150,150,0.22); */
+    /* background-color: #ddefff; */
+    /* border-radius: 4px; */
+    padding-left: 5px;
+    padding-bottom: 5px;
+    padding-right: 36px;
+    line-height: 30px;
+    /* border-color: transparent; */
+    /* border-radius:2px; */
+}
+
+/* @media only screen and (max-width: 980px) {
     #echartDiv{
         top: 5px;
         left: 10px;
@@ -129,7 +161,7 @@ section{
         height: 300px;
     }
     
-}
+} */
 
 #tabRow{
     margin: 0%;
@@ -138,7 +170,20 @@ section{
 }
 #tabRow li{
     float: left;
-    margin: 5px;
-    border-style: ridge;
-    border-color: black;
+    /* margin: 5px; */
+    /* border-style: ridge; */
+    margin: 0px 5px 0px 5px;
+    /* border-color: black; */
+}
+
+.CloseTabSpan
+{
+    width: 10px;
+    background: url(http://jkrb.xjtu.edu.cn/EIP/core/miniui/themes/2018-skin/2018-img/icon-tab-x-color01.png) no-repeat center center/16px 16px;
+    height: 16px;
+    /* padding: 7px; */
+    display: inline-block;
+    width: 16px;
+    /* line-height: 30px; */
+    /* top: 20px; */
 }
