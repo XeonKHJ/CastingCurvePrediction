@@ -54,23 +54,25 @@
     </section>
     <section id="chartSection">
         <div id="echartDiv">
-
+            <div id="tabDiv">
+                <table>
+                    <ul id="tabRow">
+                        <span id="closeTabButton" style="float: right; margin: 5px;"
+                            onclick="onCloseTabButtonClicked()">❎</span>
+                        <li v-bind:class="[chartViewModel.isSelected?'tabItemSelected tabLi':'tabItemUnselected tabLi']" v-for="(chartViewModel,index) in chartViewModels"
+                            @click="currentId=chartViewModel.chartId" onclick="onTabClicked()">
+                            <span class="tabText"  >{{chartViewModel.title}}</span>
+                            <span class="CloseTabSpan"></span>
+                        </li>
+                    </ul>
+                </table>
+            </div>
             <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
                 v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
             <!-- <button id="updateButton" style="top: 35px; left: 5px; position:absolute">加入数据集</button> -->
         </div>
-        <div id="tabDiv">
-            <table>
-                <ul id="tabRow">
-                    <span id="closeTabButton" style="float: right; margin: 5px;"
-                        onclick="onCloseTabButtonClicked()">❎</span>
-                    <li v-for="(chartViewModel,index) in chartViewModels" @click="currentId=chartViewModel.chartId"
-                        onclick="onTabClicked()" v-bind:class="{tabItemSelected:chartViewModel.isSelected}">
-                        {{chartViewModel.title}}</li>
-                </ul>
-            </table>
-        </div>
+
     </section>
     <!-- <section id="charSection"></section>
     <section id="mainSection">

@@ -20,7 +20,9 @@ if __name__ == '__main__':
         list(1,2,4,5),
         list(1,2,3,4),
         list(1,2,4,5),
-        list(4,5,6,7)
+        list(4,5,6,7),
+        list(1,2,3,4),
+        list(1,2,3,4)
     )
     
     # first layer

@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Launch Microsoft Edge and open the Edge DevTools",
+            "request":"launch",
+            "type": "vscode-edge-devtools.debug",
+            "url": "file://C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\system\\frontend\\predict.html" // Provide your project's url to finish configuring
+        }
+    ]
+}
