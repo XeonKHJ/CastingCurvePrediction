@@ -193,18 +193,22 @@ function initVertices(gl) {
         -180 / width, -2000 / height,
         -150 / width, -2000 / height
     ])
-    var moldRightVertices = new Float32Array([
-        180 / width, -300 / height,
-        150 / width, -300 / height,
-        180 / width, -2000 / height,
-        150 / width, -2000 / height
+
+    var moldLeftVerticesInside = new Float32Array([
+        (-180 + borderThinkness) / width, (-300 - borderThinkness) / height,
+        (-150 - borderThinkness) / width, (-300 - borderThinkness) / height,
+        (-180 + borderThinkness) / width, -2000 / height,
+        (-150 - borderThinkness) / width, -2000 / height
     ])
+
+    var moldRightVertices = reverseVertices(moldLeftVertices)
+    var moldRightVerticesInside = reverseVertices(moldLeftVerticesInside)
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
     var stoperColor = new Float32Array([0,0,0, 1.0])
     var coolingPipeColor = new Float32Array([0.8,0.8,0.8, 1.0]);
-    var moldColor = new Float32Array([0, 0, 0, 1.0])
+    var moldColor = new Float32Array([0.6,0.6,0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
@@ -218,10 +222,11 @@ function initVertices(gl) {
     rightCoolingPipe = AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipeInside = AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipeInside = AnimObj(coolingPipeRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-    leftMoldPipe = AnimObj(moldLeftVertices, moldColor, gl.TRIANGLE_STRIP, 2);
-    rightMoldPipe = AnimObj(moldRightVertices, moldColor, gl.TRIANGLE_STRIP, 2);
-
-    var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, rightMoldPipe];
+    leftMoldPipe = AnimObj(moldLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    leftMoldPipeInside = AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    rightMoldPipe = AnimObj(moldRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    rightMoldPipeInside = AnimObj(moldRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside];
 
     // Animation
     var modelMatrix = new Matrix4();
