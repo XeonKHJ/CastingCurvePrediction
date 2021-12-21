@@ -51,8 +51,8 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, 0.7, 0);
-    globalModelMatrix.scale(0.5,0.5, 1)
+    //globalModelMatrix.translate(0, 0.7, 0);
+    globalModelMatrix.scale(0.5, 0.5, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -70,24 +70,40 @@ var height = 2000;
 var width = 1000;
 var offset = 0;
 
-function AnimObj(vertices, colors, drawMethod, verticeSize) {
+function AnimObj(vertices, colors, drawMethod, verticeSize, borderWidth = 0, borderColor = null) {
     return {
         vertices: vertices,
         drawMethod: drawMethod,
         verticeSize: verticeSize,
         colors: colors,
+        borderWidth: borderWidth,
+        borderColor: null,
         buffer: null
     }
 }
 
+function reverseVertices(verticesIn, verticesOut)
+{
+    for (var i = 0; i < verticesIn.length; i++) {
+        if (i % 2) {
+            verticesOut[i] = verticesOut[i];
+        }
+        else {
+            verticesOut[i] = -1 * verticesOut[i];
+        }
+    }
+}
+
 function initVertices(gl) {
-    var tan = Math.tan(80 / 180 * Math.PI);
+    var tan80 = Math.tan(80 / 180 * Math.PI);
+    var sin80 = Math.sin(80 / 180 * Math.PI);
+    var borderThinkness = 5;
     var tudishLeftVertices = new Float32Array(
         [
-            -400 / width, (50 * tan) / height,
-            -350 / width, (50 * tan) / height,
+            -400 / width, (50 * tan80) / height,
+            -350 / width, (50 * tan80) / height,
             -350 / width, 0,
-            (-350 + ((50 * tan - 50) / tan)) / width, 50 / height,
+            (-350 + ((50 * tan80 - 50) / tan80)) / width, 50 / height,
             -50 / width, 0,
             -50 / width, 50 / height
         ]
@@ -104,6 +120,19 @@ function initVertices(gl) {
             tudishRightVertices[i] = -1 * tudishLeftVertices[i];
         }
     }
+
+
+    var tudishLeftInsideVertices = new Float32Array(
+        [
+            (-400 + borderThinkness / sin80) / width, ((50 * tan80) - borderThinkness) / height,
+            (-350 - borderThinkness / sin80) / width, ((50 * tan80) - borderThinkness) / height,
+            (-350 + borderThinkness / sin80) / width, (0 + borderThinkness) / height,
+            (-350 + ((50 * tan80 - 50) / tan80) - borderThinkness ) / width, (50 - borderThinkness) / height,
+            (-50 - borderThinkness) / width, (0 + borderThinkness) / height,
+            (-50 - borderThinkness) / width, (50 - borderThinkness) / height
+        ]
+    );
+
 
     var stoperVertices = new Float32Array([
         -63.5 / width, 300 / height,
@@ -143,27 +172,28 @@ function initVertices(gl) {
         stoperBottomVertices[index + 1] = r * Math.sin(i * 2 * Math.PI / 100) / height;
         index += 2;
     }
-    
+
     var moldLeftVertices = new Float32Array([
-        -180/width, -300/height,
-        -150/width, -300/height,
-        -180/width, -2000/height,
-        -150/width, -2000/height
+        -180 / width, -300 / height,
+        -150 / width, -300 / height,
+        -180 / width, -2000 / height,
+        -150 / width, -2000 / height
     ])
     var moldRightVertices = new Float32Array([
-        180/width, -300/height,
-        150/width, -300/height,
-        180/width, -2000/height,
-        150/width, -2000/height
+        180 / width, -300 / height,
+        150 / width, -300 / height,
+        180 / width, -2000 / height,
+        150 / width, -2000 / height
     ])
 
     // Define colors
-    var tudishColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
+    var tudishColor = new Float32Array([0, 0, 0, 1.0]);
     var stoperColor = new Float32Array([0.8, 0.8, 0.8, 1.0])
     var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
     var moldColor = new Float32Array([0, 0, 0, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
+    leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     stoper = AnimObj(stoperVertices, stoperColor, gl.TRIANGLE_STRIP, 2);
     stoperBottom = AnimObj(stoperBottomVertices, stoperColor, gl.TRIANGLE_FAN, 2);
@@ -172,7 +202,7 @@ function initVertices(gl) {
     leftMoldPipe = AnimObj(moldLeftVertices, moldColor, gl.TRIANGLE_STRIP, 2);
     rightMoldPipe = AnimObj(moldRightVertices, moldColor, gl.TRIANGLE_STRIP, 2);
 
-    var animObjs = [leftTudish, rightTudish, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe, leftMoldPipe, rightMoldPipe];
+    var animObjs = [leftTudish, rightTudish, leftTudishInside, stoper, stoperBottom, leftCoolingPipe, rightCoolingPipe, leftMoldPipe, rightMoldPipe];
 
     // Animation
     var modelMatrix = new Matrix4();
