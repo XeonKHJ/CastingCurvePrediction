@@ -181,9 +181,20 @@ function initVertices(gl) {
     stoperBottomVertices[1] = (47.625 + 10) / height;
     index = 2;
     const r = 47.625 * Math.sqrt(2);
-    for (i = -50; i <= -0; i++) {
+    for (i = -40; i <= -10; i++) {
         stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100) / width;
         stoperBottomVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) / height;
+        index += 2;
+    }
+
+    var stoperBottomVerticesInside = new Float32Array(104);
+    stoperBottomVerticesInside[0] = 0;
+    stoperBottomVerticesInside[1] = (47.625 + 10) / height;
+    index = 2;
+    const rInside = 47.625 * Math.sqrt(2) - borderThinkness;
+    for (i = -40; i <= -10; i++) {
+        stoperBottomVerticesInside[index] = rInside * Math.cos(i * 2 * Math.PI / 100) / width;
+        stoperBottomVerticesInside[index + 1] = (rInside * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) / height;
         index += 2;
     }
 
@@ -206,7 +217,7 @@ function initVertices(gl) {
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
-    var stoperColor = new Float32Array([0,0,0, 1.0])
+    var stoperColor = new Float32Array([0.8,0.8,0.8, 1.0])
     var coolingPipeColor = new Float32Array([0.8,0.8,0.8, 1.0]);
     var moldColor = new Float32Array([0.6,0.6,0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
@@ -215,9 +226,10 @@ function initVertices(gl) {
     leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     rightTudishInside = AnimObj(tudishRightInsideVertices, new Float32Array([0.8,0.8,0.8,1]), gl.TRIANGLE_STRIP, 2)
-    stoper = AnimObj(stoperVertices, stoperColor, gl.TRIANGLE_STRIP, 2);
-    stoperInside = AnimObj(stoperVerticesInside, new Float32Array([0.8,0.8,0.8,1]), gl.TRIANGLE_STRIP, 2);
-    stoperBottom = AnimObj(stoperBottomVertices, stoperColor, gl.TRIANGLE_FAN, 2);
+    stoper = AnimObj(stoperVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    stoperInside = AnimObj(stoperVerticesInside, stoperColor, gl.TRIANGLE_STRIP, 2);
+    stoperBottom = AnimObj(stoperBottomVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    stoperBottomInside = AnimObj(stoperBottomVerticesInside, stoperColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipe = AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipe = AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipeInside = AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
@@ -226,7 +238,7 @@ function initVertices(gl) {
     leftMoldPipeInside = AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
     rightMoldPipe = AnimObj(moldRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
     rightMoldPipeInside = AnimObj(moldRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
-    var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside];
+    var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside];
 
     // Animation
     var modelMatrix = new Matrix4();
