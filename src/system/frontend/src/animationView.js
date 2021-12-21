@@ -51,8 +51,8 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    // globalModelMatrix.translate(0, 0.7, 0);
-    globalModelMatrix.scale(1, 1, 1)
+    globalModelMatrix.translate(0, 0.7, 0);
+    globalModelMatrix.scale(0.7, 0.7, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -106,7 +106,7 @@ function a2r(angle)
 function initVertices(gl) {
     var tan80 = Math.tan(a2r(80));
     var sin80 = Math.sin(a2r(80));
-    var borderThinkness = 5;
+    var borderThinkness = 3;
     var tudishLeftVertices = new Float32Array(
         [
             -400 / width, (50 * tan80) / height,
