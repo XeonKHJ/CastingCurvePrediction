@@ -178,12 +178,12 @@ function initVertices(gl) {
 
     var stoperBottomVertices = new Float32Array(104);
     stoperBottomVertices[0] = 0;
-    stoperBottomVertices[1] = 0;
+    stoperBottomVertices[1] = (47.625 + 10) / height;
     index = 2;
-    const r = 40;
-    for (i = -50; i <= 0; i++) {
+    const r = 47.625 * Math.sqrt(2);
+    for (i = -50; i <= -0; i++) {
         stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100) / width;
-        stoperBottomVertices[index + 1] = r * Math.sin(i * 2 * Math.PI / 100) / height;
+        stoperBottomVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) / height;
         index += 2;
     }
 
