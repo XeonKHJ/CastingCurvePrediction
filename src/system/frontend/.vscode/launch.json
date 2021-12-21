@@ -1,6 +1,13 @@
 {
     "configurations": [
         {
+            "name": "Launch Edge",
+            "request": "launch",
+            "type": "pwa-msedge",
+            "url": "file://C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\system\\frontend\\predict.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
             "name": "Launch Microsoft Edge and open the Edge DevTools",
             "request":"launch",
             "type": "vscode-edge-devtools.debug",
