@@ -18,6 +18,12 @@ public class CastingResultModel extends StatusViewModel {
         resultItems.add(resultItem);
     }
 
+    public void addResultItem(String time, double value, double liqLevel)
+    {
+        CastingResultItemModel resultItem = new CastingResultItemModel(time, value, liqLevel);
+        resultItems.add(resultItem);
+    }
+
     public ArrayList<CastingResultItemModel> getResultItems()
     {
         return resultItems;

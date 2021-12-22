@@ -149,13 +149,26 @@ function generatingCastingChart(dataViewModel) {
             type: 'category',
             data: dataViewModel.data.times
         },
-        yAxis: {
-            type: 'value',
-            min: -2
-        },
+        yAxis: [
+            {
+                type: 'value',
+                min: -2
+            },
+            {
+                type: 'value',
+                min: -2
+            }
+
+        ],
         series: [
             {
                 data: dataViewModel.data.values,
+                yAxis:0,
+                type: 'line'
+            },
+            {
+                data: dataViewModel.data.liqLevel,
+                yAxis:2,
                 type: 'line'
             }
         ],

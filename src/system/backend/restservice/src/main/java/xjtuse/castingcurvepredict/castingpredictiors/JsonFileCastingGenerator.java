@@ -31,7 +31,13 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
                         String[] item = itemToSplit.split(",");
                         String date = item[0];
                         double value = Double.parseDouble(item[1]);
-                        resultModel.addResultItem(date, value);
+                        double liqLevel = 0;
+                        if(item.length == 3)
+                        {
+                            liqLevel = Double.parseDouble(item[2]);
+                        }
+                            
+                        resultModel.addResultItem(date, value, liqLevel);
                     }
                 }
             } catch (NumberFormatException | IOException e) {

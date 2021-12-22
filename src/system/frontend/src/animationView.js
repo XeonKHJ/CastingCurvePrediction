@@ -250,7 +250,9 @@ function initVertices(gl) {
         modelMatrix.translate(0, translateData.values[deltaNo] / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
     stoper.modelMatrix = modelMatrix;
+    stoperInside.modelMatrix = modelMatrix;
     stoperBottom.modelMatrix = modelMatrix;
+    stoperBottomInside.modelMatrix = modelMatrix;
 
     // Init buffer for later use.
     animObjs.forEach(animObj => {
