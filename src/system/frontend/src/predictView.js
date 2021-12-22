@@ -44,7 +44,7 @@ var chartListViewModel = Vue.createApp({
 
 
 function onTabClicked() {
-    console.log("Tab" + chartListViewModel.currentIndex + "is clicked");
+    console.log("ontabclicked")
     selectItem(chartCollectionViewModel.currentId)
 }
 
@@ -263,6 +263,8 @@ function onCloseTabButtonClicked() {
                 element.echart.dispose();
             }
 
+
+
             chartCollectionViewModel.chartViewModels.splice(i, 1);
             break;
         }
@@ -273,11 +275,15 @@ function onCloseTabButtonClicked() {
         chartCollectionViewModel.isEmpty = true;
     }
     else if (length == i + 1) {
-        selectItem(chartCollectionViewModel.chartViewModels[i - 1].chartId);
+            selectItem(chartCollectionViewModel.chartViewModels[i - 1].chartId);
+        
     }
     else {
-        selectItem(chartCollectionViewModel.chartViewModels[i].chartId);
+
+            selectItem(chartCollectionViewModel.chartViewModels[i].chartId);
     }
+
+
 }
 
 function resizeEverything() {
