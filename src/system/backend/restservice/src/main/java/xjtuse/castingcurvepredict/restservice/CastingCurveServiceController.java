@@ -42,6 +42,12 @@ public class CastingCurveServiceController {
     @PostMapping("/openCastingCurveFile")
     public DiagramViewModel openCastingCurveFile(MultipartFile file)
     {
+        if(file == null)
+        {
+            DiagramViewModel viewModel = new DiagramViewModel(null);
+            viewModel.setStatusCode(-1);
+            return viewModel;
+        }
         ICastingGenerator generator = new JsonFileCastingGenerator();
         CastingResultModel resultModel = new CastingResultModel();
         File castFile = null;
