@@ -63,7 +63,7 @@
                             onclick="onCloseTabButtonClicked()">❎</span>
                         <li v-bind:class="[chartViewModel.isSelected?'tabItemSelected tabLi':'tabItemUnselected tabLi']" v-for="(chartViewModel,index) in chartViewModels">
                             <span class="tabText" @click="currentId=chartViewModel.chartId"  onclick="onTabClicked()">{{chartViewModel.title}}</span>
-                            <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked()"></span>
+                            <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked(this)" v-bind:id="'chartTab'+chartViewModel.chartId"></span>
                         </li>
                     </ul>
                 </table>
