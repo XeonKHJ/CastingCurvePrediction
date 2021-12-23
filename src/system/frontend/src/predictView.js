@@ -58,57 +58,29 @@ var chartCollectionVueModel = Vue.createApp({
         return {
             isEmpty: true,
             chartViewModels: [
-                {
-                    chartId: 0,
-                    title: "没数据",
-                    data: null,
-                    isPredictResult: false,
-                    isSelected: true,
-                    echart: null,
-                    htmlContent: "skdfjlsdf",
-                }
+                ChartViewModel()
             ],
-            currentId: 0,
-            htmlContent:"sdfsdf"
+            currentId: 0
         }
     },
-    directives:{
-        content (el, { value }) {
-            if (el.innerHTML !== value) {
-              el.innerHTML = ""
-            }
+    methods:{
+        revmoveItem(id)
+        {
+            var echartContentDiv = document.getElementById('echartContent'+id);
+            echartContentDiv.parentNode.removeChild(echartContentDiv);
+        },
+        selectItem(id)
+        {
+            var echartContentDiv = document.getElementById('echartContent'+id);
+            echartContentDiv.style.display = "block"
         }
     }
 }).mount("#chartSection");
 
-const ChartViewCollectionViewModel = {
-    chartViewModels:[
-        ChartViewModel()
-    ],
-    currentId : function()
-    {
-        return 0
-    },
-    isEmpty : function()
-    {
-        return true;
-    },
-    selectItem: function(id)
-    {
-
-    },
-    addItem: function(id)
-    {
-
-    },
-    removeItem: function(id)
-    {
-
-    }
-}
-
 function ChartViewModel()
 {
+    var defaultDom = document.createElement('div');
+    defaultDom.className = "echartContentDiv";
     var defaultChartViewModel = {
         chartId: 0,
         title: "没数据",
@@ -116,6 +88,7 @@ function ChartViewModel()
         isPredictResult: false,
         isSelected: true,
         echart:null,
+        domeEl:defaultDom,
     };
 
     return defaultChartViewModel;
@@ -132,11 +105,18 @@ function showCastingCurve(data, title, id) {
     newDataViewModel.isSelected = true
 
     chartCollectionVueModel.chartViewModels.push(newDataViewModel);
+    var echartDiv = document.getElementById('echartDiv');
+    var chartContentDiv = document.createElement('div');
+    chartContentDiv.id = 'echartContent' + id;
+    chartContentDiv.className = 'echartContentDiv';
+    chartContentDiv.style.display = '';
+    echartDiv.appendChild(chartContentDiv);
+
+    newDataViewModel.domeEl = chartContentDiv;
+    //chartContentDiv.
     chartCollectionVueModel.$nextTick(() => {
         generatingCastingChart(newDataViewModel);
         selectItem(id);
-        // startTime = Date.now();
-        //_animationStarted = true;
     });
 }
 
@@ -295,7 +275,7 @@ function onCloseTabButtonClicked() {
     var i = 0;
     var length = chartCollectionVueModel.chartViewModels.length;
     var echartToDispose;
-    var elsd = document.getElementsByClassName('echartContentDiv');
+    
     for (i = 0; i < length; ++i) {
         if (chartCollectionVueModel.chartViewModels[i].chartId == chartCollectionVueModel.currentId) {
             var element = chartCollectionVueModel.chartViewModels[i];
@@ -354,9 +334,11 @@ function selectItem(id) {
         if (element.chartId == id) {
             element.isSelected = true;
             chartCollectionVueModel.currentId = element.chartId;
+            element.domeEl.style.display = '';
         }
         else {
             element.isSelected = false;
+            element.domeEl.style.display = 'none';
         }
     });
     chartCollectionVueModel.$nextTick(() => {
