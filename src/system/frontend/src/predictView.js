@@ -64,13 +64,74 @@ var chartCollectionVueModel = Vue.createApp({
         }
     },
     methods: {
-        revmoveItem(id) {
-            var echartContentDiv = document.getElementById('echartContent' + id);
-            echartContentDiv.parentNode.removeChild(echartContentDiv);
+        revmoveItem(idToDelete) {
+            var length = this.chartViewModels.length;
+            var echartToDispose;
+
+            for (i = 0; i < length; ++i) {
+                if (this.chartViewModels[i].chartId == idToDelete) {
+                    var element = this.chartViewModels[i];
+                    echartToDispose = element;
+        
+                    if (length == 1) {
+                        this.chartViewModels.push(ChartViewModel());
+                        selectItem(0);
+                        this.isEmpty = true;
+                    }
+                    else if(this.currentId == idToDelete) {
+        
+                        if (length == i + 1) {
+                            selectItem(this.chartViewModels[i - 1].chartId);
+                        }
+                        else {
+                            var chartId = this.chartViewModels[i + 1].chartId;
+                            var el = document.getElementById('echartContent' + chartId);
+                            selectItem(this.chartViewModels[i + 1].chartId);
+                        }
+                    }
+        
+                    if (echartToDispose.echart != null) {
+                        echartToDispose.echart.clear();
+                        echartToDispose.echart.dispose();
+                    }
+        
+                    this.chartViewModels.splice(i, 1);
+                    break;
+                }
+            }
         },
         selectItem(id) {
             var echartContentDiv = document.getElementById('echartContent' + id);
             echartContentDiv.style.display = "block"
+        },
+        addAndDisplayChart(newDataViewModel)
+        {
+            newDataViewModel.chartId = id,
+            newDataViewModel.title = title,
+            newDataViewModel.data = data.castingCurveValues,
+            newDataViewModel.isPredictResult = false,
+            newDataViewModel.isSelected = true
+            
+            if(this.isEmpty)
+            {
+                this.chartViewModels.splice(0, 1);
+                this.isEmpty = false;
+            }
+
+            this.chartViewModels.push(newDataViewModel);
+            var echartDiv = document.getElementById('echartDiv');
+            var chartContentDiv = document.createElement('div');
+            chartContentDiv.id = 'echartContent' + id;
+            chartContentDiv.className = 'echartContentDiv';
+            chartContentDiv.style.display = '';
+            echartDiv.appendChild(chartContentDiv);
+        
+            newDataViewModel.domeEl = chartContentDiv;
+            //chartContentDiv.
+            this.$nextTick(() => {
+                generatingCastingChart(newDataViewModel);
+                this.selectItem(id);
+            });
         }
     }
 }).mount("#chartSection");
@@ -253,7 +314,7 @@ function onOpenFileInputChanged(event) {
             chartCollectionVueModel.chartViewModels.splice(0, 1);
             chartCollectionVueModel.isEmpty = false;
         }
-        vmId = hashCode(fileName, seedCounter++);
+        const vmId = hashCode(fileName, seedCounter++);
 
         showCastingCurve(response.data, fileName, vmId);
     }).then().catch(
@@ -265,42 +326,9 @@ window.onresize = function () {
 }
 
 function onCloseTabButtonClicked(el) {
-    var i = 0;
-    var length = chartCollectionVueModel.chartViewModels.length;
-    var echartToDispose;
 
     idToDelete = el.id.substring(8, el.id.length)
-    for (i = 0; i < length; ++i) {
-        if (chartCollectionVueModel.chartViewModels[i].chartId == idToDelete) {
-            var element = chartCollectionVueModel.chartViewModels[i];
-            echartToDispose = element;
-
-            if (length == 1) {
-                chartCollectionVueModel.chartViewModels.push(ChartViewModel());
-                selectItem(0);
-                chartCollectionVueModel.isEmpty = true;
-            }
-            else if(chartCollectionVueModel.currentId == idToDelete) {
-
-                if (length == i + 1) {
-                    selectItem(chartCollectionVueModel.chartViewModels[i - 1].chartId);
-                }
-                else {
-                    var chartId = chartCollectionVueModel.chartViewModels[i + 1].chartId;
-                    var el = document.getElementById('echartContent' + chartId);
-                    selectItem(chartCollectionVueModel.chartViewModels[i + 1].chartId);
-                }
-            }
-
-            if (echartToDispose.echart != null) {
-                echartToDispose.echart.clear();
-                echartToDispose.echart.dispose();
-            }
-
-            chartCollectionVueModel.chartViewModels.splice(i, 1);
-            break;
-        }
-    }
+    chartCollectionVueModel.revmoveItem(idToDelete)
 
 }
 
