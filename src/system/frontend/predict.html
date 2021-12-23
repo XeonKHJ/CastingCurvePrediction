@@ -12,7 +12,9 @@
 
 <body onload="drawAnimation()">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
-    <script src="https://unpkg.com/vue@next"></script>
+    <!-- <script src="src/lib/echarts.js"></script> -->
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
     <section id="headerSection">
@@ -66,8 +68,8 @@
                     </ul>
                 </table>
             </div>
-            <div v-for="(chartViewModel,index) in chartViewModels" class="echartContentDiv"
-                v-show="chartViewModel.isSelected" v-bind:id="'echartContent' + chartViewModel.chartId">
+            <div v-for="(chartViewModel,index) in chartViewModels"
+                v-show="chartViewModel.isSelected" class="echartContentDiv" v-bind:id="'echartContent' + chartViewModel.chartId">
             </div>
             <!-- <button id="updateButton" style="top: 35px; left: 5px; position:absolute">加入数据集</button> -->
         </div>

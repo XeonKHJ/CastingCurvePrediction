@@ -20,9 +20,9 @@ function submitCastingPriorInfo(form, title = "预测结果") {
             Accept: "application/json"
         }
     }).then(response => {
-        if (chartCollectionViewModel.isEmpty) {
-            chartCollectionViewModel.chartViewModels.splice(0, 1);
-            chartCollectionViewModel.isEmpty = false;
+        if (chartCollectionVueModel.isEmpty) {
+            chartCollectionVueModel.chartViewModels.splice(0, 1);
+            chartCollectionVueModel.isEmpty = false;
         }
         vmId = hashCode(title, seedCounter++);
         var filePaths = title.split('\\');
@@ -45,7 +45,7 @@ var chartListViewModel = Vue.createApp({
 
 function onTabClicked() {
     console.log("ontabclicked")
-    selectItem(chartCollectionViewModel.currentId)
+    selectItem(chartCollectionVueModel.currentId)
 }
 
 function onUpdateClicked() {
@@ -53,15 +53,7 @@ function onUpdateClicked() {
 }
 
 
-var defaultChartViewModel = {
-    chartId: 0,
-    title: "没数据",
-    data: null,
-    isPredictResult: false,
-    isSelected: true
-};
-
-var chartCollectionViewModel = Vue.createApp({
+var chartCollectionVueModel = Vue.createApp({
     data() {
         return {
             isEmpty: true,
@@ -73,27 +65,76 @@ var chartCollectionViewModel = Vue.createApp({
                     isPredictResult: false,
                     isSelected: true,
                     echart: null,
+                    htmlContent: "skdfjlsdf",
                 }
             ],
-            currentId: 0
+            currentId: 0,
+            htmlContent:"sdfsdf"
+        }
+    },
+    directives:{
+        content (el, { value }) {
+            if (el.innerHTML !== value) {
+              el.innerHTML = ""
+            }
         }
     }
 }).mount("#chartSection");
 
-function showCastingCurve(data, title, id) {
-    var newDataViewModel = {
-        chartId: vmId,
-        title: title,
-        data: data.castingCurveValues,
+const ChartViewCollectionViewModel = {
+    chartViewModels:[
+        ChartViewModel()
+    ],
+    currentId : function()
+    {
+        return 0
+    },
+    isEmpty : function()
+    {
+        return true;
+    },
+    selectItem: function(id)
+    {
+
+    },
+    addItem: function(id)
+    {
+
+    },
+    removeItem: function(id)
+    {
+
+    }
+}
+
+function ChartViewModel()
+{
+    var defaultChartViewModel = {
+        chartId: 0,
+        title: "没数据",
+        data: null,
         isPredictResult: false,
         isSelected: true,
-        echart: null
-    }
+        echart:null,
+    };
 
-    chartCollectionViewModel.chartViewModels.push(newDataViewModel);
-    chartCollectionViewModel.$nextTick(() => {
+    return defaultChartViewModel;
+}
+
+
+
+function showCastingCurve(data, title, id) {
+    var newDataViewModel = ChartViewModel();
+    newDataViewModel.chartId = id,
+    newDataViewModel.title = title,
+    newDataViewModel.data = data.castingCurveValues,
+    newDataViewModel.isPredictResult = false,
+    newDataViewModel.isSelected = true
+
+    chartCollectionVueModel.chartViewModels.push(newDataViewModel);
+    chartCollectionVueModel.$nextTick(() => {
         generatingCastingChart(newDataViewModel);
-        selectItem(vmId);
+        selectItem(id);
         // startTime = Date.now();
         //_animationStarted = true;
     });
@@ -101,11 +142,11 @@ function showCastingCurve(data, title, id) {
 
 function exportToCsv() {
     var viewModel = null;
-    for(var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i)
+    for(var i = 0; i < chartCollectionVueModel.chartViewModels.length; ++i)
     {
-        if(chartCollectionViewModel.currentId == chartCollectionViewModel.chartViewModels[i].chartId)
+        if(chartCollectionVueModel.currentId == chartCollectionVueModel.chartViewModels[i].chartId)
         {
-            viewModel = chartCollectionViewModel.chartViewModels[i];
+            viewModel = chartCollectionVueModel.chartViewModels[i];
             break;
         }
     }
@@ -235,9 +276,9 @@ function onOpenFileInputChanged(event) {
             Accept: "application/json"
         }
     }).then(response => {
-        if (chartCollectionViewModel.isEmpty) {
-            chartCollectionViewModel.chartViewModels.splice(0, 1);
-            chartCollectionViewModel.isEmpty = false;
+        if (chartCollectionVueModel.isEmpty) {
+            chartCollectionVueModel.chartViewModels.splice(0, 1);
+            chartCollectionVueModel.isEmpty = false;
         }
         vmId = hashCode(fileName, seedCounter++);
 
@@ -252,12 +293,28 @@ window.onresize = function () {
 
 function onCloseTabButtonClicked() {
     var i = 0;
-    var length = chartCollectionViewModel.chartViewModels.length;
-
+    var length = chartCollectionVueModel.chartViewModels.length;
+    var echartToDispose;
+    var elsd = document.getElementsByClassName('echartContentDiv');
     for (i = 0; i < length; ++i) {
-        if (chartCollectionViewModel.chartViewModels[i].chartId == chartCollectionViewModel.currentId) {
-            var element = chartCollectionViewModel.chartViewModels[i];
+        if (chartCollectionVueModel.chartViewModels[i].chartId == chartCollectionVueModel.currentId) {
+            var element = chartCollectionVueModel.chartViewModels[i];
+            echartToDispose = element;
 
+            if (length == 1) {
+                chartCollectionVueModel.chartViewModels.push(defaultChartViewModel);
+                chartCollectionVueModel.isEmpty = true;
+            }
+            else if (length == i + 1) {
+                    selectItem(chartCollectionVueModel.chartViewModels[i - 1].chartId);
+            }
+            else {
+                    var chartId = chartCollectionVueModel.chartViewModels[i+1].chartId;
+                    var el = document.getElementById('echartContent'+ chartId);
+                    selectItem(chartCollectionVueModel.chartViewModels[i + 1].chartId);
+            }
+
+            
             if (element.echart != null) {
                 element.echart.clear();
                 element.echart.dispose();
@@ -265,33 +322,19 @@ function onCloseTabButtonClicked() {
 
 
 
-            chartCollectionViewModel.chartViewModels.splice(i, 1);
+            chartCollectionVueModel.chartViewModels.splice(i, 1);
             break;
         }
     }
-
-    if (length == 1) {
-        chartCollectionViewModel.chartViewModels.push(defaultChartViewModel);
-        chartCollectionViewModel.isEmpty = true;
-    }
-    else if (length == i + 1) {
-            selectItem(chartCollectionViewModel.chartViewModels[i - 1].chartId);
-        
-    }
-    else {
-
-            selectItem(chartCollectionViewModel.chartViewModels[i].chartId);
-    }
-
 
 }
 
 function resizeEverything() {
 
-    for (var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i) {
-        if (chartCollectionViewModel.chartViewModels[i].chartId == chartCollectionViewModel.currentId) {
-            if (chartCollectionViewModel.chartViewModels[i].echart != null) {
-                chartCollectionViewModel.chartViewModels[i].echart.resize();
+    for (var i = 0; i < chartCollectionVueModel.chartViewModels.length; ++i) {
+        if (chartCollectionVueModel.chartViewModels[i].chartId == chartCollectionVueModel.currentId) {
+            if (chartCollectionVueModel.chartViewModels[i].echart != null) {
+                chartCollectionVueModel.chartViewModels[i].echart.resize();
             }
             break;
         }
@@ -307,16 +350,16 @@ function resizeEverything() {
 }
 
 function selectItem(id) {
-    chartCollectionViewModel.chartViewModels.forEach(element => {
+    chartCollectionVueModel.chartViewModels.forEach(element => {
         if (element.chartId == id) {
             element.isSelected = true;
-            chartCollectionViewModel.currentId = element.chartId;
+            chartCollectionVueModel.currentId = element.chartId;
         }
         else {
             element.isSelected = false;
         }
     });
-    chartCollectionViewModel.$nextTick(() => {
+    chartCollectionVueModel.$nextTick(() => {
         resizeEverything();
     });
 }
@@ -324,7 +367,7 @@ function selectItem(id) {
 function getChartViewModelById(id)
 {
     var requestViewModel = null;
-    chartCollectionViewModel.chartViewModels.forEach(element => {
+    chartCollectionVueModel.chartViewModels.forEach(element => {
         if (element.chartId == id) {
             requestViewModel = element;
         }
@@ -335,7 +378,7 @@ function getChartViewModelById(id)
 
 function onPlayButtonClicked()
 {
-    currentViewModel = getChartViewModelById(chartCollectionViewModel.currentId);
+    currentViewModel = getChartViewModelById(chartCollectionVueModel.currentId);
     if(currentViewModel.data != null)
     {
         playAnimation(currentViewModel.data);
