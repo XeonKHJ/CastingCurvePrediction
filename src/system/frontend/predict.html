@@ -41,12 +41,16 @@
                         <td></td>
                     </tr>
                 </table>
+                <!-- <ul style="list-style: none;">
+                    <li class="steelInfoLi"><span style="width: 30px; min-width: 30px; border-style:ridge; margin: 0px;">{{steelType}}：</span><input class="boxText" id="steelTypeInput"></input></li>
+                    <li class="steelInfoLi"><span style="width: 30px; border-style:ridge;">{{billetWidth}}：</span><input class="boxText" id="billetWidthInput"></input></li>
+                </ul> -->
             </form>
-            <button id="playButton" class="button text" onclick="javascript:onPlayButtonClicked()">播放</button>
+            <!-- <button id="playButton" class="button text" onclick="javascript:onPlayButtonClicked()">播放</button>
             <button class="button text" style="margin: 0px 0px 0px 10px;"
                 onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
             <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput"
-                type="file" onchange="javascript:onOpenFileInputChanged(this)"></input>
+                type="file" onchange="javascript:onOpenFileInputChanged(this)"></input> -->
         </div>
     </section>
     <section id="animationSection">
@@ -59,8 +63,6 @@
             <div id="tabDiv">
                 <table>
                     <ul id="tabRow">
-                        <span id="closeTabButton" style="float: right; margin: 5px;"
-                            onclick="onCloseTabButtonClicked()">❎</span>
                         <li v-bind:class="[chartViewModel.isSelected?'tabItemSelected tabLi':'tabItemUnselected tabLi']" v-for="(chartViewModel,index) in chartViewModels">
                             <span class="tabText" @click="currentId=chartViewModel.chartId"  onclick="onTabClicked()">{{chartViewModel.title}}</span>
                             <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked(this)" v-bind:id="'chartTab'+chartViewModel.chartId"></span>

@@ -188,3 +188,8 @@ section{
     /* line-height: 30px; */
     /* top: 20px; */
 }
+
+.steelInfoLi
+{
+    float: left; 
+}

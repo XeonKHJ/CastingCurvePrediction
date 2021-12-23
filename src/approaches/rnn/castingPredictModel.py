@@ -26,8 +26,9 @@ class CastingPredictModel(nn.Module):
         self.finalCalculation = nn.Sigmoid()
 
 
-    def forward(self, _x, xTimestampSizes):
-        x = torchrnn.pack_padded_sequence(_x, xTimestampSizes, True)
+    def forward(self, _x):
+        # x = torchrnn.pack_padded_sequence(_x, xTimestampSizes, True)
+        x = _x
         x, b = self.lstm(x)  # _x is input, size (seq_len, batch, input_size)
         
         x, xBatchSize = torchrnn.pad_packed_sequence(x, batch_first=True)
