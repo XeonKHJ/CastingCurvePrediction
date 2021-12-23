@@ -94,9 +94,7 @@ var chartCollectionVueModel = Vue.createApp({
                         echartToDispose.echart.clear();
                         echartToDispose.echart.dispose();
                     }
-                    
-                    
-                    element.domeEl.remove();
+
                     this.chartViewModels.splice(i, 1);
                     break;
                 }
@@ -107,18 +105,15 @@ var chartCollectionVueModel = Vue.createApp({
             if(id == 0)
             {
                 var echartDiv = document.getElementById('echartDiv');
-                echartDiv.appendChild(this.chartViewModels[0].domeEl);
             }
             else{
                 this.chartViewModels.forEach(element => {
                     if (element.chartId == id) {
                         element.isSelected = true;
                         this.currentId = element.chartId;
-                        element.domeEl.style.display = '';
                     }
                     else {
                         element.isSelected = false;
-                        element.domeEl.style.display = 'none';
                     }
                 });
             }
@@ -137,14 +132,13 @@ var chartCollectionVueModel = Vue.createApp({
             }
 
             this.chartViewModels.push(newDataViewModel);
-            var echartDiv = document.getElementById('echartDiv');
-            var chartContentDiv = document.createElement('div');
-            chartContentDiv.id = 'echartContent' + id;
-            chartContentDiv.className = 'echartContentDiv';
-            chartContentDiv.style.display = '';
-            echartDiv.appendChild(chartContentDiv);
-        
-            newDataViewModel.domeEl = chartContentDiv;
+            // var echartDiv = document.getElementById('echartDiv');
+            // var chartContentDiv = document.createElement('div');
+            // chartContentDiv.id = 'echartContent' + id;
+            // chartContentDiv.className = 'echartContentDiv';
+            // chartContentDiv.style.display = '';
+            // echartDiv.appendChild(chartContentDiv);
+
             //chartContentDiv.
             this.$nextTick(() => {
                 generatingCastingChart(newDataViewModel);
@@ -154,12 +148,7 @@ var chartCollectionVueModel = Vue.createApp({
     }
 }).mount("#chartSection");
 
-const adf = document.getElementById('echartDiv');
-adf.appendChild(chartCollectionVueModel.chartViewModels[0].domeEl);
-
 function ChartViewModel() {
-    var defaultDom = document.createElement('div');
-    defaultDom.className = "echartContentDiv";
     var defaultChartViewModel = {
         chartId: 0,
         title: "没数据",
@@ -167,7 +156,6 @@ function ChartViewModel() {
         isPredictResult: false,
         isSelected: true,
         echart: null,
-        domeEl: defaultDom,
     };
 
     return defaultChartViewModel;
