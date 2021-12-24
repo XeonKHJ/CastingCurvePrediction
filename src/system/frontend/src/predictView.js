@@ -132,14 +132,6 @@ var chartCollectionVueModel = Vue.createApp({
             }
 
             this.chartViewModels.push(newDataViewModel);
-            // var echartDiv = document.getElementById('echartDiv');
-            // var chartContentDiv = document.createElement('div');
-            // chartContentDiv.id = 'echartContent' + id;
-            // chartContentDiv.className = 'echartContentDiv';
-            // chartContentDiv.style.display = '';
-            // echartDiv.appendChild(chartContentDiv);
-
-            //chartContentDiv.
             this.$nextTick(() => {
                 generatingCastingChart(newDataViewModel);
                 this.selectItem(id);
@@ -281,9 +273,6 @@ function generatingCastingChart(dataViewModel) {
 
 function createEchartContentDiv(name, chartId) {
     var divId = "echartContent" + chartId;
-    // Create tab page
-    //var echartDiv = document.getElementById("echartDiv");
-    //echartDiv.innerHTML = "<div class=\"echartContentDiv\" id=\""+divId+"\"></div>";
     return divId;
 }
 

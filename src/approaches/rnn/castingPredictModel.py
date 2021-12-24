@@ -18,11 +18,10 @@ class CastingPredictModel(nn.Module):
         self.detectors = list()
 
         # input_size is output_size
-        for i in range(feature_nums.len()):
+        for i in range(feature_nums.__len__()):
             self.detectors.append(nn.LSTM(feature_nums[i][0], feature_nums[i][1], feature_nums[i][2], batch_first = True))
-
-        
-        self.forwardCalculation = nn.Linear(12,6)
+        self.lstm = nn.LSTM(feature_nums[0][0], feature_nums[0][1], feature_nums[0][2], batch_first = True)
+        self.forwardCalculation = nn.Linear(6,1)
         self.finalCalculation = nn.Sigmoid()
 
 
@@ -31,9 +30,11 @@ class CastingPredictModel(nn.Module):
         x = _x
         x, b = self.lstm(x)  # _x is input, size (seq_len, batch, input_size)
         
-        x, xBatchSize = torchrnn.pad_packed_sequence(x, batch_first=True)
+        # x, xBatchSize = torchrnn.pad_packed_sequence(x, batch_first=True)
 
-        forward_to_stack_x = torch.transpose(x, 0, 1)
+        # forward_to_stack_x = torch.transpose(x, 0, 1)
+
+        x = self.forwardCalculation(x)
 
     
 

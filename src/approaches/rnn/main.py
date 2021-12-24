@@ -47,25 +47,34 @@ if __name__ == '__main__':
     allStage = ReadData()
     timeLimitForEveryStep = list([1,2,3,4,5,6])
 
+
+    #inputsize(feature size) hidden_size(LSTM output size)
+
     # attr for every stage LSTM.
+    # order: 0. feature size, 1. hidden size (LSTM output feature size), 2. number of hidden layers
     attrs = list(
-        list(1,2,4,5),
-        list(1,2,3,4),
+        [list([1,6,3]),
+        list([1,3,3]),]
     )
 
-    lstm_model = CastingPredictModel(1,200,1)
+    feature_nums = list([1,1])
+    
+    lstm_model = CastingPredictModel(attrs,200,1)
     
     loss_function = nn.MSELoss()
-    optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-2)
-
+    optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-1)
+    
+    # reshape tensor to (batch size, time series length, feature size)
+    inputTensor = torch.tensor(allStage[0]).reshape([1,-1,1])
+    yTensor = torch.tensor(allStage[1])
     max_epochs = 10000
     for epoch in range(max_epochs):
-        output = lstm_model(paddedTrainingSet, dataTimestampLengths)
-        loss = loss_function(output, paddedTrainingSet)
+        output = lstm_model(inputTensor)
+        loss = loss_function(output, yTensor)
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
+        print(loss)
         if loss.item() < 1e-4:
             print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch+1, max_epochs, loss.item()))
             print("The loss value is reached")
