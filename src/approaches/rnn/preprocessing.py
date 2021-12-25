@@ -5,6 +5,7 @@ import numpy
 from numpy.lib.function_base import append
 from numpy.lib.npyio import fromregex
 
+allfiles = 0
 def PreReadData():
     datasetFolder = "../../../Datasets/fuck/"
     allfiles = os.listdir(datasetFolder)
@@ -61,39 +62,54 @@ def MoveFowardBy(data,ogData,step):
 def mseData(data1, data2):
     data1Np = numpy.array(data1)
     data2Np = numpy.array(data2)
-    mse = (numpy.square(data1Np - data2Np)).mean(axis=0)
+    mse = (numpy.square(data1Np - data2Np)).mean()
     return mse
 
 step = 100
 data = PreReadData()
 offset = 0
-datasetLength = 1000
-portion = 10
+datasetLength = 1024
+portion = 4
 ogData = data[4][offset:datasetLength+offset]
 cpData = data[0][offset:datasetLength+offset]
-
+step = int(datasetLength / portion)
 offseted = dict()
 minPortionMse = sys.float_info.max
 while True:
     maxCount = dict()
+    maxCountWeight = dict()
     step = int(datasetLength / portion)
     datashit = MoveFowardBy(cpData, ogData, int(datasetLength / portion))
-    for i in range(datashit.__len__()):
-        maxCount[(i + int(offset / (datasetLength / portion)) )-(datashit[i][0])] = 0
-    for i in range(datashit.__len__()):
-        maxCount[(i + int(offset / (datasetLength / portion)))-(datashit[i][0])] += 1
-    maxStep = 0
+    
     maxStepCount = 0
+    maxStep = 0
+    # calculate offset weight
+    for i in range(datashit.__len__()):
+        maxCount[(i*step + offset)-(datashit[i][0])*step] = 0
+        maxCountWeight[(i*step + offset)-(datashit[i][0])*step] = 0 
+    for i in range(datashit.__len__()):
+        maxCount[(i*step + offset)-(datashit[i][0])*step] += 1
+        currentCount = maxCount[(i*step + offset)-(datashit[i][0])*step]
+        if currentCount > maxStepCount:
+            maxStepCount = currentCount
+            maxStep = (i*step + offset)-(datashit[i][0])*step
+        maxCountWeight[(i*step + offset)-(datashit[i][0])*step] += datashit[i][1]
+    minWeightStep = 0
+    minWeight = sys.float_info.max
     for i in maxCount.keys():
-        if maxCount[i] > maxStepCount:
-            maxStepCount = maxCount[i]
-            maxStep = i
-        elif maxCount[i] == maxStepCount:
-            if abs(i) > abs(maxStep):
-                maxStep = i
+        #maxCountWeight[i] /= maxCount[i]
+        if maxCountWeight[i] < minWeight:
+            minWeight = maxCountWeight[i]
+            minWeightStep = i
+
     offset -=  maxStep
-    if offset in offseted:
+    realOffset = offset
+    ogData = data[4][0:datasetLength]
+    cpData = data[0][realOffset:datasetLength+realOffset]
+    if realOffset in offseted:
         portion *= 2
+        step = int(datasetLength / portion)
+        #offset = 0
         portionMse = mseData(cpData, ogData)
         if portionMse < minPortionMse:
             minPortionMse = portionMse
@@ -101,8 +117,6 @@ while True:
         #     break
         offseted = dict()
     else:
-        offseted[offset] = True
-    ogData = data[4][offset:datasetLength+offset]
-    cpData = data[0][offset:datasetLength+offset]
+        offseted[realOffset] = True
 
 print(data)
