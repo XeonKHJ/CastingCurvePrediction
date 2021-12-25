@@ -69,12 +69,14 @@ step = 100
 data = PreReadData()
 offset = 0
 datasetLength = 1024
-portion = 4
-ogData = data[4][offset:datasetLength+offset]
-cpData = data[0][offset:datasetLength+offset]
+portion = 2
+ogData = data[0][offset:datasetLength+offset]
+cpData = data[4][offset:datasetLength+offset]
 step = int(datasetLength / portion)
 offseted = dict()
 minPortionMse = sys.float_info.max
+
+# minMse = 0
 while True:
     maxCount = dict()
     maxCountWeight = dict()
@@ -85,27 +87,33 @@ while True:
     maxStep = 0
     # calculate offset weight
     for i in range(datashit.__len__()):
-        maxCount[(i*step + offset)-(datashit[i][0])*step] = 0
-        maxCountWeight[(i*step + offset)-(datashit[i][0])*step] = 0 
+        maxCount[(i*step)-(datashit[i][0])*step] = 0
+        maxCountWeight[(i*step)-(datashit[i][0])*step] = 0 
     for i in range(datashit.__len__()):
-        maxCount[(i*step + offset)-(datashit[i][0])*step] += 1
-        currentCount = maxCount[(i*step + offset)-(datashit[i][0])*step]
+        maxCount[(i*step)-(datashit[i][0])*step] += 1
+        currentCount = maxCount[(i*step)-(datashit[i][0])*step]
         if currentCount > maxStepCount:
             maxStepCount = currentCount
-            maxStep = (i*step + offset)-(datashit[i][0])*step
-        maxCountWeight[(i*step + offset)-(datashit[i][0])*step] += datashit[i][1]
+            maxStep = (i*step)-(datashit[i][0])*step
+        maxCountWeight[(i*step)-(datashit[i][0])*step] += datashit[i][1]
+    
     minWeightStep = 0
+    maxWeightStep = 0
     minWeight = sys.float_info.max
+    maxWeight = 0
     for i in maxCount.keys():
-        #maxCountWeight[i] /= maxCount[i]
+        maxCountWeight[i] /= maxCount[i]
         if maxCountWeight[i] < minWeight:
             minWeight = maxCountWeight[i]
             minWeightStep = i
+        if maxCountWeight[i] > maxWeight:
+            maxWeight = maxCountWeight[i]
+            maxWeightStep = i
 
-    offset -=  maxStep
+    offset +=  minWeightStep
     realOffset = offset
-    ogData = data[4][0:datasetLength]
-    cpData = data[0][realOffset:datasetLength+realOffset]
+    ogData = data[0][0:datasetLength]
+    cpData = data[4][realOffset:datasetLength+realOffset]
     if realOffset in offseted:
         portion *= 2
         step = int(datasetLength / portion)
