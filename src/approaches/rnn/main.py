@@ -1,36 +1,42 @@
 import torch
 import torch.nn as nn
+import os
 from castingPredictModel import CastingPredictModel
 
 def ReadData():
-    datasetFolder = "../../../Datasets/Datas"
-
+    datasetFolder = "../../../Datasets/fuck/"
+    allfiles = os.listdir(datasetFolder)
     stage1 = list()
     stage2 = list()
     allStage = list()
     allStage.append(stage1)
     allStage.append(stage2)
-    datafile = open(datasetFolder + '/data2.csv')
-    lines = datafile.readlines()
 
-    indexToStart = 1
-    while float(lines[indexToStart].split(',')[1]) == 0:
-        indexToStart += 1
+    for file in allfiles:
+        stage1f = list()
+        stage2f = list()
+        datafile = open(datasetFolder + file, encoding='utf-8')
+        lines = datafile.readlines()
 
-    attrsList = list() 
-    for i in range(150):
-        if i == 0:
-            continue
-        line = lines[i + indexToStart]
-        attris = line.split(',')
-        stage1.append(float(attris[1]))
+        indexToStart = 1
+        while float(lines[indexToStart].split(';')[5]) == 0:
+            indexToStart += 1
 
-    indexToStart += 150
-    for i in range(150):
-        line = lines[i+indexToStart]
-        attris = line.split(',')
-        stage2.append(float(attris[1]))
+        attrsList = list() 
+        for i in range(150):
+            if i == 0:
+                continue
+            line = lines[i + indexToStart]
+            attris = line.split(';')
+            stage1f.append(float(attris[5]))
 
+        indexToStart += 150
+        for i in range(150):
+            line = lines[i+indexToStart]
+            attris = line.split(';')
+            stage2f.append(float(attris[5]))
+        stage1.append(stage1f)
+        stage2.append(stage2f)
     return allStage
 
 
@@ -65,8 +71,8 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-1)
     
     # reshape tensor to (batch size, time series length, feature size)
-    inputTensor = torch.tensor(allStage[0]).reshape([1,-1,1])
-    yTensor = torch.tensor(allStage[1])
+    inputTensor = torch.tensor(allStage[0]).reshape([allStage[0].__len__(),-1,1])
+    yTensor = torch.tensor(allStage[1]).reshape([allStage[1].__len__(),-1,1])
     max_epochs = 10000
     for epoch in range(max_epochs):
         output = lstm_model(inputTensor)

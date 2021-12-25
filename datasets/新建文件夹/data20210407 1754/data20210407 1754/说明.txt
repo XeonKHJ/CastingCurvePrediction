@@ -1,0 +1,4 @@
+LV_TRG——目标液位
+LV_ACT——实际液位
+STP_POS——塞棒位置
+tundish_weight——中包重量
