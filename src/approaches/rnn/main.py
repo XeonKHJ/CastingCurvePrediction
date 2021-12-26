@@ -11,6 +11,8 @@ def ReadData():
     allStage = list()
     allStage.append(stage1)
     allStage.append(stage2)
+    
+    allfiles = list("C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\datasets\\diagramcompare.csv")
 
     for file in allfiles:
         stage1f = list()
