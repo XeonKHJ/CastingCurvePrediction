@@ -66,97 +66,31 @@ def mseData(data1, data2):
     mse = (numpy.square(data1Np - data2Np)).mean()
     return mse
 
-def writeFile(data1, dataOffset, length):
-    dataframe = pandas.DataFrame({'value':data1[dataOffset:length]})
+def writeFile(dataset):
+    datasetDict = dict()
+    for i in range(len(dataset)):
+        datasetDict[('value'+str(i))] = dataset[i]
+    dataframe = pandas.DataFrame(datasetDict)
     dataframe.to_csv("test.csv",index=False,sep=',')
 
 
+datasetLength = 2500
+
 step = 100
-data = PreReadData()
-offset = 0
-datasetLength = 1500
-portion = 10
+dataset = PreReadData()
+startindice = list()
+for data in dataset:
+    for dataIndice in range(len(data)):
+        if data[dataIndice] > 5:
+            startindice.append(dataIndice)
+            break
 
-ogData = data[0][0:datasetLength]
-cpData = data[4][offset:datasetLength + offset]
-cpDataLen = cpData.__len__()
-step = int(datasetLength / portion)
-offseted = dict()
-minPortionMse = sys.float_info.max
-minOffset = 0
+for i in range(len(dataset)):
+    dataset[i] = dataset[i][startindice[i] - 50: startindice[i] + datasetLength - 50]
 
 
-while True:
-    maxCount = dict()
-    maxCountWeight = dict()
-    step = int(datasetLength / portion)
-    datashit = MoveFowardBy(cpData, ogData, int(datasetLength / portion))
-    
-    maxStepCount = 0
-    maxStep = 0
-    stepSum = 0
-    # calculate offset weight
-    for i in range(datashit.__len__()):
-        maxCount[(i*step)-(datashit[i][0])*step] = 0
-        maxCountWeight[(i*step)-(datashit[i][0])*step] = 0 
-    for i in range(datashit.__len__()):
-        currentStep = (i*step)-(datashit[i][0])*step
-        maxCount[currentStep] += 1
-        stepSum += currentStep
-        currentCount = maxCount[currentStep]
-        if currentCount > maxStepCount:
-            maxStepCount = currentCount
-            maxStep = currentStep
-        maxCountWeight[currentStep] += datashit[i][1]
-    
-    minWeightStep = 0
-    maxWeightStep = 0
-    minWeight = sys.float_info.max
-    maxWeight = 0
-    for i in maxCount.keys():
-        maxCountWeight[i] /= maxCount[i]
-        if maxCountWeight[i] < minWeight:
-            minWeight = maxCountWeight[i]
-            minWeightStep = i
-        if maxCountWeight[i] > maxWeight:
-            maxWeight = maxCountWeight[i]
-            maxWeightStep = i
-
-    offset +=  maxStep
-    realOffset = offset
-    ogData = data[0][0:datasetLength]
-    cpData = data[4][realOffset:datasetLength+realOffset]
-    if realOffset in offseted:
-        # portion *= 2
-        step = int(datasetLength / portion)
-        #offset = 0
-        portionMse = mseData(cpData, ogData)
-        if portionMse < minPortionMse:
-            minPortionMse = portionMse
-        # else:
-        #     break
-        offseted = dict()
-    else:
-        offseted[realOffset] = True
-
-if offset > 0:
-    while (datasetLength+realOffset) < (cpDataLen - 2):
-        cpSubste = cpData[realOffset:datasetLength+realOffset]
-        mse = mseData(ogData, cpSubste)
-        if mse < minPortionMse:
-            minPortionMse = mse
-            minOffsetm = realOffset
-        realOffset += 1
-elif offset < 0:
-    while (datasetLength+realOffset) < (cpDataLen - 2):
-        cpSubste = cpData[realOffset:datasetLength+realOffset]
-        mse = mseData(ogData, cpSubste)
-        if mse < minPortionMse:
-            minPortionMse = mse
-            minOffsetm = realOffset
-        realOffset += 1
 
 # minMse = 0
-writeFile(cpData, minOffsetm, datasetLength)
+writeFile(dataset)
 
-print(data)
+print(dataset)

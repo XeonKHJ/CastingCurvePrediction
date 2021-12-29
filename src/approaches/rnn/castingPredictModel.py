@@ -21,7 +21,7 @@ class CastingPredictModel(nn.Module):
         for i in range(feature_nums.__len__()):
             self.detectors.append(nn.LSTM(feature_nums[i][0], feature_nums[i][1], feature_nums[i][2], batch_first = True))
         self.lstm = nn.LSTM(feature_nums[0][0], feature_nums[0][1], feature_nums[0][2], batch_first = True)
-        self.forwardCalculation = nn.Linear(6,1)
+        self.forwardCalculation = nn.Linear(feature_nums[0][1],1)
         self.finalCalculation = nn.Sigmoid()
 
 
