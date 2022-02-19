@@ -4,7 +4,7 @@ import os
 from castingPredictModel import CastingPredictModel
 
 def ReadData():
-    # datasetFolder = "../../../datasets/Datas/"
+    datasetFolder = "../../../datasets/Datas/"
     allfiles = os.listdir(datasetFolder)
     stage1 = list()
     stage2 = list()
@@ -17,7 +17,7 @@ def ReadData():
     for file in allfiles:
         stage1f = list()
         stage2f = list()
-        datafile = open( datasetFolder+file, encoding='utf-16')
+        datafile = open(datasetFolder+file, encoding='utf-16')
         lines = datafile.readlines()
 
         datasetNum = 7
