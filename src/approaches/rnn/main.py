@@ -1,7 +1,43 @@
 import torch
 import torch.nn as nn
 import os
+import math
 from castingPredictModel import CastingPredictModel
+
+def enrichData(dataset, window1, window2):
+    step1step = window1/2
+    step2step = window2/2
+
+    enrichS = list()
+    for data in dataset:
+        enrichPerData = list()
+        index = 0
+        while index < data.__len__() - window1:
+            dataInWindow = data[index:index+window1]
+            windowDor = torch.sqrt(torch.sum(torch.pow(dataInWindow, 2)))
+            enrichPerData.append(windowDor)
+            index += int(step1step)
+        enrichS.append(enrichPerData)
+
+    enrichSTensor = torch.tensor(enrichS)
+    enrichS = list()
+    for data in enrichSTensor:
+        enrichPerData = list()
+        index = 0
+        while index < data.__len__() - window2:
+            dataInWindow = data[index:index+window2]
+            mean = torch.mean(dataInWindow)
+            max = torch.max(dataInWindow)
+            newData = list([mean, max])
+            enrichPerData.append(newData)
+            index += int(step2step)
+        enrichS.append(enrichPerData)
+
+    resultTensor = torch.tensor(enrichS)
+    print("Dataset enriched")
+    return resultTensor
+
+
 
 def ReadData():
     datasetFolder = "../../../datasets/Datas/"
@@ -12,12 +48,12 @@ def ReadData():
     # allStage.append(stage1)
     # allStage.append(stage2)
     
-    # allfiles = list(["test.csv"])
+    allfiles = list(["test.csv"])
 
     for file in allfiles:
         stage1f = list()
         stage2f = list()
-        datafile = open(datasetFolder+file, encoding='utf-16')
+        datafile = open(file, encoding='utf-8')
         lines = datafile.readlines()
 
         datasetNum = 7
@@ -47,7 +83,9 @@ def ReadData():
             for j in range(0,datasetNum,1):
                 stage2f[j].append(float(attris[j]))
         allStage.append(stage1f)
+        #enrichData(stage1f, 4, 2)
         allStage.append(stage2f)
+
     return allStage
 
 
@@ -87,6 +125,7 @@ if __name__ == '__main__':
 
     # reshape tensor to (batch size, time series length, feature size)
     trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
+    enrichData(trainningTensor, 4, 2)
     yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
     validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
     validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
