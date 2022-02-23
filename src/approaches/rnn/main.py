@@ -1,3 +1,4 @@
+from numpy import quantile
 import torch
 import torch.nn as nn
 import os
@@ -28,7 +29,13 @@ def enrichData(dataset, window1, window2):
             dataInWindow = data[index:index+window2]
             mean = torch.mean(dataInWindow)
             max = torch.max(dataInWindow)
-            newData = list([mean, max])
+            min = torch.min(dataInWindow)
+            quantile75 = torch.quantile(dataInWindow, 0.75)
+            quantile5 = torch.quantile(dataInWindow, 0.5)
+            quantile25 = torch.quantile(dataInWindow, 0.25)
+            std = torch.std(dataInWindow)
+            ptp = max - min
+            newData = list([mean, max, min, quantile75, quantile5, quantile25, std, ptp])
             enrichPerData.append(newData)
             index += int(step2step)
         enrichS.append(enrichPerData)
@@ -89,6 +96,19 @@ def ReadData():
     return allStage
 
 
+def readConfig(enrich = True):
+    hiddenLayerSize = 100
+    if enrich:
+        attrs = list(
+            [list([8,hiddenLayerSize,3]),
+            list([8,3,3]),]
+        )
+    else:
+        attrs = list(
+            [list([8,hiddenLayerSize,3]),
+            list([1,3,3]),]
+        )
+    enrich = True
 
 
 # hz
@@ -96,6 +116,8 @@ sampleRate = 2
 
 if __name__ == '__main__':
     
+    config = readConfig()
+
     print ('now __name__ is %s' %__name__)
     allStage = ReadData()
     timeLimitForEveryStep = list([1,2,3,4,5,6])
@@ -111,8 +133,8 @@ if __name__ == '__main__':
     
     hiddenLayerSize = 100
     attrs = list(
-        [list([1,hiddenLayerSize,3]),
-        list([1,3,3]),]
+        [list([8,hiddenLayerSize,3]),
+        list([8,3,3]),]
     )
 
     feature_nums = list([1,1])
@@ -121,26 +143,28 @@ if __name__ == '__main__':
     
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-2)
-    
 
     # reshape tensor to (batch size, time series length, feature size)
     trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
-    enrichData(trainningTensor, 4, 2)
+    enrichedTrainningTensor = enrichData(trainningTensor, 4, 2)
     yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
     validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
+    enrichedValidationTensor = enrichData(validationTensor, 4, 2)
     validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
     max_epochs = 10000000
     for epoch in range(max_epochs):
-        output = lstm_model(trainningTensor)
-        loss = loss_function(output, yTensor)
+        output = lstm_model(enrichedTrainningTensor)
+        loss = loss_function(output, yTensor.reshape([yTensor.shape[0],-1]))
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-        print(loss)
+        #print(loss)
         if loss.item() < 1e-4:
             print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch+1, max_epochs, loss.item()))
             print("The loss value is reached")
             break
         elif (epoch+1) % 100 == 0:
             print('Epoch: [{}/{}], Loss:{:.5f}'.format(epoch+1, max_epochs, loss.item()))
+            val = lstm_model(enrichedValidationTensor)
+            print('validation loss:{}'.format(loss_function(val, validationYTensor.reshape([validationYTensor.shape[0], -1]))))
 
