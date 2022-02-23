@@ -4,6 +4,8 @@ import torch.nn as nn
 import os
 import math
 from castingPredictModel import CastingPredictModel
+from datetime import datetime, timedelta
+import pandas
 
 def enrichData(dataset, window1, window2):
     step1step = window1/2
@@ -41,7 +43,7 @@ def enrichData(dataset, window1, window2):
         enrichS.append(enrichPerData)
 
     resultTensor = torch.tensor(enrichS)
-    print("Dataset enriched")
+    #print("Dataset enriched")
     return resultTensor
 
 
@@ -111,20 +113,29 @@ def readConfig(enrich = True):
     enrich = True
 
 
+def shuffle():
+    border = 3
+    allNum = 7
+    # extract trainning and vaidation sets.
+    stage1tranSetFront = allStage[0][0:border] + allStage[0][border+1:allNum]
+    trainningSet = list([allStage[0][0:border], allStage[1][0:border]])
+    validationSet = list([allStage[0][border:7], allStage[1][border:7]])
+    trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
+    yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
+    trainningTensor = enrichData(trainningTensor, 4, 2)
+    validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
+    validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
+    validationTensor = enrichData(validationTensor, 4, 2)
+
 # hz
 sampleRate = 2
 
 if __name__ == '__main__':
-    
     config = readConfig()
 
     print ('now __name__ is %s' %__name__)
     allStage = ReadData()
     timeLimitForEveryStep = list([1,2,3,4,5,6])
-    border = 6
-    # extract trainning and vaidation sets.
-    trainningSet = list([allStage[0][0:border], allStage[1][0:border]])
-    validationSet = list([allStage[0][border:7], allStage[1][border:7]])
 
     #inputsize(feature size) hidden_size(LSTM output size)
 
@@ -145,26 +156,63 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-2)
 
     # reshape tensor to (batch size, time series length, feature size)
-    trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
-    enrichedTrainningTensor = enrichData(trainningTensor, 4, 2)
-    yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
-    validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
-    enrichedValidationTensor = enrichData(validationTensor, 4, 2)
-    validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
+
     max_epochs = 10000000
+    border = 0
+    timeAndLoss = list([list(),list()])
+    now = datetime.now()
     for epoch in range(max_epochs):
-        output = lstm_model(enrichedTrainningTensor)
+        if (epoch % 100 == 0):
+            length = 7
+            # extract trainning and vaidation sets.
+            trainningSet = list([allStage[0][0:border] + allStage[0][border+1:length], allStage[1][0:border] + allStage[1][border+1:length]])
+            validationSet = list([allStage[0][border:border+1], allStage[1][border:border+1]])
+            trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
+            yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
+            trainningTensor = enrichData(trainningTensor, 4, 2)
+            validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
+            validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
+            validationTensor = enrichData(validationTensor, 4, 2)
+            #border = 6
+            print("shuffle!")
+        output = lstm_model(trainningTensor)
         loss = loss_function(output, yTensor.reshape([yTensor.shape[0],-1]))
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
+        timeAndLoss[0].append((datetime.now() - now).total_seconds())
+        timeAndLoss[1].append(loss.item())
         #print(loss)
-        if loss.item() < 1e-4:
-            print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch+1, max_epochs, loss.item()))
-            print("The loss value is reached")
+        if loss.item() < 1e-3:
+            # print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch+1, max_epochs, loss.item()))
+            # print("The loss value is reached")
+            #break
+            abc = 1 # do nothing
             break
-        elif (epoch+1) % 100 == 0:
-            print('Epoch: [{}/{}], Loss:{:.5f}'.format(epoch+1, max_epochs, loss.item()))
-            val = lstm_model(enrichedValidationTensor)
+        elif (epoch+1) % 10 == 0:
+            
+            print('Epoch: [{}/{}], Loss:{}'.format(epoch+1, max_epochs, loss.item()))
+            val = lstm_model(validationTensor)
             print('validation loss:{}'.format(loss_function(val, validationYTensor.reshape([validationYTensor.shape[0], -1]))))
+
+    timeAndLossDict = dict()
+    timeAndLossDict['timespan'] = timeAndLoss[0]
+    timeAndLossDict['loss'] = timeAndLoss[1]
+    dataframe = pandas.DataFrame(timeAndLossDict)
+    dataframe.to_csv("timeAndLoss.csv",index=False,sep=',')
+
+
+    lstm_model.eval()
+    # output eval data
+    predSet = list([allStage[0][0:7], allStage[1][0:7]])
+    predTensor = enrichData(torch.tensor(predSet[0]).reshape([predSet[0].__len__(),-1,1]), 4, 2)
+    result = lstm_model(predTensor)
+    result = result.tolist()
+    
+    datasetDict = dict()
+    for i in range(len(result)):
+        datasetDict[('value'+str(i))] = allStage[0][i] + result[i]
+    dataframe = pandas.DataFrame(datasetDict)
+    dataframe.to_csv("predData.csv",index=False,sep=',')
+    
 
