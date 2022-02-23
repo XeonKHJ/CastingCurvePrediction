@@ -7,7 +7,8 @@ from castingPredictModel import CastingPredictModel
 from datetime import datetime, timedelta
 import pandas
 
-def enrichData(dataset, window1, window2):
+
+def preProcessData(dataset, window1, window2):
     step1step = window1/2
     step2step = window2/2
 
@@ -122,10 +123,10 @@ def shuffle():
     validationSet = list([allStage[0][border:7], allStage[1][border:7]])
     trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
     yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
-    trainningTensor = enrichData(trainningTensor, 4, 2)
+    trainningTensor = preProcessData(trainningTensor, 4, 2)
     validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
     validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
-    validationTensor = enrichData(validationTensor, 4, 2)
+    validationTensor = preProcessData(validationTensor, 4, 2)
 
 # hz
 sampleRate = 2
@@ -169,10 +170,10 @@ if __name__ == '__main__':
             validationSet = list([allStage[0][border:border+1], allStage[1][border:border+1]])
             trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
             yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
-            trainningTensor = enrichData(trainningTensor, 4, 2)
+            trainningTensor = preProcessData(trainningTensor, 4, 2)
             validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
             validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
-            validationTensor = enrichData(validationTensor, 4, 2)
+            validationTensor = preProcessData(validationTensor, 4, 2)
             #border = 6
             print("shuffle!")
         output = lstm_model(trainningTensor)
@@ -205,7 +206,7 @@ if __name__ == '__main__':
     lstm_model.eval()
     # output eval data
     predSet = list([allStage[0][0:7], allStage[1][0:7]])
-    predTensor = enrichData(torch.tensor(predSet[0]).reshape([predSet[0].__len__(),-1,1]), 4, 2)
+    predTensor = preProcessData(torch.tensor(predSet[0]).reshape([predSet[0].__len__(),-1,1]), 4, 2)
     result = lstm_model(predTensor)
     result = result.tolist()
     
