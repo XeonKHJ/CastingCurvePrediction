@@ -49,7 +49,7 @@ def preProcessData(dataset, window1, window2):
 
 
 
-def ReadData():
+def ReadData(stages):
     datasetFolder = "../../../datasets/Datas/"
     allfiles = os.listdir(datasetFolder)
     stage1 = list()
@@ -76,7 +76,7 @@ def ReadData():
             stage2f.append(list())
 
         attrsList = list() 
-        for i in range(151):
+        for i in range(stages[0]):
             if i == 0:
                 continue
             line = lines[i + indexToStart]
@@ -85,8 +85,8 @@ def ReadData():
             for j in range(0,datasetNum,1):
                 stage1f[j].append(float(attris[j]))
 
-        indexToStart += 150
-        for i in range(150):
+        indexToStart += stages[0]
+        for i in range(stages[1]):
             line = lines[i+indexToStart]
             attris = line.split(',')
             attrPerFile = list()
@@ -135,7 +135,8 @@ if __name__ == '__main__':
     config = readConfig()
 
     print ('now __name__ is %s' %__name__)
-    allStage = ReadData()
+    stageSpliter = [41,41+150]
+    allStage = ReadData(stageSpliter)
     timeLimitForEveryStep = list([1,2,3,4,5,6])
 
     #inputsize(feature size) hidden_size(LSTM output size)
