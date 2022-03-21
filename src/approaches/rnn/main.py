@@ -1,3 +1,4 @@
+from tkinter import Y
 from numpy import quantile
 import torch
 import torch.nn as nn
@@ -46,6 +47,20 @@ def preProcessData(dataset, window1, window2):
     resultTensor = torch.tensor(enrichS)
     #print("Dataset enriched")
     return resultTensor
+
+
+def ReadContext():
+    datasetFolder = "../../../datasets/Datas/"
+    file = "context.csv"
+    datafile = open(file, encoding='utf-8')
+    lines = datafile.readlines()
+    context = dict()
+    for i in range(1, 5):
+        attris = lines[i].split(',')
+        context[attris[0]] = list({int(attris[3]) / 1000000,int(attris[6]) / 100})
+    abcdsdf = 'sdfsdf'
+    return context
+        
 
 
 
@@ -135,15 +150,16 @@ if __name__ == '__main__':
     config = readConfig()
 
     print ('now __name__ is %s' %__name__)
-    stageSpliter = [41,41+150]
+    context = ReadContext()
+    stageSpliter = [41,150]
     allStage = ReadData(stageSpliter)
     timeLimitForEveryStep = list([1,2,3,4,5,6])
-
+    
     #inputsize(feature size) hidden_size(LSTM output size)
+    
 
     # attr for every stage LSTM.
     # order: 0. feature size, 1. hidden size (LSTM output feature size), 2. number of hidden layers
-    
     hiddenLayerSize = 100
     attrs = list(
         [list([8,hiddenLayerSize,3]),
@@ -159,13 +175,37 @@ if __name__ == '__main__':
 
     # reshape tensor to (batch size, time series length, feature size)
 
+    # ++++++++++++ generate first phase +++++++++++++++++++
+    
+    contextList = list()
+    for i in context.values():
+        contextList.append(i)
+    
+    contextTensor = torch.tensor(contextList).reshape([contextList.__len__(), -1, 2]).float()
+    # yTensor = torch.tensor(allStage[0][0:4]).reshape([contextList.__len__(), 1, -1])
+    # while(True):   
+    #     output = lstm_model.firstStageForward(contextTensor)
+    #     loss = loss_function(output, yTensor)
+    #     print(loss)
+    #     loss.backward()
+    #     optimizer.step()
+    #     optimizer.zero_grad()
+
+    # ------------------------end---------------------------
+        
+    
+
+
+
+
+
     max_epochs = 10000000
-    border = 0
+    border = 3
     timeAndLoss = list([list(),list()])
     now = datetime.now()
     for epoch in range(max_epochs):
         if (epoch % 100 == 0):
-            length = 7
+            length = 4
             # extract trainning and vaidation sets.
             trainningSet = list([allStage[0][0:border] + allStage[0][border+1:length], allStage[1][0:border] + allStage[1][border+1:length]])
             validationSet = list([allStage[0][border:border+1], allStage[1][border:border+1]])
@@ -175,9 +215,13 @@ if __name__ == '__main__':
             validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
             validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
             validationTensor = preProcessData(validationTensor, 4, 2)
+            trainningContextSet = contextList[0:border]
+            trainningContextTensor = torch.Tensor(trainningContextSet)
+            validationContextSet = contextList[border:length]
+            validationContextTensor = torch.tensor(validationContextSet)
             #border = 6
             print("shuffle!")
-        output = lstm_model(trainningTensor)
+        output = lstm_model(trainningTensor, torch.tensor(trainningContextSet))
         loss = loss_function(output, yTensor.reshape([yTensor.shape[0],-1]))
         loss.backward()
         optimizer.step()
@@ -194,7 +238,7 @@ if __name__ == '__main__':
         elif (epoch+1) % 10 == 0:
             
             print('Epoch: [{}/{}], Loss:{}'.format(epoch+1, max_epochs, loss.item()))
-            val = lstm_model(validationTensor)
+            val = lstm_model(validationTensor, torch.tensor(validationContextSet))
             print('validation loss:{}'.format(loss_function(val, validationYTensor.reshape([validationYTensor.shape[0], -1]))))
 
     timeAndLossDict = dict()
@@ -206,9 +250,9 @@ if __name__ == '__main__':
 
     lstm_model.eval()
     # output eval data
-    predSet = list([allStage[0][0:7], allStage[1][0:7]])
+    predSet = list([allStage[0][0:length], allStage[1][0:length]])
     predTensor = preProcessData(torch.tensor(predSet[0]).reshape([predSet[0].__len__(),-1,1]), 4, 2)
-    result = lstm_model(predTensor)
+    result = lstm_model(predTensor, torch.tensor(contextList))
     result = result.tolist()
     
     datasetDict = dict()
