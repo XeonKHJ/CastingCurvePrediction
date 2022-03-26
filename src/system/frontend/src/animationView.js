@@ -46,13 +46,13 @@ function startDrawing(gl) {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    animObjs = initVertices(gl);
+    bundles = initVertices(gl);
 
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, -0.3, 0);
-    globalModelMatrix.scale(1.2, 1,2, 1)
+    globalModelMatrix.translate(0, 0.5, 0);
+    globalModelMatrix.scale(0.5, 0.5, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -60,7 +60,8 @@ function startDrawing(gl) {
     // var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
     // var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
 
-    drawAnimObjs(gl, a_Position, animObjs);
+    drawAnimObjBundle(gl, a_Position, bundles);
+    //drawAnimObjs(gl, a_Position, animObjs);
 }
 
 var startTime = null;
@@ -82,8 +83,15 @@ function AnimObj(vertices, colors, drawMethod, verticeSize, borderWidth = 0, bor
     }
 }
 
-function reverseVertices(verticesIn)
-{
+function AnimObjBundle(objList, translationMatrix = [0, 0, 0], scaleMatrix = [0, 0, 0]) {
+    return {
+        objects: objList,
+        transMatrix: translationMatrix,
+        scaleMatrix: scaleMatrix
+    }
+}
+
+function reverseVertices(verticesIn) {
     var verticesOut = new Float32Array(
         verticesIn.length
     );
@@ -98,9 +106,8 @@ function reverseVertices(verticesIn)
     return verticesOut;
 }
 
-function a2r(angle)
-{
-    return (angle/180 * Math.PI);
+function a2r(angle) {
+    return (angle / 180 * Math.PI);
 }
 
 function initVertices(gl) {
@@ -125,14 +132,14 @@ function initVertices(gl) {
             (-400 + borderThinkness / sin80) / width, ((50 * tan80) - borderThinkness) / height,
             (-350 - borderThinkness / sin80) / width, ((50 * tan80) - borderThinkness) / height,
             (-350 + borderThinkness / sin80) / width, (0 + borderThinkness) / height,
-            (-350 + ((50 * tan80 - 50) / tan80) - borderThinkness ) / width, (50 - borderThinkness) / height,
+            (-350 + ((50 * tan80 - 50) / tan80) - borderThinkness) / width, (50 - borderThinkness) / height,
             (-50 - borderThinkness) / width, (0 + borderThinkness) / height,
             (-50 - borderThinkness) / width, (50 - borderThinkness) / height
         ]
     );
 
     var tudishRightInsideVertices = reverseVertices(tudishLeftInsideVertices);
-    
+
     var sin60 = Math.sin(60 / 180 * Math.PI);
     var sin30 = Math.sin(30 / 180 * Math.PI);
     var stoperVertices = new Float32Array([
@@ -141,7 +148,7 @@ function initVertices(gl) {
         -63.5 / width, 20 / height,
         63.5 / width, 20 / height,
         -47.625 / width, 10 / height,
-        47.625/ width, 10 / height
+        47.625 / width, 10 / height
     ]);
 
     var stoperVerticesInside = new Float32Array([
@@ -149,8 +156,8 @@ function initVertices(gl) {
         (63.5 - borderThinkness) / width, (300 - borderThinkness) / height,
         (-63.5 + borderThinkness) / width, (20 + borderThinkness) / height,
         (63.5 - borderThinkness) / width, (20 + borderThinkness) / height,
-        (-47.625 + borderThinkness) / width, (10 + borderThinkness*sin60*sin30) / height,
-        (47.625 -borderThinkness) / width, (10 + borderThinkness*sin60*sin30) / height
+        (-47.625 + borderThinkness) / width, (10 + borderThinkness * sin60 * sin30) / height,
+        (47.625 - borderThinkness) / width, (10 + borderThinkness * sin60 * sin30) / height
     ]);
 
     var coolingPipeLeftVertices = new Float32Array([
@@ -168,9 +175,9 @@ function initVertices(gl) {
         (-40 - borderThinkness) / width, (0 - borderThinkness) / height,
         (-120 + borderThinkness) / width, (0 - borderThinkness) / height,
         (-120 + borderThinkness) / width, (-44 + borderThinkness) / height,
-        (-110 + ( (Math.sqrt(Math.pow(356,2) + Math.pow(10,2)) - 10) * borderThinkness/356 ))  / width, (-44 + borderThinkness) / height,
-        (-90 + borderThinkness) / width, (-400 + 10 / 356 * borderThinkness)  / height,
-        (-90 + borderThinkness) / width, (-800+borderThinkness) / height,
+        (-110 + ((Math.sqrt(Math.pow(356, 2) + Math.pow(10, 2)) - 10) * borderThinkness / 356)) / width, (-44 + borderThinkness) / height,
+        (-90 + borderThinkness) / width, (-400 + 10 / 356 * borderThinkness) / height,
+        (-90 + borderThinkness) / width, (-800 + borderThinkness) / height,
         (-32.5 - borderThinkness) / width, (-800 + borderThinkness) / height
     ]);
 
@@ -216,24 +223,24 @@ function initVertices(gl) {
     var moldRightVerticesInside = reverseVertices(moldLeftVerticesInside)
 
     var middleUnknownLeftVertices = new Float32Array([
-        -120/width, 0/height,
-        -36/width, 0/height,
-        -120/width, 24 / height,
-        -36/width, 24/height,
-        -85 / width, 59 / height, 
+        -120 / width, 0 / height,
+        -36 / width, 0 / height,
+        -120 / width, 24 / height,
+        -36 / width, 24 / height,
+        -85 / width, 59 / height,
         -36 / width, (365 + 45) / height,
         -85 / width, 365 / height,
         -76 / width, 460 / height
     ])
     var middleUnknownLeftVerticesInside = new Float32Array([
-        (-120 + borderThinkness) /width, (0 + borderThinkness) /height,
-        (-36 - borderThinkness)/width, (0 + borderThinkness)/height,
-        (-120 + borderThinkness) /width, (24 - borderThinkness)  / height,
-        (-36 - borderThinkness) /width, (24 - borderThinkness) /height,
-        (-85 + borderThinkness) / width, (59 - borderThinkness) / height, 
+        (-120 + borderThinkness) / width, (0 + borderThinkness) / height,
+        (-36 - borderThinkness) / width, (0 + borderThinkness) / height,
+        (-120 + borderThinkness) / width, (24 - borderThinkness) / height,
+        (-36 - borderThinkness) / width, (24 - borderThinkness) / height,
+        (-85 + borderThinkness) / width, (59 - borderThinkness) / height,
         (-36 - borderThinkness) / width, (365 + 45 - borderThinkness) / height,
         (-85 + borderThinkness) / width, (365 - borderThinkness) / height,
-        (-76 + Math.sqrt((Math.pow(95, 2) + Math.pow(9, 2))) /95 * borderThinkness) / width, (460 - (borderThinkness))  / height
+        (-76 + Math.sqrt((Math.pow(95, 2) + Math.pow(9, 2))) / 95 * borderThinkness) / width, (460 - (borderThinkness)) / height
     ])
 
     var middleUnknownLeftHeadVertices = new Float32Array(100)
@@ -262,19 +269,19 @@ function initVertices(gl) {
     var middleUnknownRightVerticesInside = reverseVertices(middleUnknownLeftVerticesInside)
     var middleUnknownRightHeadVerticesInside = reverseVertices(middleUnknownLeftHeadVerticesInside)
     var middleUnknownRightHeadVertices = reverseVertices(middleUnknownLeftHeadVertices)
-    
+
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
-    var stoperColor = new Float32Array([0.8,0.8,0.8, 1.0])
-    var coolingPipeColor = new Float32Array([0.8,0.8,0.8, 1.0]);
-    var moldColor = new Float32Array([0.6,0.6,0.6, 1.0])
+    var stoperColor = new Float32Array([0.8, 0.8, 0.8, 1.0])
+    var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
+    var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
-    rightTudishInside = AnimObj(tudishRightInsideVertices, new Float32Array([0.8,0.8,0.8,1]), gl.TRIANGLE_STRIP, 2)
+    rightTudishInside = AnimObj(tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
     stoper = AnimObj(stoperVertices, borderColor, gl.TRIANGLE_STRIP, 2);
     stoperInside = AnimObj(stoperVerticesInside, stoperColor, gl.TRIANGLE_STRIP, 2);
     stoperBottom = AnimObj(stoperBottomVertices, borderColor, gl.TRIANGLE_FAN, 2);
@@ -299,17 +306,25 @@ function initVertices(gl) {
     middleUnknownRightHeadInside = AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
 
 
-    var animObjs = [ leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
-                    middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
+    tudishObj = AnimObjBundle([leftTudish, rightTudish, leftTudishInside, rightTudishInside], [0, 460/height, 0])
+    stoperObj = AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 460/height, 0])
+    coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside])
+    moldPipe = AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
+    middleUnknownObj = AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
+
+    // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
+    //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
+    var bundles = [tudishObj, stoperObj, coolingObj, moldPipe, middleUnknownObj]
 
     // Animation
     var modelMatrix = new Matrix4();
+    modelMatrix.translate(0, 460/height, 0);
     if (startTime != null) {
         var deltaTime = Date.now() - startTime;
         deltaNo = parseInt(deltaTime / (250 / 25));
         console.log(deltaNo)
         console.log(translateData.values[deltaNo])
-        modelMatrix.translate(0, translateData.values[deltaNo] / height, 0);        // Multiply modelMatrix by the calculated translation matrix
+        modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
     stoper.modelMatrix = modelMatrix;
     stoperInside.modelMatrix = modelMatrix;
@@ -317,11 +332,13 @@ function initVertices(gl) {
     stoperBottomInside.modelMatrix = modelMatrix;
 
     // Init buffer for later use.
-    animObjs.forEach(animObj => {
-        initArrayBufferForLaterUse(gl, animObj.verticeSize, animObj);
+    bundles.forEach(bundle => {
+        bundle.objects.forEach(animObj => {
+            initArrayBufferForLaterUse(gl, animObj.verticeSize, animObj);
+        })
     });
 
-    return animObjs;
+    return bundles;
 }
 
 function initArrayBufferForLaterUse(gl, num, animObj) {
@@ -347,6 +364,34 @@ function drawAnimObjs(gl, a_Position, animObjs) {
     });
 }
 
+function drawAnimObjBundle(gl, a_Position, animObjBundle) {
+    animObjBundle.forEach(bundle => {
+        bundle.objects.forEach(animObj => {
+            var u_Color = gl.getUniformLocation(gl.program, 'u_Color');
+            gl.uniform4fv(u_Color, animObj.colors);
+
+            var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+            if (animObj.modelMatrix != undefined) {
+                gl.uniformMatrix4fv(u_ModelMatrix, false, animObj.modelMatrix.elements);
+            }
+            else {
+                var modelMatrix = new Matrix4();
+                modelMatrix.translate(bundle.transMatrix[0], bundle.transMatrix[1], bundle.transMatrix[2]);
+                gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+            }
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, animObj.buffer);
+            // Assign the buffer object to the attribute variable
+            gl.vertexAttribPointer(a_Position, animObj.verticeSize, gl.FLOAT, false, 0, 0);
+            // Enable the assignment of the buffer object to the attribute variable
+            gl.enableVertexAttribArray(a_Position);
+
+            // Draw
+            gl.drawArrays(animObj.drawMethod, 0, animObj.vertices.length / animObj.verticeSize);
+        })
+    });
+}
+
 function drawAnimObj(gl, a_Position, animObj) {
 
     var u_Color = gl.getUniformLocation(gl.program, 'u_Color');
@@ -354,7 +399,6 @@ function drawAnimObj(gl, a_Position, animObj) {
 
     var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
     if (animObj.modelMatrix != undefined) {
-
         gl.uniformMatrix4fv(u_ModelMatrix, false, animObj.modelMatrix.elements);
     }
     else {
@@ -389,7 +433,6 @@ function drawAnimObjsOrigin(gl, n, buffer, viewProjMatrix, a_Position, u_MvpMatr
     g_normalMatrix.setInverseOf(g_modelMatrix);
     g_normalMatrix.transpose();
     gl.uniformMatrix4fv(u_NormalMatrix, false, g_normalMatrix.elements);
-
 
     // Draw
     gl.drawArrays(animObjs.drawMethod, 0, n);
