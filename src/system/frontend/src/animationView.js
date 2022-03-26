@@ -51,8 +51,8 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, 0.7, 0);
-    globalModelMatrix.scale(0.7, 0.7, 1)
+    globalModelMatrix.translate(0, -0.3, 0);
+    globalModelMatrix.scale(1.2, 1,2, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -180,7 +180,7 @@ function initVertices(gl) {
     stoperBottomVertices[0] = 0;
     stoperBottomVertices[1] = (47.625 + 10) / height;
     index = 2;
-    const r = 47.625 * Math.sqrt(2);
+    r = 47.625 * Math.sqrt(2);
     for (i = -40; i <= -10; i++) {
         stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100) / width;
         stoperBottomVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) / height;
@@ -191,7 +191,7 @@ function initVertices(gl) {
     stoperBottomVerticesInside[0] = 0;
     stoperBottomVerticesInside[1] = (47.625 + 10) / height;
     index = 2;
-    const rInside = 47.625 * Math.sqrt(2) - borderThinkness;
+    rInside = 47.625 * Math.sqrt(2) - borderThinkness;
     for (i = -40; i <= -10; i++) {
         stoperBottomVerticesInside[index] = rInside * Math.cos(i * 2 * Math.PI / 100) / width;
         stoperBottomVerticesInside[index + 1] = (rInside * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) / height;
@@ -214,6 +214,55 @@ function initVertices(gl) {
 
     var moldRightVertices = reverseVertices(moldLeftVertices)
     var moldRightVerticesInside = reverseVertices(moldLeftVerticesInside)
+
+    var middleUnknownLeftVertices = new Float32Array([
+        -120/width, 0/height,
+        -36/width, 0/height,
+        -120/width, 24 / height,
+        -36/width, 24/height,
+        -85 / width, 59 / height, 
+        -36 / width, (365 + 45) / height,
+        -85 / width, 365 / height,
+        -76 / width, 460 / height
+    ])
+    var middleUnknownLeftVerticesInside = new Float32Array([
+        (-120 + borderThinkness) /width, (0 + borderThinkness) /height,
+        (-36 - borderThinkness)/width, (0 + borderThinkness)/height,
+        (-120 + borderThinkness) /width, (24 - borderThinkness)  / height,
+        (-36 - borderThinkness) /width, (24 - borderThinkness) /height,
+        (-85 + borderThinkness) / width, (59 - borderThinkness) / height, 
+        (-36 - borderThinkness) / width, (365 + 45 - borderThinkness) / height,
+        (-85 + borderThinkness) / width, (365 - borderThinkness) / height,
+        (-76 + Math.sqrt((Math.pow(95, 2) + Math.pow(9, 2))) /95 * borderThinkness) / width, (460 - (borderThinkness))  / height
+    ])
+
+    var middleUnknownLeftHeadVertices = new Float32Array(100)
+    middleUnknownLeftHeadVertices[0] = -76 / width;
+    middleUnknownLeftHeadVertices[1] = 410 / height;
+    index = 2;
+    r = 40;
+    for (i = 0; i <= 50; i++) {
+        middleUnknownLeftHeadVertices[index] = (r * Math.cos(i * 2 * Math.PI / 200) - 76) / width;
+        middleUnknownLeftHeadVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 200) + 410) / height;
+        index += 2;
+    }
+
+    var middleUnknownLeftHeadVerticesInside = new Float32Array(100)
+    middleUnknownLeftHeadVerticesInside[0] = -76 / width;
+    middleUnknownLeftHeadVerticesInside[1] = 410 / height;
+    index = 2;
+    r = 40 - borderThinkness;
+    for (i = 0; i <= 50; i++) {
+        middleUnknownLeftHeadVerticesInside[index] = (r * Math.cos(i * 2 * Math.PI / 200) - 76) / width;
+        middleUnknownLeftHeadVerticesInside[index + 1] = (r * Math.sin(i * 2 * Math.PI / 200) + 410) / height;
+        index += 2;
+    }
+
+    var middleUnknownRightVertices = reverseVertices(middleUnknownLeftVertices)
+    var middleUnknownRightVerticesInside = reverseVertices(middleUnknownLeftVerticesInside)
+    var middleUnknownRightHeadVerticesInside = reverseVertices(middleUnknownLeftHeadVerticesInside)
+    var middleUnknownRightHeadVertices = reverseVertices(middleUnknownLeftHeadVertices)
+    
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
@@ -238,7 +287,20 @@ function initVertices(gl) {
     leftMoldPipeInside = AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
     rightMoldPipe = AnimObj(moldRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
     rightMoldPipeInside = AnimObj(moldRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
-    var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside];
+
+    // for middle unknown stuffs.
+    middleUnknownLeft = AnimObj(middleUnknownLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownLeftInside = AnimObj(middleUnknownLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownLeftHead = AnimObj(middleUnknownLeftHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownLeftHeadInside = AnimObj(middleUnknownLeftHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownRight = AnimObj(middleUnknownRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownRightInside = AnimObj(middleUnknownRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownRightHead = AnimObj(middleUnknownRightHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownRightHeadInside = AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
+
+
+    var animObjs = [ leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
+                    middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
 
     // Animation
     var modelMatrix = new Matrix4();

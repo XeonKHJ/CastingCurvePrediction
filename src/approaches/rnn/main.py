@@ -5,6 +5,7 @@ import torch.nn as nn
 import os
 import math
 from castingPredictModel import CastingPredictModel
+from autoEncoderModel import CastingEncoderModel
 from datetime import datetime, timedelta
 import pandas
 
@@ -169,11 +170,56 @@ if __name__ == '__main__':
     feature_nums = list([1,1])
     
     lstm_model = CastingPredictModel(attrs,hiddenLayerSize,1)
-    
+
+
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(lstm_model.parameters(), lr=1e-2)
 
-    # reshape tensor to (batch size, time series length, feature size)
+    # ++++++++++++ try auto-encoder +++++++++++++++++++++++
+    autoencoder = CastingEncoderModel()
+    autoencoderLoss = nn.MSELoss()
+    autoencoderOptimizer = torch.optim.Adam(autoencoder.parameters(), lr=1e-2)
+
+    length = 6
+    border = 3
+    trainningSet = list([allStage[0][0:border] + allStage[0][border+1:length], allStage[1][0:border] + allStage[1][border+1:length]])
+    validationSet = list([allStage[0][border:border+1], allStage[1][border:border+1]])
+    trainningFirstTensor = torch.tensor(trainningSet[0])
+    trainningSecondTensor = torch.tensor(trainningSet[1])
+    toBeEncodedTensor = torch.cat([trainningFirstTensor, trainningSecondTensor], 1).reshape([trainningFirstTensor.shape[0], -1, 1])
+    yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
+    # trainningTensor = preProcessData(trainningTensor, 4, 2)
+    validationFirstTensor = torch.tensor(validationSet[0])
+    validationSecondTensor = torch.tensor(validationSet[1])
+    tobeValidateTensor = torch.cat([validationFirstTensor, validationSecondTensor], 1).reshape([validationFirstTensor.shape[0], -1, 1])
+    allTensor = torch.cat([torch.tensor(allStage[0]), torch.tensor(allStage[1])], 1)
+    allTensor = allTensor.reshape([allTensor.shape[0], -1, 1])
+    epoch = 0
+    while True:
+        epoch += 1
+        output = autoencoder(toBeEncodedTensor)
+        loss = autoencoderLoss(output, toBeEncodedTensor)
+        loss.backward()
+        autoencoderOptimizer.step()
+        autoencoderOptimizer.zero_grad()
+        print(loss)
+        if epoch > 1000:
+            output = autoencoder(allTensor)
+            datasetDict = dict()
+            for i in range(len(output)):
+                datasetDict[('value'+str(i))] = output[i].reshape([-1]).tolist()
+            dataframe = pandas.DataFrame(datasetDict)
+            dataframe.to_csv("autoencoderresult.csv",index=False,sep=',')
+            break
+
+            
+
+    # validationTensor = preProcessData(validationTensor, 4, 2)
+
+        
+    
+
+    # ------------ try auto-encoder -----------------------
 
     # ++++++++++++ generate first phase +++++++++++++++++++
     
