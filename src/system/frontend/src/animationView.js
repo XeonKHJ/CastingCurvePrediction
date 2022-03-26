@@ -317,19 +317,20 @@ function initVertices(gl) {
     var bundles = [tudishObj, stoperObj, coolingObj, moldPipe, middleUnknownObj]
 
     // Animation
-    var modelMatrix = new Matrix4();
-    modelMatrix.translate(0, 460/height, 0);
+    // var modelMatrix = new Matrix4();
+    // modelMatrix.translate(0, 460/height, 0);
     if (startTime != null) {
         var deltaTime = Date.now() - startTime;
         deltaNo = parseInt(deltaTime / (250 / 25));
         console.log(deltaNo)
         console.log(translateData.values[deltaNo])
-        modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
+        stoperObj.transMatrix = [stoperObj.transMatrix[0], (translateData.values[deltaNo] + 460) / height, stoperObj.transMatrix[2]]
+        // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
-    stoper.modelMatrix = modelMatrix;
-    stoperInside.modelMatrix = modelMatrix;
-    stoperBottom.modelMatrix = modelMatrix;
-    stoperBottomInside.modelMatrix = modelMatrix;
+    // stoper.modelMatrix = modelMatrix;
+    // stoperInside.modelMatrix = modelMatrix;
+    // stoperBottom.modelMatrix = modelMatrix;
+    // stoperBottomInside.modelMatrix = modelMatrix;
 
     // Init buffer for later use.
     bundles.forEach(bundle => {
