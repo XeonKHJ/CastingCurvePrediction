@@ -12,13 +12,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RestserviceApplication {
 	private static SqlSessionFactory mSqlSessionFactory;
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		loadMybatis();
 		SpringApplication.run(RestserviceApplication.class, args);
 	}
 
-	public static void loadMybatis() throws IOException{
+	private static void loadMybatis() throws IOException{
 		// load mybatis
-		String resource = "org/mybatis/example/mybatis-config.xml";
+		String resource = "mybatis-config.xml";
 		InputStream inputStream = Resources.getResourceAsStream(resource);
 		mSqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 	}
