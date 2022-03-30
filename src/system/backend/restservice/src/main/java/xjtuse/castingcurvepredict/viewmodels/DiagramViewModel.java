@@ -1,8 +1,4 @@
 package xjtuse.castingcurvepredict.viewmodels;
-
-import com.fasterxml.jackson.databind.JsonSerializable.Base;
-
-import ch.qos.logback.core.status.Status;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
 
 public class DiagramViewModel extends StatusViewModel {

@@ -1,6 +1,7 @@
 package xjtuse.castingcurvepredict.restservice;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.ibatis.builder.IncompleteElementException;
 import org.apache.ibatis.session.SqlSession;
@@ -20,16 +21,38 @@ public class TrainningServiceConstoller {
     @GetMapping("/getModelFromId")
     public MLModelViewModel getModelFromId(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        SqlSession session = sessionFactory.openSession();
-        // MlModelMapper mapper = session.getMapper(MlModelMapper.class);
-        MlModelMapper mlModelMapper = session.getMapper(MlModelMapper.class);
-        MlModel model = mlModelMapper.getMlModelById(1);
+
+        try (SqlSession session = sessionFactory.openSession()) {
+            MlModelMapper mlModelMapper = session.getMapper(MlModelMapper.class);
+            MlModel model = mlModelMapper.getMlModelById(1);
+        }
 
         return null;
     }
 
-    public ArrayList<MLModelViewModel> getModels()
-    {
-        throw new IncompleteElementException();
+    @GetMapping("/getModels")
+    public ArrayList<MLModelViewModel> getModels() {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        List<MlModel> models = null;
+        ArrayList<MLModelViewModel> modelViewModels = new ArrayList<MLModelViewModel>();
+        try (SqlSession session = sessionFactory.openSession()) {
+            MlModelMapper mlModelMapper = session.getMapper(MlModelMapper.class);
+            models = mlModelMapper.getModels();
+        }
+
+        if(models == null)
+        {
+            
+        }
+        else
+        {
+            for(int i = 0; i < models.size(); ++i)
+            {
+                MLModelViewModel mlViewModel = new MLModelViewModel(models.get(i));
+                modelViewModels.add(new MLModelViewModel(models.get(i)));
+            }
+        }
+
+        return modelViewModels;
     }
 }

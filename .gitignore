@@ -338,4 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-src/system/backend/restservice/src/main/java/xjtuse/castingcurvepredict/data/mybatis-config.xml
+src/system/backend/restservice/src/main/resources/mybatis-extra-config.properties

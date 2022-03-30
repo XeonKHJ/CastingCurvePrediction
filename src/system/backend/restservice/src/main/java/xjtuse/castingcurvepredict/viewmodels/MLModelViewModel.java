@@ -1,6 +1,13 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
+import xjtuse.castingcurvepredict.data.MlModel;
+
 public class MLModelViewModel {
+    public MLModelViewModel(MlModel mlmodel)
+    {
+        id = mlmodel.getId();
+    }
+
     private int id;
     public int getId()
     {
