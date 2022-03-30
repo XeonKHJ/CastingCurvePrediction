@@ -1,4 +1,4 @@
-自行在 ./src/main/java/xjtuse/castingcurvepredict/data 中添加一个mybatis-config.xml的文件。内容如下。
+自行在 ./src/main/resources 中添加一个mybatis-config.xml的文件。内容如下。
 
 ```
 <?xml version="1.0" encoding="UTF-8" ?>
