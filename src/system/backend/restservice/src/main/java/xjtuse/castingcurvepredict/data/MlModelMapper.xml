@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.mybatis.example.MlModelMapper">
-  <select id="selectMlModel" resultType="MlModel">
-    select * from MlModel where id = #{id}
+<mapper namespace="xjtuse.castingcurvepredict.data.MlModelMapper">
+  <select id="selectMlModel" resultType="xjtuse.castingcurvepredict.data.MlModel">
+    select * from MLModel where id = #{id}
   </select>
 </mapper>
