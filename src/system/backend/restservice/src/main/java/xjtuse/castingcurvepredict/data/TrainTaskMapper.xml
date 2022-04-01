@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="xjtuse.castingcurvepredict.data.MlModelMapper">
+<mapper namespace="xjtuse.castingcurvepredict.data.TrainTaskMapper">
   <select id="getTaskById" resultType="TrainTask">
     select * from Task where Id = #{id}
   </select>

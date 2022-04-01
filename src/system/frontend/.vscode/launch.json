@@ -4,7 +4,7 @@
             "name": "Launch Edge",
             "request": "launch",
             "type": "pwa-msedge",
-            "url": "file://C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\system\\frontend\\predict.html",
+            "url": "file://C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\system\\frontend\\tasks.html",
             "webRoot": "${workspaceFolder}"
         },
         {
