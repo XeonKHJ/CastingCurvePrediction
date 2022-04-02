@@ -5,11 +5,11 @@ section{
 #headerSection{
     position: absolute;
     /* background-color: red; */
-    height: 150px;
+    height: 100px;
     /* width: 100%; */
     left: 0px;
     right: 0px;
-    top: 0px;
+    top: 65px;
     /* opacity: 0.4; */
 }
 #inputDiv{
@@ -27,7 +27,7 @@ section{
 
 #chartSection, #animationSection{
     position: absolute;
-    top:150px;
+    top:165px;
     /* background-color: red; */
     bottom: 0px;
     padding: 0px;

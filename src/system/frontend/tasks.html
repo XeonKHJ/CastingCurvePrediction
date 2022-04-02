@@ -16,79 +16,85 @@
     <!-- <script src="https://unpkg.com/vue@next"></script> -->
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
     <script src="src/config.js"></script>
 
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" href="/">开浇曲线预测</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/">预测</a>
+                            <a class="nav-link text-dark" href="predict.html">预测</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Movies">训练</a>
+                            <a class="nav-link text-dark" href="train.html">训练</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Movies/TopRatedMovies">设置</a>
+                            <a class="nav-link text-dark" href="tasks.html">设置</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-
-    <div class="container">
-        <table class="table" id="taskListTable">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>损失</th>
-                    <th>状态</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(taskViewModel,index) in taskViewModels">
-                    <td class="col">{{taskViewModel.id}}</td>
-                    <td class="col">{{taskViewModel.loss}}</td>
-                    <td class="col">{{taskViewModel.epoch}}</td>
-                    <td class="col">{{taskViewModel.status}}</td>
-                    <td class="col">{{taskViewModel.startTime}}</td>
-                    <td class="col">{{taskViewModel.endTime}}</td>
-                    <td class="col">相关模型</td>
-                    <td class="col">删除 暂停 继续</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="container">
-        <table class="table" id="modelListTable">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>损失</th>
-                    <th>状态</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(modelViewModel,index) in modelViewModels">
-                    <td class="col">{{modelViewModel.id}}</td>
-                    <td class="col">{{modelViewModel.loss}}</td>
-                    <td class="col">{{modelViewModel.status}}</td>
-                    <td class="col">{{modelViewModel.path}}</td>
-                    <td class="col">删除</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <script src="src/taskView.js"></script>
+    <main role="main" class="pb-3">
+        <div class="container">
+            <p>任务管理</p>
+            <table class="table" id="taskListTable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>损失</th>
+                        <th>状态</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(taskViewModel,index) in taskViewModels">
+                        <td class="col">{{taskViewModel.id}}</td>
+                        <td class="col">{{taskViewModel.loss}}</td>
+                        <td class="col">{{taskViewModel.epoch}}</td>
+                        <td class="col">{{taskViewModel.status}}</td>
+                        <td class="col">{{taskViewModel.startTime}}</td>
+                        <td class="col">{{taskViewModel.endTime}}</td>
+                        <td class="col">相关模型</td>
+                        <td class="col">删除 暂停 继续</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <p>模型管理</p>
+            <table class="table" id="modelListTable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>损失</th>
+                        <th>状态</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(modelViewModel,index) in modelViewModels">
+                        <td class="col">{{modelViewModel.id}}</td>
+                        <td class="col">{{modelViewModel.loss}}</td>
+                        <td class="col">{{modelViewModel.status}}</td>
+                        <td class="col">{{modelViewModel.path}}</td>
+                        <td class="col">删除</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="src/taskView.js"></script>
+    </main>
 </body>
 
 </html>
