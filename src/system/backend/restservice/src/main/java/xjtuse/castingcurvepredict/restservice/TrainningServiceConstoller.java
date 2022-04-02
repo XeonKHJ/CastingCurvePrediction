@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.builder.IncompleteElementException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
+import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
 
 //import xjtuse.castingcurvepredict.data.MlModelMapper;
 
+@CrossOrigin
 @RestController
 public class TrainningServiceConstoller {
     @GetMapping("/getModelFromId")
@@ -31,9 +34,10 @@ public class TrainningServiceConstoller {
     }
 
     @GetMapping("/getModels")
-    public ArrayList<MLModelViewModel> getModels() {
+    public ModelCollectionViewModel getModels() {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         List<MlModel> models = null;
+        ModelCollectionViewModel collectionViewModel = new ModelCollectionViewModel(new ArrayList<MLModelViewModel>());
         ArrayList<MLModelViewModel> modelViewModels = new ArrayList<MLModelViewModel>();
         try (SqlSession session = sessionFactory.openSession()) {
             MlModelMapper mlModelMapper = session.getMapper(MlModelMapper.class);
@@ -50,9 +54,10 @@ public class TrainningServiceConstoller {
             {
                 MLModelViewModel mlViewModel = new MLModelViewModel(models.get(i));
                 modelViewModels.add(new MLModelViewModel(models.get(i)));
+                collectionViewModel = new ModelCollectionViewModel(modelViewModels);
             }
         }
 
-        return modelViewModels;
+        return collectionViewModel;
     }
 }

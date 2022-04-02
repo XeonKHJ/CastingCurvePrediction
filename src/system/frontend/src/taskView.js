@@ -1,9 +1,17 @@
-function TaskViewModel(id = 0, loss = 0.0, status = "Stopped")
-{
+function TaskViewModel(id = 0, loss = 0.0, status = "Stopped") {
+    return {
+        id: id,
+        loss: loss,
+        status: status
+    }
+}
+
+function ModelViewModel(id = 0, loss = 0.0, status = "untrained") {
     return {
         id: 0,
         loss: 0.0,
-        status: "Stopped"
+        path: "don't know",
+        status: status
     }
 }
 
@@ -73,12 +81,39 @@ function getTasks() {
             Accept: "application/json"
         }
     }).then(response => {
-        for(i = 0; i < response.data.taskViewModels.length; ++i)
-        {
+        for (i = 0; i < response.data.taskViewModels.length; ++i) {
             taskCollectionVueModel.taskViewModels.push(response.data.taskViewModels[i]);
         }
     }).then().catch(
         err => console.log(err))
 }
 
+
+var modelCollectionVueModel = Vue.createApp({
+    data() {
+        return {
+            isEmpty: true,
+            modelViewModels: [
+                ModelViewModel()
+            ],
+            currentId: 0
+        }
+    }
+}).mount("#modelListTable");
+
+function getModels() {
+    axios.get(baseServerAddr + '/getModels', {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        for (i = 0; i < response.data.mlModelViewModels.length; ++i) {
+            modelCollectionVueModel.modelViewModels.push(response.data.mlModelViewModels[i]);
+        }
+    }).then().catch(
+        err => console.log(err))
+}
+
+getModels();
 getTasks();

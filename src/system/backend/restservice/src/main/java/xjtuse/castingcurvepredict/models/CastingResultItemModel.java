@@ -7,31 +7,26 @@ public class CastingResultItemModel {
     private double _liqLevel;
     private double _stopperPos;
 
-    public CastingResultItemModel(String datetime, double stopperPos, double liqLevel )
-    {
+    public CastingResultItemModel(String datetime, double stopperPos, double liqLevel) {
         _datetime = datetime;
         _liqLevel = liqLevel;
         _stopperPos = stopperPos;
     }
 
-    public CastingResultItemModel(String datetime, double stopperPos)
-    {
+    public CastingResultItemModel(String datetime, double stopperPos) {
         _datetime = datetime;
         _stopperPos = stopperPos;
     }
 
-    public String getDatetime()
-    {
+    public String getDatetime() {
         return _datetime;
     }
 
-    public double getStopperPos()
-    {
+    public double getStopperPos() {
         return _stopperPos;
     }
 
-    public double getLiqLevel()
-    {
+    public double getLiqLevel() {
         return _liqLevel;
     }
 }

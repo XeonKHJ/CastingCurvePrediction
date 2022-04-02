@@ -27,15 +27,10 @@ public class TaskServiceController {
             models = mlModelMapper.getModels();
         }
 
-        if(models == null)
-        {
-            
-        }
-        else
-        {
-            for(int i = 0; i < models.size(); ++i)
-            {
-                TaskViewModel mlViewModel = new TaskViewModel(models.get(i).getId(), models.get(i).getLoss(), models.get(i).getStatus());
+        if (models != null) {
+            for (int i = 0; i < models.size(); ++i) {
+                TrainTask model = models.get(i);
+                TaskViewModel mlViewModel = new TaskViewModel(model.getId(), model.getLoss(), model.getStatus(), model.getEpoch());
                 modelViewModels.add(mlViewModel);
             }
         }
