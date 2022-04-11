@@ -1,0 +1,17 @@
+html, body {
+    height: 100%;
+  }  
+
+#animationSection{
+    /* position: absolute; */
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    box-sizing:border-box;
+    border-radius: 5px;
+}
+
+.mySection{
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    box-sizing:border-box;
+    border-radius: 5px;
+}

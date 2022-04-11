@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预测</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+    <link href="styles/newPredict.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body onload="drawAnimation()">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
+    <script src="src/lib/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">开浇曲线预测</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="predict.html">预测</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="train.html">训练</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="tasks.html">设置</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid ">
+        <div class="row mx-2 shadow-sm rounded border">
+            <div class="row mx-2">
+                <div class="col">
+                    1 of 2
+                </div>
+                <div class="col">
+                    2 of 2
+                </div>
+                <div class="col">
+                    2 of 2
+                </div>
+                <div class="col-1 mx-2">
+                    2 of 2
+                </div>
+            </div>
+            <div class="row mx-2">
+                <div class="col">
+                    1 of 2
+                </div>
+                <div class="col">
+                    2 of 2
+                </div>
+                <div class="col">
+                    2 of 2
+                </div>
+                <div class="col-1">
+                    2 of 2
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-2">
+        <div class="row mx-2" style="height: 85vh; min-height: 200px;">
+            <div class="col-3 shadow-sm rounded border" id="animationDiv">
+                <canvas id="animationCanvas"></canvas>
+            </div>
+            <div class="col ms-2 shadow-sm rounded border" id="chartSection">
+                <ul class="nav nav-tabs">
+                    <li v-bind:class="[chartViewModel.isSelected?'active tabLi nav-item':'active tabLi nav-item']"
+                        v-for="(chartViewModel,index) in chartViewModels">
+                        <span v-bind:class="[chartViewModel.isSelected?'active tabText nav-link':'tabText nav-link']"
+                            @click="currentId=chartViewModel.chartId"
+                            onclick="onTabClicked()">{{chartViewModel.title}}</span>
+                        <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked(this)"
+                            v-bind:id="'chartTab'+chartViewModel.chartId"></span>
+                    </li>
+                </ul>
+                <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
+                    class="echartContentDiv" :key="chartViewModel.chartId"
+                    v-bind:id="'echartContent' + chartViewModel.chartId">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="src/predictView.js"></script>
+    <script src="src/animationView.js"></script>
+    <script src="src/lib/webgl-utils.js"></script>
+    <script src="src/lib/webgl-debug.js"></script>
+    <script src="src/lib/cuon-utils.js"></script>
+    <script src="src/lib/cuon-matrix.js"></script>
+    <script src="src/lib/utils.js"></script>
+    <script src="src/config.js"></script>
+</body>
+
+</html>
