@@ -42,38 +42,39 @@
     <div class="container-fluid ">
         <div class="row mx-2 shadow-sm rounded border">
             <div class="row mx-2">
-                <div class="col">
-                    1 of 2
-                </div>
-                <div class="col">
-                    2 of 2
-                </div>
-                <div class="col">
-                    2 of 2
-                </div>
-                <div class="col-1 mx-2">
-                    2 of 2
-                </div>
-            </div>
-            <div class="row mx-2">
-                <div class="col">
-                    1 of 2
-                </div>
-                <div class="col">
-                    2 of 2
-                </div>
-                <div class="col">
-                    2 of 2
-                </div>
-                <div class="col-1">
-                    2 of 2
-                </div>
+                <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
+                    method="post">
+                    <table style="border-spacing: 10px;">
+                        <tr>
+                            <td><span>{{steelType}}：</span></td>
+                            <td><input class="boxText" id="steelTypeInput"></input></td>
+                            <td><span>{{billetWidth}}：</span></td>
+                            <td><input class="boxText" id="billetWidthInput"></input></td>
+                            <td><span>{{billetThickness}}：</span></td>
+                            <td><input class="boxText" id="billetThicknessInput"></input></td>
+                            <td><input class="btn btn-primary mb-3" type="submit" v-bind:value="predictButton"></input></td>
+                        </tr>
+                        <tr>
+                            <td><span>{{castingWidth}}：</span></td>
+                            <td><input class="boxText" id="castingWidthInput"></input></td>
+                            <td><span>{{mode}}：</span></td>
+                            <td><input class="boxText" id="modeInput"></input></td>
+                            <td><span>{{targetLV}}：</span></td>
+                            <td><input class="boxText" id="targetLVInput"></input></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <!-- <ul style="list-style: none;">
+                    <li class="steelInfoLi"><span style="width: 30px; min-width: 30px; border-style:ridge; margin: 0px;">{{steelType}}：</span><input class="boxText" id="steelTypeInput"></input></li>
+                    <li class="steelInfoLi"><span style="width: 30px; border-style:ridge;">{{billetWidth}}：</span><input class="boxText" id="billetWidthInput"></input></li>
+                </ul> -->
+                </form>
             </div>
         </div>
     </div>
     <div class="container-fluid my-2">
-        <div class="row mx-2" style="height: 85vh; min-height: 200px;">
-            <div class="col-3 shadow-sm rounded border" id="animationDiv">
+        <div class="row mx-2" style="min-height: 200px; height: 100%;">
+            <div class="col-2 shadow-sm rounded border" id="animationDiv">
                 <canvas id="animationCanvas"></canvas>
             </div>
             <div class="col ms-2 shadow-sm rounded border" id="chartSection">
@@ -88,8 +89,8 @@
                     </li>
                 </ul>
                 <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
-                    class="echartContentDiv" :key="chartViewModel.chartId"
-                    v-bind:id="'echartContent' + chartViewModel.chartId">
+                    class="echartContentDiv container" :key="chartViewModel.chartId"
+                    v-bind:id="'echartContent' + chartViewModel.chartId" style="height: 60vh; width: 95%;">
                 </div>
             </div>
         </div>
