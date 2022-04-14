@@ -52,8 +52,10 @@
                     <tr>
                         <th>Id</th>
                         <th>损失</th>
+                        <th>Epoch</th>
                         <th>状态</th>
-                        <th></th>
+                        <th>开始时间</th>
+                        <th>相关模型</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,13 +65,14 @@
                         <td class="col">{{taskViewModel.epoch}}</td>
                         <td class="col">{{taskViewModel.status}}</td>
                         <td class="col">{{taskViewModel.startTime}}</td>
-                        <td class="col">{{taskViewModel.endTime}}</td>
-                        <td class="col">相关模型</td>
+                        <td class="col">{{taskViewModel.modelId}}</td>
                         <td class="col text-end">
                         <td class="col text-end">
                             <button class="btn btn-secondary btn-sm">查看</button>
                             <button class="btn btn-secondary btn-sm ms-2">暂停</button>
-                            <button class="btn btn-secondary btn-sm ms-2">删除</button>
+                            <button class="btn btn-secondary btn-sm ms-2"
+                                @click="onDeleteButtonClicked(taskViewModel.id, index)">删除
+                            </button>
                         </td>
                         </td>
                     </tr>
@@ -89,7 +92,8 @@
                         <th>损失</th>
                         <th>状态</th>
                         <th></th>
-                        <th style="text-align: right;"><button class="btn btn-primary btn-sm" id="createModelButton" onclick="javascript:onCreateModelButtonClicked()">添加模型</button></th>
+                        <th style="text-align: right;"><button class="btn btn-primary btn-sm" id="createModelButton"
+                                onclick="javascript:onCreateModelButtonClicked()">添加模型</button></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,8 +102,13 @@
                         <td class="col">{{modelViewModel.loss}}</td>
                         <td class="col">{{modelViewModel.status}}</td>
                         <td class="col">{{modelViewModel.path}}</td>
-                        <td class="col text-end"><button class="btn btn-secondary btn-sm">创建任务</button><button
-                                class="btn btn-secondary btn-sm ms-2">删除</button></td>
+                        <td class="col text-end">
+                            <button class="btn btn-secondary btn-sm"
+                                @click="onCreateTaskButtonClicked(modelViewModel.id)">创建任务</button>
+                            <button class="btn btn-secondary btn-sm ms-2"
+                                @click="onDeleteButtonClicked(modelViewModel.id, index)">删除
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>

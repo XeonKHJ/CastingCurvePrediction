@@ -1,8 +1,9 @@
-function TaskViewModel(id = 0, loss = 0.0, status = "Stopped") {
+function TaskViewModel(id = 0, loss = 0.0, status = "Stopped", modelId) {
     return {
         id: id,
         loss: loss,
-        status: status
+        status: status,
+        modelId: modelId
     }
 }
 
@@ -26,50 +27,16 @@ var taskCollectionVueModel = Vue.createApp({
         }
     },
     methods: {
-        revmoveItem(idToDelete) {
-            var length = this.taskViewModel.length;
-            var echartToDispose;
-
-            for (i = 0; i < length; ++i) {
-                if (this.taskViewModel[i].chartId == idToDelete) {
-                    var element = this.taskViewModel[i];
-                    if (length == 1) {
-                        this.taskViewModel.push(taskViewModel());
-                        this.selectItem(0);
-                        this.isEmpty = true;
-                    }
-                    else if (this.currentId == idToDelete) {
-
-                        if (length == i + 1) {
-                            this.selectItem(this.taskViewModels[i - 1].chartId);
-                        }
-                        else {
-                            var chartId = this.taskViewModels[i + 1].chartId;
-                            this.selectItem(this.taskViewModels[i + 1].chartId);
-                        }
-                    }
-                    this.taskViewModel.splice(i, 1);
-                    break;
+        onDeleteButtonClicked(id, idx) {
+            axios.get(baseServerAddr + '/deleteTaskById?id=' + id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
                 }
-            }
-        },
-        selectItem(id) {
-            if (id == 0) {
-                var echartDiv = document.getElementById('echartDiv');
-            }
-            else {
-                this.chartViewModels.forEach(element => {
-                    if (element.chartId == id) {
-                        element.isSelected = true;
-                        this.currentId = element.chartId;
-                    }
-                    else {
-                        element.isSelected = false;
-                    }
-                });
-            }
-            chartCollectionVueModel.$nextTick(() => {
-            });
+            }).then(response => {
+                taskCollectionVueModel.taskViewModels.splice(idx, 1);
+            }).then().catch(
+                err => console.log(err))
         }
     }
 }).mount("#taskListTable");
@@ -97,6 +64,30 @@ var modelCollectionVueModel = Vue.createApp({
                 ModelViewModel()
             ],
             currentId: 0
+        }
+    },
+    methods: {
+        onCreateTaskButtonClicked(id) {
+            axios.get(baseServerAddr + '/createTrainningTask?id=' + id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                taskCollectionVueModel.taskViewModels.push(response.data);
+            }).then().catch(
+                err => console.log(err))
+        },
+        onDeleteButtonClicked(id, idx) {
+            axios.get(baseServerAddr + '/deleteModelById?id=' + id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                modelCollectionVueModel.modelViewModels.splice(idx, 1);
+            }).then().catch(
+                err => console.log(err))
         }
     }
 }).mount("#modelListTable");
@@ -126,6 +117,8 @@ function onCreateModelButtonClicked() {
     }).then().catch(
         err => console.log(err))
 }
+
+
 
 getModels();
 getTasks();

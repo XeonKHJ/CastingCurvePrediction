@@ -15,7 +15,9 @@ public interface TrainTaskMapper {
 
     public void deleteModelById(int id);
 
-    Integer createModel(MlModel model);
+    void createModel(MlModel model);
 
     public MlModel getModelById(int id);
+
+    public void deleteTaskById(int id);
 }

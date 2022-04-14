@@ -30,7 +30,7 @@ public class TaskServiceController {
         if (models != null) {
             for (int i = 0; i < models.size(); ++i) {
                 TrainTask model = models.get(i);
-                TaskViewModel mlViewModel = new TaskViewModel(model.getId(), model.getLoss(), model.getStatus(), model.getEpoch());
+                TaskViewModel mlViewModel = new TaskViewModel(model.getId(), model.getLoss(), model.getStatus(), model.getEpoch(), model.getModelId());
                 modelViewModels.add(mlViewModel);
             }
         }

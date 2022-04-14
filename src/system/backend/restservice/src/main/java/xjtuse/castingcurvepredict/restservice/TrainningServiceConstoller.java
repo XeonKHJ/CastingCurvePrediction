@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.DataModel;
+
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,6 +25,7 @@ import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
 import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
+import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
 //import xjtuse.castingcurvepredict.data.MlModelMapper;
 
@@ -42,22 +45,24 @@ public class TrainningServiceConstoller {
     }
 
     @GetMapping("/createTrainningTask")
-    public String createTrainningTask() {
+    public TaskViewModel createTrainningTask(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-
+        TaskViewModel viewModel = new TaskViewModel();
         try (SqlSession session = sessionFactory.openSession()) {
             TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            TaskModel newTask = TaskManager.CreateTask();
+            // TaskModel newTask = TaskManager.CreateTask();
             TrainTask dataModel = new TrainTask();
-            dataModel.Loss = 10.0;
+            dataModel.Loss = -10.0;
             dataModel.startTime = "2022.04.01";
-            dataModel.ModelId = 1;
+            dataModel.ModelId = id;
             dataModel.Status = "Stopped";
+
             mapper.createTask(dataModel);
+            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch, dataModel.ModelId);
             session.commit();
         }
 
-        return "fuck";
+        return viewModel;
     }
 
     @GetMapping("/getModels")
@@ -109,13 +114,31 @@ public class TrainningServiceConstoller {
             MlModel model = new MlModel();
             model.setName("model-" + Instant.now().toString());
             // 路径命名：
-            model.setPath("C:\\model-" + Instant.now().toString() + ".model");;
-            
-            Integer id = mapper.createModel(model);
+            model.setPath("C:\\model-" + Instant.now().toString() + ".model");
+            ;
+
+            mapper.createModel(model);
             session.commit();
             viewModel = new MLModelViewModel(model);
         }
 
         return viewModel;
     }
+
+    @GetMapping("/deleteTaskById")
+    public StatusViewModel getMethodName(@RequestParam("id") int id) {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        StatusViewModel viewModel = new StatusViewModel();
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            mapper.deleteTaskById(id);
+            session.commit();
+        } catch (PersistenceException exception) {
+            viewModel.setStatusCode(-100);
+            viewModel.setMessage("有任务正在运行");
+        }
+
+        return viewModel;
+    }
+    
 }
