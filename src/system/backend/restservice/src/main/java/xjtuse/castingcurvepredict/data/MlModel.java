@@ -1,9 +1,10 @@
 package xjtuse.castingcurvepredict.data;
 
 public class MlModel {
-    public int Id;
-    public String Name;
-    public String Path;
+    private int Id;
+    private String Name;
+    private String Path;
+    private double mLoss;
 
     public int getId() {
         return Id;
@@ -27,6 +28,16 @@ public class MlModel {
 
     public void setPath(String path) {
         Path = path;
+    }
+
+    public void setLoss(double value)
+    {
+        mLoss = value;
+    }
+
+    public double getLoss()
+    {
+        return mLoss;
     }
 
 }

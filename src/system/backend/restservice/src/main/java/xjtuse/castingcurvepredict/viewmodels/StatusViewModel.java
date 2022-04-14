@@ -26,6 +26,7 @@ public class StatusViewModel {
                 break;
             case -3:
                 status = "查询不到训练活动的状态";
+                break;
             default:
                 status = "未知错误";
         }

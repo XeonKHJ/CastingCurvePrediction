@@ -3,12 +3,15 @@ package xjtuse.castingcurvepredict.data;
 import java.util.Calendar;
 
 public class TrainTask {
-    int Id;
-    double Loss;
-    String Status;
-    Calendar startTime;
-    Calendar endTime;
-    int epoch;
+
+    // TODO make all those members private;
+    public int Id;
+    public double Loss;
+    public String Status;
+    public String startTime;
+    public String endTime;
+    public int Epoch;
+    public int ModelId;
 
     public int getId() {
         return Id;
@@ -22,15 +25,20 @@ public class TrainTask {
         return Status;
     }
 
-    public Calendar getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public Calendar getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
     public int getEpoch() {
-        return epoch;
+        return Epoch;
+    }
+
+    public int getModelId()
+    {
+        return ModelId;
     }
 }

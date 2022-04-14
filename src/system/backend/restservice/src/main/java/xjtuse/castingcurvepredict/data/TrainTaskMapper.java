@@ -6,5 +6,16 @@ import org.apache.ibatis.annotations.Param;
 
 public interface TrainTaskMapper {
     public TrainTask getMlModelById(@Param("id") long id);
+
     public List<TrainTask> getModels();
+
+    public void createTask(TrainTask task);
+
+    public List<TrainTask> getWorkingTasks();
+
+    public void deleteModelById(int id);
+
+    Integer createModel(MlModel model);
+
+    public MlModel getModelById(int id);
 }

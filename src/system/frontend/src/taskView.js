@@ -115,5 +115,17 @@ function getModels() {
         err => console.log(err))
 }
 
+function onCreateModelButtonClicked() {
+    axios.get(baseServerAddr + '/createModel', {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        modelCollectionVueModel.modelViewModels.push(response.data);
+    }).then().catch(
+        err => console.log(err))
+}
+
 getModels();
 getTasks();

@@ -3,9 +3,9 @@ var formViewModel = Vue.createApp({
         return {
             steelType: "粘度",
             castingWidth: "面积",
-            billetWidth: "大包水口面积",
+            billetWidth: "水口面积",
             billetThickness: "流速",
-            mode: "铸机模式",
+            mode: "模式",
             targetLV: "目标液位",
             predictButton: "预测"
         }

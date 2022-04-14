@@ -1,9 +1,12 @@
 package xjtuse.castingcurvepredict.restservice;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.builder.IncompleteElementException;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,8 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
+import xjtuse.castingcurvepredict.data.TrainTask;
+import xjtuse.castingcurvepredict.data.TrainTaskMapper;
+import xjtuse.castingcurvepredict.models.TaskManager;
+import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
 import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
+import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
 
 //import xjtuse.castingcurvepredict.data.MlModelMapper;
 
@@ -33,6 +41,25 @@ public class TrainningServiceConstoller {
         return null;
     }
 
+    @GetMapping("/createTrainningTask")
+    public String createTrainningTask() {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            TaskModel newTask = TaskManager.CreateTask();
+            TrainTask dataModel = new TrainTask();
+            dataModel.Loss = 10.0;
+            dataModel.startTime = "2022.04.01";
+            dataModel.ModelId = 1;
+            dataModel.Status = "Stopped";
+            mapper.createTask(dataModel);
+            session.commit();
+        }
+
+        return "fuck";
+    }
+
     @GetMapping("/getModels")
     public ModelCollectionViewModel getModels() {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -44,20 +71,51 @@ public class TrainningServiceConstoller {
             models = mlModelMapper.getModels();
         }
 
-        if(models == null)
-        {
-            
-        }
-        else
-        {
-            for(int i = 0; i < models.size(); ++i)
-            {
+        if (models == null) {
+
+        } else {
+            for (int i = 0; i < models.size(); ++i) {
                 MLModelViewModel mlViewModel = new MLModelViewModel(models.get(i));
-                modelViewModels.add(new MLModelViewModel(models.get(i)));
+                modelViewModels.add(mlViewModel);
                 collectionViewModel = new ModelCollectionViewModel(modelViewModels);
             }
         }
 
         return collectionViewModel;
+    }
+
+    @GetMapping("/deleteModelById")
+    public StatusViewModel deleteModelById(@RequestParam(value = "id") int id) {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        StatusViewModel viewModel = new StatusViewModel();
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            mapper.deleteModelById(id);
+            session.commit();
+        } catch (PersistenceException exception) {
+            viewModel.setStatusCode(-100);
+            viewModel.setMessage("有任务正在运行");
+        }
+
+        return viewModel;
+    }
+
+    @GetMapping("/createModel")
+    public MLModelViewModel createModel() {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        MLModelViewModel viewModel = null;
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            MlModel model = new MlModel();
+            model.setName("model-" + Instant.now().toString());
+            // 路径命名：
+            model.setPath("C:\\model-" + Instant.now().toString() + ".model");;
+            
+            Integer id = mapper.createModel(model);
+            session.commit();
+            viewModel = new MLModelViewModel(model);
+        }
+
+        return viewModel;
     }
 }

@@ -16,7 +16,9 @@
     <!-- <script src="https://unpkg.com/vue@next"></script> -->
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
     <script src="src/config.js"></script>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -63,20 +65,31 @@
                         <td class="col">{{taskViewModel.startTime}}</td>
                         <td class="col">{{taskViewModel.endTime}}</td>
                         <td class="col">相关模型</td>
-                        <td class="col">删除 暂停 继续</td>
+                        <td class="col text-end">
+                        <td class="col text-end">
+                            <button class="btn btn-secondary btn-sm">查看</button>
+                            <button class="btn btn-secondary btn-sm ms-2">暂停</button>
+                            <button class="btn btn-secondary btn-sm ms-2">删除</button>
+                        </td>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="container">
-            <p>模型管理</p>
+            <div class="row justify-content-between">
+                <div class="col-4">
+                    模型管理
+                </div>
+            </div>
             <table class="table" id="modelListTable">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>编号</th>
                         <th>损失</th>
                         <th>状态</th>
                         <th></th>
+                        <th style="text-align: right;"><button class="btn btn-primary btn-sm" id="createModelButton" onclick="javascript:onCreateModelButtonClicked()">添加模型</button></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +98,8 @@
                         <td class="col">{{modelViewModel.loss}}</td>
                         <td class="col">{{modelViewModel.status}}</td>
                         <td class="col">{{modelViewModel.path}}</td>
-                        <td class="col">删除</td>
+                        <td class="col text-end"><button class="btn btn-secondary btn-sm">创建任务</button><button
+                                class="btn btn-secondary btn-sm ms-2">删除</button></td>
                     </tr>
                 </tbody>
             </table>
