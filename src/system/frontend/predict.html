@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
-    <header >
+    <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" href="/">开浇曲线预测</a>
@@ -40,7 +40,7 @@
             </div>
         </nav>
     </header>
-    <section id="headerSection" class="container">
+    <section id="headerSection" class="container-fluid">
         <div id="inputDiv">
             <div class="container">
                 <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
@@ -86,17 +86,14 @@
     <section id="chartSection">
         <div id="echartDiv">
             <div id="tabDiv">
-                <table>
-                    <ul id="tabRow">
-                        <li v-bind:class="[chartViewModel.isSelected?'tabItemSelected tabLi':'tabItemUnselected tabLi']"
-                            v-for="(chartViewModel,index) in chartViewModels">
-                            <span class="tabText" @click="currentId=chartViewModel.chartId"
-                                onclick="onTabClicked()">{{chartViewModel.title}}</span>
+                <ul class="nav nav-tabs">
+                    <li v-bind:class="nav-item" v-for="(chartViewModel,index) in chartViewModels">
+                        <span v-bind:class="[chartViewModel.isSelected?'active nav-link px-1':'nav-link px-1']"
+                            @click="currentId=chartViewModel.chartId" style="margin: 1px; padding: 2px;" onclick="onTabClicked()">{{chartViewModel.title}}
                             <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked(this)"
-                                v-bind:id="'chartTab'+chartViewModel.chartId"></span>
-                        </li>
-                    </ul>
-                </table>
+                                v-bind:id="'chartTab'+chartViewModel.chartId"></span></span>
+                    </li>
+                </ul>
             </div>
             <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
                 class="echartContentDiv" :key="chartViewModel.chartId"
