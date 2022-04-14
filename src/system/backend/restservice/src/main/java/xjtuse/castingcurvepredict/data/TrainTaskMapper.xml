@@ -20,7 +20,7 @@
     DELETE FROM `MLModel` WHERE (`Id` = '${id}')
   </delete>
   <insert id="createModel" useGeneratedKeys="true" keyProperty="Id" parameterType="MlModel">
-    INSERT INTO `MLModel` (`Path`, `Loss`, `Name`, `Status`) VALUES ('${Path}', '12', '${Name}', 'Untrained');
+    INSERT INTO `MLModel` (`Path`, `Loss`, `Name`, `Status`) VALUES ('${Path}', '${mLoss}', '${Name}', '${mStatus}');
   </insert>
   <select id="getModelById" resultType="MlModel">
     SELECT * FROM 'MLModel' WHERE `Id` = '${id}';

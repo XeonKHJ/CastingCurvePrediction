@@ -4,8 +4,9 @@ public class MlModel {
     private int Id;
     private String Name;
     private String Path;
-    private double mLoss;
-
+    private double mLoss = -10;
+    private String mStatus = "Untrained";
+    
     public int getId() {
         return Id;
     }
@@ -30,14 +31,20 @@ public class MlModel {
         Path = path;
     }
 
-    public void setLoss(double value)
-    {
+    public void setLoss(double value) {
         mLoss = value;
     }
 
-    public double getLoss()
-    {
+    public double getLoss() {
         return mLoss;
+    }
+
+    public void setStatus(String value) {
+        mStatus = value;
+    }
+
+    public String getStatus() {
+        return mStatus;
     }
 
 }
