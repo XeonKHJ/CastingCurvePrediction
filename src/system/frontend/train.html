@@ -41,18 +41,24 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container align-self-center">
         <div class="row">
             <div class="col">
-                <input v-model="datasetPath" class="form-control" type="file" id="formFile">
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-primary" onclick="onTrainButtonClicked()">创建训练任务</button>
+                
+                
             </div>
         </div>
+        <div class="row">
+            
+            <div class="col-sm-10">
+
+              <input v-model="datasetPath" class="form-control" type="file" id="formFile">
+            </div>
+            <button type="button" class="btn btn-primary col-sm-2 col-form-label" onclick="onTrainButtonClicked()">开始训练</button>
+          </div>
 
     </div>
-    <div class="container">
+    <!-- <div class="container">
         <div>
             <label for="formFile" class="form-label">上传数据集</label>
             <input v-model="datasetPath" class="form-control" type="file" id="formFile">
@@ -70,7 +76,7 @@
             action="http://localhost:8080/uploadAndTrainModel" type="file" style="visibility:hidden;"
             value="上传数据集"></input>
 
-    </div>
+    </div> -->
     <!-- <section id="trainningInfoSection">
         <div id="trainningInfoDiv">
             <span style="font-size:large;">训练数据</span>

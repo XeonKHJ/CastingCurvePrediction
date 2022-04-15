@@ -45,8 +45,8 @@
         </nav>
     </header>
     <main role="main" class="pb-3">
-        <div class="container">
-            <p>任务管理</p>
+        <div class="container shadow-sm mb-2">
+            <h4>任务管理</h4>
             <table class="table" id="taskListTable">
                 <thead>
                     <tr>
@@ -79,12 +79,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-4">
-                    模型管理
-                </div>
-            </div>
+        <div class="container shadow-sm rounded">
+            <h4>模型管理</h4>
             <table class="table" id="modelListTable">
                 <thead>
                     <tr>
@@ -113,8 +109,28 @@
                 </tbody>
             </table>
         </div>
-        <script src="src/taskView.js"></script>
+
     </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dialogDiv" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{message}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="src/taskView.js"></script>
+    <script src="src/view.js"></script>
 </body>
 
 </html>

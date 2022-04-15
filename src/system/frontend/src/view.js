@@ -1,36 +1,19 @@
-var body = document.getElementsByName("body");
-document.createElement()
-
-var chartCollectionViewModel = Vue.createApp({
+var dialogViewModel = Vue.createApp({
     data() {
         return {
-            isError: false,
-            errorMessage:"empty",
-
+            title: "dialog",
+            message: "nothing",
+            display: false
         }
     }
-}).mount("#chartSection");
+}).mount("#dialogDiv")
 
-function hasError(data)
-{
-    var hasError = false;
-    var errorMessage;
-    if(data.statusCode != undefined && data.status != undefined)
-    {
-        if(data.status > 0)
-        {
-            hasError = true;
-        }
-        errorMessage = data.status;
-    }
-
-    return hasError;
-}
-
-function displayError(data)
-{
-    var htmlBody = document.getElementsByName("body");
-    
-    
+function showError(message) {
+    var galleryModal = new bootstrap.Modal(document.getElementById('dialogDiv'), {
+        keyboard: false
+    });
+    dialogViewModel.title = "❌错误"
+    dialogViewModel.message = message
+    galleryModal.show();
 }
 

@@ -39,39 +39,31 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid ">
-        <div class="row mx-2 shadow-sm rounded border">
+        <div class="container rounded border shadow-sm">
             <div class="row mx-2">
-                <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
+                <form class="my-2" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
                     method="post">
-                    <table style="border-spacing: 10px;">
-                        <tr>
-                            <td><span>{{steelType}}：</span></td>
-                            <td><input class="boxText" id="steelTypeInput"></input></td>
-                            <td><span>{{billetWidth}}：</span></td>
-                            <td><input class="boxText" id="billetWidthInput"></input></td>
-                            <td><span>{{billetThickness}}：</span></td>
-                            <td><input class="boxText" id="billetThicknessInput"></input></td>
-                            <td><input class="btn btn-primary mb-3" type="submit" v-bind:value="predictButton"></input></td>
-                        </tr>
-                        <tr>
-                            <td><span>{{castingWidth}}：</span></td>
-                            <td><input class="boxText" id="castingWidthInput"></input></td>
-                            <td><span>{{mode}}：</span></td>
-                            <td><input class="boxText" id="modeInput"></input></td>
-                            <td><span>{{targetLV}}：</span></td>
-                            <td><input class="boxText" id="targetLVInput"></input></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    <!-- <ul style="list-style: none;">
-                    <li class="steelInfoLi"><span style="width: 30px; min-width: 30px; border-style:ridge; margin: 0px;">{{steelType}}：</span><input class="boxText" id="steelTypeInput"></input></li>
-                    <li class="steelInfoLi"><span style="width: 30px; border-style:ridge;">{{billetWidth}}：</span><input class="boxText" id="billetWidthInput"></input></li>
-                </ul> -->
+                    <div class="row align-items-center align-self-center">
+                        <div class="col"></div>
+                        <div class="col" style="text-align: right;"><label class="form-label">钢种：</label></div>
+                        <div class="col">
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>SPHC(C0.06)</option>
+                                <option value="1">SPHC(C0.06)</option>
+                                <option value="2">Q235B</option>
+                            </select>
+                        </div>
+                        <div class="col" style="text-align: right;"><label class="form-label text-right">面积：</label></div>
+                        <div class="col"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col" style="text-align: right;"><label class="form-label text-right">液位：</label></div>
+                        <div class="col"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col"><input class="btn btn-primary" type="submit"
+                                v-bind:value="predictButton"></input></div>
+                                <div class="col"></div>
+                    </div>
                 </form>
             </div>
         </div>
-    </div>
     <div class="container-fluid my-2">
         <div class="row mx-2" style="min-height: 200px; height: 100%;">
             <div class="col-2 shadow-sm rounded border" id="animationDiv">

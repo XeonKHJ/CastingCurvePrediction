@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -40,37 +41,27 @@
             </div>
         </nav>
     </header>
-    <section id="headerSection" class="container-fluid">
-        <div id="inputDiv">
-            <div class="container">
+    <section id="headerSection">
+            <div class="container shadow-sm p-2 rounded">
                 <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
                     method="post">
-                    <div class="row">
-                        <div class="col"><label class="form-label">钢种：</label></div>
-                        <div class="col">
+                    <div class="row mb-1">
+                        <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >钢种</label></div>
+                        <div class="col my-auto">
                             <select class="form-select" aria-label="Default select example">
                                 <option selected>SPHC(C0.06)</option>
-                                <option value="1">SPHC(C0.06)</option>
                                 <option value="2">Q235B</option>
                             </select>
                         </div>
-                        <div class="col"><label class="form-label">面积：</label></div>
-                        <div class="col"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col"><input class="btn btn-primary" type="submit"
+                        <div class="col my-auto" style="text-align: right;">面积</div>
+                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col my-auto" style="text-align: right;">目标液位</div>
+                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col my-auto"><input class="btn btn-primary" type="submit"
                                 v-bind:value="predictButton"></input></div>
                     </div>
-                    <!-- <ul style="list-style: none;">
-                    <li class="steelInfoLi"><span style="width: 30px; min-width: 30px; border-style:ridge; margin: 0px;">{{steelType}}：</span><input class="boxText" id="steelTypeInput"></input></li>
-                    <li class="steelInfoLi"><span style="width: 30px; border-style:ridge;">{{billetWidth}}：</span><input class="boxText" id="billetWidthInput"></input></li>
-                </ul> -->
                 </form>
             </div>
-            <!-- <button id="playButton" class="button text" onclick="javascript:onPlayButtonClicked()">播放</button>
-            <button class="button text" style="margin: 0px 0px 0px 10px;"
-                onclick="javascript:onOpenFileButtonClicked()">打开文件</button>
-            <input class="button text" style="margin: 0px 0px 0px 10px; visibility: hidden;" id="openFileInput"
-                type="file" onchange="javascript:onOpenFileInputChanged(this)"></input> -->
-        </div>
     </section>
     <section id="animationSection">
         <div id="animationDiv">
@@ -98,13 +89,26 @@
         </div>
 
     </section>
-    <!-- <section id="charSection"></section>
-    <section id="mainSection">
-        <div id="animationDiv"></div>
-        <div id="chartDiv"></div>
-    </section> -->
+    <div class="modal fade" id="dialogDiv" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{message}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="src/view.js"></script>
     <script src="src/predictView.js"></script>
     <script src="src/animationView.js"></script>
+    
     <script src="src/lib/webgl-utils.js"></script>
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>

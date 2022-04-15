@@ -36,7 +36,10 @@ var taskCollectionVueModel = Vue.createApp({
             }).then(response => {
                 taskCollectionVueModel.taskViewModels.splice(idx, 1);
             }).then().catch(
-                err => console.log(err))
+                err => {
+                    console.log(err)
+                    showError(err)
+                })
         }
     }
 }).mount("#taskListTable");
@@ -52,7 +55,9 @@ function getTasks() {
             taskCollectionVueModel.taskViewModels.push(response.data.taskViewModels[i]);
         }
     }).then().catch(
-        err => console.log(err))
+        err => {
+            console.log(err)
+        })
 }
 
 
@@ -76,7 +81,11 @@ var modelCollectionVueModel = Vue.createApp({
             }).then(response => {
                 taskCollectionVueModel.taskViewModels.push(response.data);
             }).then().catch(
-                err => console.log(err))
+                err => {
+                    console.log(err)
+                    showError(err)
+                }
+            )
         },
         onDeleteButtonClicked(id, idx) {
             axios.get(baseServerAddr + '/deleteModelById?id=' + id, {
@@ -85,9 +94,18 @@ var modelCollectionVueModel = Vue.createApp({
                     Accept: "application/json"
                 }
             }).then(response => {
-                modelCollectionVueModel.modelViewModels.splice(idx, 1);
+                if (response.data.statusCode < 0) {
+                    showError(response.data.message)
+                }
+                else {
+                    modelCollectionVueModel.modelViewModels.splice(idx, 1);
+                }
+
             }).then().catch(
-                err => console.log(err))
+                err => {
+                    console.log(err)
+                    showError(err)
+                })
         }
     }
 }).mount("#modelListTable");
@@ -103,7 +121,9 @@ function getModels() {
             modelCollectionVueModel.modelViewModels.push(response.data.mlModelViewModels[i]);
         }
     }).then().catch(
-        err => console.log(err))
+        err => {
+            console.log(err)
+        })
 }
 
 function onCreateModelButtonClicked() {
@@ -115,10 +135,11 @@ function onCreateModelButtonClicked() {
     }).then(response => {
         modelCollectionVueModel.modelViewModels.push(response.data);
     }).then().catch(
-        err => console.log(err))
+        err => {
+            console.log(err)
+            showError(err)
+        })
 }
-
-
 
 getModels();
 getTasks();

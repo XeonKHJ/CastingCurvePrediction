@@ -29,7 +29,11 @@ function submitCastingPriorInfo(form, title = "预测结果") {
         var fileName = filePaths[filePaths.length - 1]
         showCastingCurve(response.data, fileName, vmId);
     }).then().catch(
-        err => console.log(err))
+        err => {
+            console.log(err)
+            showError(err)
+        }
+    )
 }
 
 var chartListViewModel = Vue.createApp({
@@ -72,14 +76,14 @@ var chartCollectionVueModel = Vue.createApp({
                 if (this.chartViewModels[i].chartId == idToDelete) {
                     var element = this.chartViewModels[i];
                     echartToDispose = element;
-        
+
                     if (length == 1) {
                         this.chartViewModels.push(ChartViewModel());
                         this.selectItem(0);
                         this.isEmpty = true;
                     }
-                    else if(this.currentId == idToDelete) {
-        
+                    else if (this.currentId == idToDelete) {
+
                         if (length == i + 1) {
                             this.selectItem(this.chartViewModels[i - 1].chartId);
                         }
@@ -89,7 +93,7 @@ var chartCollectionVueModel = Vue.createApp({
                             this.selectItem(this.chartViewModels[i + 1].chartId);
                         }
                     }
-        
+
                     if (echartToDispose.echart != null) {
                         echartToDispose.echart.clear();
                         echartToDispose.echart.dispose();
@@ -102,11 +106,10 @@ var chartCollectionVueModel = Vue.createApp({
         },
         selectItem(id) {
 
-            if(id == 0)
-            {
+            if (id == 0) {
                 var echartDiv = document.getElementById('echartDiv');
             }
-            else{
+            else {
                 this.chartViewModels.forEach(element => {
                     if (element.chartId == id) {
                         element.isSelected = true;
@@ -122,11 +125,9 @@ var chartCollectionVueModel = Vue.createApp({
                 resizeEverything();
             });
         },
-        addAndDisplayChart(newDataViewModel)
-        {
+        addAndDisplayChart(newDataViewModel) {
             const id = newDataViewModel.chartId;
-            if(this.isEmpty)
-            {
+            if (this.isEmpty) {
                 this.chartViewModels.splice(0, 1);
                 this.isEmpty = false;
             }
@@ -163,7 +164,7 @@ function showCastingCurve(data, title, id) {
         newDataViewModel.isPredictResult = false,
         newDataViewModel.isSelected = true
 
-    chartCollectionVueModel.addAndDisplayChart(newDataViewModel);    
+    chartCollectionVueModel.addAndDisplayChart(newDataViewModel);
 }
 
 function exportToCsv() {
@@ -285,7 +286,7 @@ function onOpenFileButtonClicked() {
 function onOpenFileInputChanged(event) {
     var openFileInput = document.getElementById('openFileInput');
     var filePath = openFileInput.value;
-    
+
     var filePaths = filePath.split('\\');
     var fileName = filePaths[filePaths.length - 1]
     const formData = new FormData();
@@ -336,8 +337,10 @@ function resizeEverything() {
     // canvas.Height = canvasDiv.Height;
     //startAnimation()
 
-    canvas.height = canvasDiv.clientHeight;
-    canvas.width = canvasDiv.clientWidth;
+    console.log("(" + canvasDiv.clientHeight + "," + canvasDiv.clientWidth + ")")
+
+    canvas.height = canvasDiv.clientHeight - 10;
+    canvas.width = canvasDiv.clientWidth - 10;
 }
 
 
