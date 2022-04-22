@@ -1,13 +1,19 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
-public class TaskViewModel {
+import xjtuse.castingcurvepredict.models.TaskModel;
+
+public class TaskViewModel extends StatusViewModel {
     private String _status;
     private int _id;
     private double _loss;
     private int _epoch;
     private int _modelId;
 
-    public TaskViewModel() {
+    public TaskViewModel(TaskModel tm) {
+        _status = tm.getStatus().toString();
+        _id = (int)tm.getId();
+        _loss = tm.getLoss();
+        _epoch = tm.getEpoch();
     }
 
     public TaskViewModel(int id, double loss, String status, int epoch, int modelId) {

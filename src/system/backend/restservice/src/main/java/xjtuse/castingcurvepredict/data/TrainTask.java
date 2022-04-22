@@ -1,7 +1,12 @@
 package xjtuse.castingcurvepredict.data;
 
+import java.io.ObjectInputFilter.Status;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
+import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.models.TaskModel;
 
 public class TrainTask {
@@ -39,15 +44,34 @@ public class TrainTask {
         return Epoch;
     }
 
-    public int getModelId()
-    {
+    public int getModelId() {
         return ModelId;
     }
 
-    public TaskModel getInstance()
-    {
-        TaskModel model = new TaskModel(Id);
+    public TaskModel getInstance() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTimeDate = null;
+        Date endTimeDate = null;
 
+        try {
+            startTimeDate = simpleDateFormat.parse(startTime);
+        } catch (ParseException e) {
+
+        }
+        try {
+            endTimeDate = simpleDateFormat.parse(endTime);
+        } catch (ParseException e) {
+
+        }
+
+        TaskStatus status;
+        if (Status.equals("Training")) {
+            status = TaskStatus.Training;
+        } else {
+            status = TaskStatus.Stopped;
+        }
+
+        TaskModel model = new TaskModel(Id, Loss, Epoch, status, startTimeDate, endTimeDate);
         return model;
     }
 }

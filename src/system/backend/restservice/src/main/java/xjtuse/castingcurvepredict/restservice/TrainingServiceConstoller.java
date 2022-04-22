@@ -1,5 +1,6 @@
 package xjtuse.castingcurvepredict.restservice;
 
+import java.io.ObjectInputFilter.Status;
 import java.time.Instant;
 import java.util.ArrayList;
 
@@ -18,7 +19,8 @@ import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.data.TrainTask;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
-import xjtuse.castingcurvepredict.models.TaskManager;
+import xjtuse.castingcurvepredict.models.ITaskEventListener;
+
 import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
 import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
@@ -29,7 +31,7 @@ import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
 @CrossOrigin
 @RestController
-public class TrainingServiceConstoller {
+public class TrainingServiceConstoller implements ITaskEventListener {
     @GetMapping("/getModelFromId")
     public MLModelViewModel getModelFromId(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -45,7 +47,7 @@ public class TrainingServiceConstoller {
     @GetMapping("/createTrainingTask")
     public TaskViewModel createTrainingTask(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        TaskViewModel viewModel = new TaskViewModel();
+        TaskViewModel viewModel = null;
         try (SqlSession session = sessionFactory.openSession()) {
             TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
             // TaskModel newTask = TaskManager.CreateTask();
@@ -71,8 +73,10 @@ public class TrainingServiceConstoller {
         try (SqlSession session = sessionFactory.openSession()) {
             TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
             TrainTask task = mapper.getTaskById(id);
-            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(task.getInstance());
+            var taskInstance = task.getInstance();
+            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
             sm.saveStatus(TaskStatus.Training);
+            taskInstance.Start();
         }
         catch(Exception ex){
             vm.setStatusCode(-3);
@@ -80,13 +84,6 @@ public class TrainingServiceConstoller {
 
         return vm;
     }
-
-    // @GetMapping("/stopTask")
-    // public StatusViewModel stopTask(@RequestParam(value="taskId") int id)
-    // {
-    //     StatusViewModel vm = new StatusViewModel();
-        
-    // }
 
     @GetMapping("/getModels")
     public ModelCollectionViewModel getModels() {
@@ -162,4 +159,22 @@ public class TrainingServiceConstoller {
         return viewModel;
     }
 
+    @Override
+    public void onTaskStarting(TaskModel task) {
+        
+        
+    }
+
+    @Override
+    public void onTaskStarted(TaskModel task) {
+        var sm = RestserviceApplication.getConfig().getStatusManager(task);
+        sm.saveStatus(TaskStatus.Training);
+    }
+
+    @Override
+    public void onTaskStopped(TaskModel task) {
+        var sm = RestserviceApplication.getConfig().getStatusManager(task);
+        sm.saveStatus(TaskStatus.Stopped);
+        
+    }
 }

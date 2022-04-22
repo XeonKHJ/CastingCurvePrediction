@@ -3,7 +3,7 @@ package xjtuse.castingcurvepredict.models;
 import java.util.Vector;
 import java.util.EventListener;
 
-public class TaskManager implements TaskEventListener {
+public class TaskManager implements ITaskEventListener {
     static Vector<TaskModel> runningTasks;
     static TaskManager mTaskManager;
 
