@@ -4,10 +4,15 @@ import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
+import org.springframework.scheduling.config.Task;
+
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
+import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener;
 import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
+import xjtuse.castingcurvepredict.models.TaskModel;
 
 // 以流的方式实现状态管理。
 // 一旦状态被读取后，就会从缓冲区中删除，不可再读。
@@ -16,6 +21,8 @@ public class StreamStatusManager implements IStatusManager {
 
     SortedMap<Date, Double> mLosses = new TreeMap<Date, Double>();
     SortedMap<Date, Integer> mEpochs = new TreeMap<Date, Integer>();
+    private TaskModel mTask;
+    private Vector<IStatusManagerEventListener> mListeners = new Vector<>();
     TaskStatus mStatus;
     Semaphore mutex;
 
@@ -33,6 +40,16 @@ public class StreamStatusManager implements IStatusManager {
     @Override
     public void saveStatus(TaskStatus status) {
         mStatus = status;
+        mTask.setStatus(status);
+        switch (status) {
+            case Stopped:
+                for (var listener : mListeners) {
+                    listener.onTaskStopped(this);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -78,4 +95,25 @@ public class StreamStatusManager implements IStatusManager {
         return mStatus;
     }
 
+    @Override
+    public void AddEventListener(IStatusManagerEventListener listener) {
+        mListeners.add(listener);
+    }
+
+    @Override
+    public void RemoveEventListenr(IStatusManagerEventListener listener) {
+        mListeners.remove(listener);
+    }
+
+    @Override
+    public void setTask(TaskModel task) {
+        // TODO Auto-generated method stub
+        mTask = task;
+    }
+
+    @Override
+    public TaskModel getTask() {
+        // TODO Auto-generated method stub
+        return mTask;
+    }
 }
