@@ -40,9 +40,69 @@ var taskCollectionVueModel = Vue.createApp({
                     console.log(err)
                     showError(err)
                 })
+        },
+        onStartButtonClicked(task) {
+            task.status = "Starting"
+            axios.get(baseServerAddr + '/startTrainingTask?taskId=' + task.id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                switch (response.data.statusCode) {
+                    case 1:
+                        task.status = "Training";
+                        break;
+                    default:
+                        task.status = "Stopped"
+                        showError(response.message);
+                }
+            }).then().catch(
+                err => {
+                    task.status = "Stopped"
+                    console.log(err)
+                    showError(err)
+                })
+        },
+        // TODO Stop task.
+        onStopButtonClicked(id, idx) {
+            axios.get(baseServerAddr + '/stopTask?taskId=' + task.id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                taskCollectionVueModel.taskViewModels.splice(idx, 1);
+            }).then().catch(
+                err => {
+                    console.log(err)
+                    showError(err)
+                })
         }
     }
 }).mount("#taskListTable");
+
+function getStatusByTaskId(taskId) {
+    axios.get(baseServerAddr + '/getTaskStatus?taskId=' + taskId, {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        switch (response.statusCode) {
+            case 1:
+                task.status = "Training";
+            default:
+                task.status = "Stopped"
+                showError(response.message);
+        }
+    }).then().catch(
+        err => {
+            task.status = "Stopped"
+            console.log(err)
+            showError(err)
+        })
+}
 
 function getTasks() {
     axios.get(baseServerAddr + '/getTasks', {
@@ -73,7 +133,7 @@ var modelCollectionVueModel = Vue.createApp({
     },
     methods: {
         onCreateTaskButtonClicked(id) {
-            axios.get(baseServerAddr + '/createTrainningTask?id=' + id, {
+            axios.get(baseServerAddr + '/createTrainingTask?id=' + id, {
                 Headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     Accept: "application/json"

@@ -3,6 +3,7 @@ package xjtuse.castingcurvepredict.restservice;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xjtuse.castingcurvepredict.data.TrainTask;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
+import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskCollectionViewModel;
+import xjtuse.castingcurvepredict.viewmodels.TaskStatusViewModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
 @CrossOrigin
@@ -24,7 +27,7 @@ public class TaskServiceController {
         ArrayList<TaskViewModel> modelViewModels = new ArrayList<TaskViewModel>();
         try (SqlSession session = sessionFactory.openSession()) {
             TrainTaskMapper mlModelMapper = session.getMapper(TrainTaskMapper.class);
-            models = mlModelMapper.getModels();
+            models = mlModelMapper.getTasks();
         }
 
         if (models != null) {
@@ -36,5 +39,17 @@ public class TaskServiceController {
         }
 
         return new TaskCollectionViewModel(modelViewModels);
+    }
+
+    @GetMapping("/getTaskStatus")
+    public TaskStatusViewModel getStatusByTaskId(@Param(value="taskId") int taskId)
+    {
+        TaskStatusViewModel vm = new TaskStatusViewModel();
+        
+        var sm = RestserviceApplication.getConfig().getStatusManager(new TaskModel(taskId));
+        vm.setEpochs(sm.readEpochs());
+        vm.setLosses(sm.readLosses());
+
+        return vm;
     }
 }

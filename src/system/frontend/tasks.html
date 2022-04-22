@@ -69,7 +69,10 @@
                         <td class="col text-end">
                         <td class="col text-end">
                             <button class="btn btn-secondary btn-sm">查看</button>
-                            <button class="btn btn-secondary btn-sm ms-2">暂停</button>
+                            <button class="btn btn-secondary btn-sm ms-2" v-if="taskViewModel.status == 'Stopped'"
+                                @click="onStartButtonClicked(taskViewModel)">开始</button>
+                            <button class="btn btn-secondary btn-sm ms-2" v-else
+                                @click="onStopButtonClicked(taskViewModel)">暂停</button>
                             <button class="btn btn-secondary btn-sm ms-2"
                                 @click="onDeleteButtonClicked(taskViewModel.id, index)">删除
                             </button>

@@ -3,15 +3,17 @@ package xjtuse.castingcurvepredict.models;
 import java.util.Calendar;
 import java.util.Vector;
 
+import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
+
 public class TaskModel {
 
     private Vector<TaskEventListener> mListeners;
     private TaskStatus mStatus;
     private Calendar startTime;
     private Calendar stopTime;
-    private int mId;
+    private long mId;
 
-    public TaskModel(int id) {
+    public TaskModel(long id) {
         mId = id;
     }
 
@@ -19,7 +21,7 @@ public class TaskModel {
         mListeners.add(listener);
     }
 
-    public int getId() {
+    public long getId() {
         return mId;
     }
 

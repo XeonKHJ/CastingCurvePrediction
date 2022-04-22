@@ -27,7 +27,7 @@ public class TaskManager implements TaskEventListener {
         return result;
     }
 
-    static void LoadAllTrainningTasks()
+    static void LoadAllTrainingTasks()
     {
         
     }

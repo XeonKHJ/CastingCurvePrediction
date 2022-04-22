@@ -7,11 +7,11 @@
   <select id="getTaskById" resultType="TrainTask">
     select * from Task where Id = #{id}
   </select>
-  <select id="getModels" resultType="TrainTask">
+  <select id="getTasks" resultType="TrainTask">
     SELECT * FROM Task
   </select>
   <select id="getWorkingTasks" resultType="TrainTask">
-    SELECT * FROM Task WHERE status = 'Trainning' or status = 'Updating'
+    SELECT * FROM Task WHERE status = 'Training' or status = 'Updating'
   </select>
   <insert id="createTask" useGeneratedKeys="true" keyProperty="Id" parameterType="TrainTask">
     INSERT INTO Task (`Epoch`, `Loss`, `Status`, `ModelId`) VALUES (${Epoch}, ${Loss}, '${status}', ${ModelId})
@@ -22,9 +22,6 @@
   <insert id="createModel" useGeneratedKeys="true" keyProperty="Id" parameterType="MlModel">
     INSERT INTO `MLModel` (`Path`, `Loss`, `Name`, `Status`) VALUES ('${Path}', '${mLoss}', '${Name}', '${mStatus}');
   </insert>
-  <select id="getModelById" resultType="MlModel">
-    SELECT * FROM `MLModel` WHERE `Id` = '${id}';
-  </select>
   <delete id="deleteTaskById">
     DELETE FROM `Task` WHERE (`Id` = '${id}')
   </delete>

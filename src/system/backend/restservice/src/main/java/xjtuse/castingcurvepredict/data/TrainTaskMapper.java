@@ -5,9 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface TrainTaskMapper {
-    public TrainTask getMlModelById(@Param("id") long id);
-
-    public List<TrainTask> getModels();
+    public List<TrainTask> getTasks();
 
     public void createTask(TrainTask task);
 
@@ -17,7 +15,7 @@ public interface TrainTaskMapper {
 
     void createModel(MlModel model);
 
-    public MlModel getModelById(int id);
+    public TrainTask getTaskById(long id);
 
     public void deleteTaskById(int id);
 }

@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import xjtuse.castingcurvepredict.castingpredictiors.*;
-import xjtuse.castingcurvepredict.interfaces.*;
+import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.castingpredictiors.impls.JsonFileCastingGenerator;
 import xjtuse.castingcurvepredict.models.*;
 import xjtuse.castingcurvepredict.viewmodels.*;
 
@@ -54,7 +55,7 @@ public class CastingCurveServiceController {
             castFile = File.createTempFile("castingcurve", "data");
             file.transferTo(castFile);
 
-            CastingInputModel inputModel = new CastingInputModel();
+            GeneratorInput inputModel = new GeneratorInput();
             inputModel.getKeyValues().put("file", castFile);
             generator.PredcitCastingCurve(inputModel);
             CastingModel castingModel = new CastingModel(generator);
@@ -72,7 +73,7 @@ public class CastingCurveServiceController {
         return new DiagramViewModel(resultModel);
     }
 
-    HashMap<UUID, TrainningStatusViewModel> uploadList = new HashMap<UUID, TrainningStatusViewModel>();
+    HashMap<UUID, TrainingStatusViewModel> uploadList = new HashMap<UUID, TrainingStatusViewModel>();
     @PostMapping("/uploadAndTrainModel")
     public UploadResultViewModel uploadAndTrainModel(MultipartFile file)
     {
@@ -83,11 +84,11 @@ public class CastingCurveServiceController {
 
         
         String fileName = file.getOriginalFilename();
-        String filePath = CastingConfig.getModelFolderPath();
+        String filePath = RestserviceApplication.getConfig().getModelDir();
         File dest = new File(filePath + fileName);
 
         // check file.
-        TrainningStatusViewModel statusViewModel = new TrainningStatusViewModel();
+        TrainingStatusViewModel statusViewModel = new TrainingStatusViewModel();
         // Generate UUID.
         UUID uuid = UUID.randomUUID();
         uploadList.put(uuid, statusViewModel);
@@ -107,18 +108,18 @@ public class CastingCurveServiceController {
         return resultViewModel;
     }
 
-    @GetMapping("/getUploadAndTrainningStatus")
-    public TrainningStatusViewModel getUploadAndTrainningStatus(@RequestParam(value = "uuid") String uuidString)
+    @GetMapping("/getUploadAndTrainingStatus")
+    public TrainingStatusViewModel getUploadAndTrainingStatus(@RequestParam(value = "uuid") String uuidString)
     {
         UUID uuid = UUID.fromString(uuidString);
-        TrainningStatusViewModel statusViewModel = uploadList.get(uuid);
+        TrainingStatusViewModel statusViewModel = uploadList.get(uuid);
         if(statusViewModel != null)
         {
             // Check status;
             
         }
         else{
-            statusViewModel = new TrainningStatusViewModel();
+            statusViewModel = new TrainingStatusViewModel();
             statusViewModel.setStatusCode(-3);
         }
 

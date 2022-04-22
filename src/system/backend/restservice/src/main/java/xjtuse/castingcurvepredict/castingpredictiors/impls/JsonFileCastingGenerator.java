@@ -1,19 +1,19 @@
-package xjtuse.castingcurvepredict.castingpredictiors;
+package xjtuse.castingcurvepredict.castingpredictiors.impls;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import xjtuse.castingcurvepredict.interfaces.*;
+import xjtuse.castingcurvepredict.castingpredictiors.GeneratorInput;
+import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.models.*;
 
 public class JsonFileCastingGenerator implements ICastingGenerator {
 
     @Override
-    public CastingResultModel PredcitCastingCurve(CastingInputModel input) {
+    public CastingResultModel PredcitCastingCurve(GeneratorInput input) {
         // TODO Auto-generated method stub
         File file = (File) input.getKeyValues().get("file");
         CastingResultModel resultModel = new CastingResultModel();
@@ -50,12 +50,6 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
     }
 
     @Override
-    public ArrayList<PredictionModel> getModelList() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void updateModel(CastingModel data) {
         // TODO Auto-generated method stub
 
@@ -67,4 +61,9 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
 
     }
 
+    @Override
+    public void train() {
+        // TODO Auto-generated method stub
+        
+    }
 }

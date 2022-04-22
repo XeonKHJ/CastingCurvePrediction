@@ -1,24 +1,19 @@
-package xjtuse.castingcurvepredict.castingpredictiors;
+package xjtuse.castingcurvepredict.castingpredictiors.impls;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import xjtuse.castingcurvepredict.interfaces.*;
-import xjtuse.castingcurvepredict.models.CastingInputModel;
+import xjtuse.castingcurvepredict.castingpredictiors.GeneratorInput;
+import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.models.CastingModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
-import xjtuse.castingcurvepredict.models.PredictionModel;
 
 public class ConstCastingGenerator implements ICastingGenerator {
-    public ConstCastingGenerator()
-    {
-        
-    }
 
     @Override
-    public CastingResultModel PredcitCastingCurve(CastingInputModel input) {
+    public CastingResultModel PredcitCastingCurve(GeneratorInput input) {
         // Read data from json
         CastingResultModel resultModel = new CastingResultModel();
 
@@ -50,12 +45,6 @@ public class ConstCastingGenerator implements ICastingGenerator {
     }
 
     @Override
-    public ArrayList<PredictionModel> getModelList() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void updateModel(CastingModel data) {
         // TODO Auto-generated method stub
         
@@ -63,6 +52,12 @@ public class ConstCastingGenerator implements ICastingGenerator {
 
     @Override
     public void updateModel(ArrayList<CastingModel> datas) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void train() {
         // TODO Auto-generated method stub
         
     }

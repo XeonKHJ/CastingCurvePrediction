@@ -2,6 +2,8 @@ package xjtuse.castingcurvepredict.data;
 
 import java.util.Calendar;
 
+import xjtuse.castingcurvepredict.models.TaskModel;
+
 public class TrainTask {
 
     // TODO make all those members private;
@@ -40,5 +42,12 @@ public class TrainTask {
     public int getModelId()
     {
         return ModelId;
+    }
+
+    public TaskModel getInstance()
+    {
+        TaskModel model = new TaskModel(Id);
+
+        return model;
     }
 }

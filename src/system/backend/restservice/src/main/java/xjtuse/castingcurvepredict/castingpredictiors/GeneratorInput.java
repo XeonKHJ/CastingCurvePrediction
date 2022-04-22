@@ -1,13 +1,12 @@
-package xjtuse.castingcurvepredict.models;
+package xjtuse.castingcurvepredict.castingpredictiors;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 
-public class CastingInputModel {
+public class GeneratorInput {
     private int param = 0;
     private HashMap<String, Object> _keyValues = new HashMap<String, Object>();
 
-    public CastingInputModel() {
+    public GeneratorInput() {
 
     }
 

@@ -9,9 +9,13 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import xjtuse.castingcurvepredict.config.IConfigFactory;
+import xjtuse.castingcurvepredict.config.TestEnvConfig;
+
 @SpringBootApplication
 public class RestserviceApplication {
 	private static SqlSessionFactory mSqlSessionFactory;
+	private static IConfigFactory config = new TestEnvConfig();
 	public static void main(String[] args) throws IOException {
 		loadMybatis();
 		SpringApplication.run(RestserviceApplication.class, args);
@@ -27,5 +31,9 @@ public class RestserviceApplication {
 	public static SqlSessionFactory getSqlSessionFactory()
 	{
 		return mSqlSessionFactory;
+	}
+
+	public static IConfigFactory getConfig(){
+		return config;
 	}
 }

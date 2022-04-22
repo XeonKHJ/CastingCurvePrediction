@@ -2,16 +2,6 @@ section{
     background-color: transparent;
 }
 
-/* #trainningControlSection{
-    position: absolute;
-    /* background-color: red; */
-    height: 150px;
-    /* width: 100%; */
-    left: 0px;
-    right: 0px;
-    top: 65px;
-    /* opacity: 0.4; */
-} */
 
 #datasetPathInput{
     width: 70%;
@@ -34,7 +24,7 @@ section{
     align-items: center;
 }
 
-#trainningInfoSection{
+#trainingInfoSection{
     position: absolute;
     top:215px;
     /* background-color: red; */
@@ -47,7 +37,7 @@ section{
     /* width: 100%; */
 }
 
-#trainningInfoDiv{
+#trainingInfoDiv{
     position: absolute;
     top: 5px;
     left: 10px;

@@ -1,6 +1,7 @@
 package xjtuse.castingcurvepredict.models;
 
-import xjtuse.castingcurvepredict.interfaces.ICastingGenerator;
+import xjtuse.castingcurvepredict.castingpredictiors.GeneratorInput;
+import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 
 public class CastingModel {
     private ICastingGenerator _generator;
@@ -9,7 +10,7 @@ public class CastingModel {
         _generator = generator;
     }
 
-    public CastingResultModel PredictCastingCurve(CastingInputModel inputModel) {
+    public CastingResultModel PredictCastingCurve(GeneratorInput inputModel) {
         return _generator.PredcitCastingCurve(inputModel);
     }
 }

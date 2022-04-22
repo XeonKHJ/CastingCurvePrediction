@@ -2,7 +2,7 @@ package xjtuse.castingcurvepredict.viewmodels;
 
 import org.yaml.snakeyaml.external.com.google.gdata.util.common.base.PercentEscaper;
 
-public class TrainningStatusViewModel extends StatusViewModel {
+public class TrainingStatusViewModel extends StatusViewModel {
     private double _percentage;
     public void setPercentage(double percentage)
     {

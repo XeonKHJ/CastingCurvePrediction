@@ -4,12 +4,12 @@ var uploadInputViewModel = Vue.createApp({
             datasetPath: "数据集路径",
             data: "",
             status: "无数据集",
-            isTrainning: false
+            isTraining: false
         }
     }
 }).mount('#uploadDatasetDiv')
 
-var trainningStatusViewModel = Vue.createApp({
+var trainingStatusViewModel = Vue.createApp({
     data() {
         return
         {
@@ -35,7 +35,7 @@ var isUploading = true;
 function getUploadStatus() {
     if (isUploading) {
         uploadInputViewModel.status = "正在上传……";
-        uploadInputViewModel.isTrainning = true;
+        uploadInputViewModel.isTraining = true;
     }
 }
 
@@ -55,7 +55,7 @@ function onTrainButtonClicked() {
     getUploadStatus();
 }
 
-function onStopTrainningClicked()
+function onStopTrainingClicked()
 {
     console.log("正在停止训练");
 }

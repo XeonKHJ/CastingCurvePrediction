@@ -2,12 +2,8 @@ package xjtuse.castingcurvepredict.restservice;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.DataModel;
-
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -16,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
+import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.data.TrainTask;
@@ -31,7 +29,7 @@ import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
 @CrossOrigin
 @RestController
-public class TrainningServiceConstoller {
+public class TrainingServiceConstoller {
     @GetMapping("/getModelFromId")
     public MLModelViewModel getModelFromId(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -44,8 +42,8 @@ public class TrainningServiceConstoller {
         return null;
     }
 
-    @GetMapping("/createTrainningTask")
-    public TaskViewModel createTrainningTask(@RequestParam(value = "id") int id) {
+    @GetMapping("/createTrainingTask")
+    public TaskViewModel createTrainingTask(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         TaskViewModel viewModel = new TaskViewModel();
         try (SqlSession session = sessionFactory.openSession()) {
@@ -58,12 +56,37 @@ public class TrainningServiceConstoller {
             dataModel.Status = "Stopped";
 
             mapper.createTask(dataModel);
-            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch, dataModel.ModelId);
+            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
+                    dataModel.ModelId);
             session.commit();
         }
-
         return viewModel;
     }
+
+    @GetMapping("/startTrainingTask")
+    public StatusViewModel startTrainingTask(@RequestParam(value = "taskId") int id) {
+        StatusViewModel vm = new StatusViewModel();
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            TrainTask task = mapper.getTaskById(id);
+            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(task.getInstance());
+            sm.saveStatus(TaskStatus.Training);
+        }
+        catch(Exception ex){
+            vm.setStatusCode(-3);
+        }
+
+        return vm;
+    }
+
+    // @GetMapping("/stopTask")
+    // public StatusViewModel stopTask(@RequestParam(value="taskId") int id)
+    // {
+    //     StatusViewModel vm = new StatusViewModel();
+        
+    // }
 
     @GetMapping("/getModels")
     public ModelCollectionViewModel getModels() {
@@ -115,8 +138,6 @@ public class TrainningServiceConstoller {
             model.setName("model-" + Instant.now().toString());
             // 路径命名：
             model.setPath("C:\\model-" + Instant.now().toString() + ".model");
-            ;
-
             mapper.createModel(model);
             session.commit();
             viewModel = new MLModelViewModel(model);
@@ -140,5 +161,5 @@ public class TrainningServiceConstoller {
 
         return viewModel;
     }
-    
+
 }
