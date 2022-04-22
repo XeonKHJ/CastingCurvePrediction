@@ -10,6 +10,7 @@ import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.DummyCastingGener
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
 import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.viewmodels.IViewModel;
 
 public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListener {
     private static Hashtable<Long, IStatusManager> taskStatusMapper = new Hashtable<>();
@@ -61,6 +62,12 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
         if (task != null) {
             taskStatusMapper.remove(task.getId());
         }
+    }
+
+    @Override
+    public void setErrorMessageOnViewModel(IViewModel viewModel, Exception exception) {
+        // TODO Auto-generated method stub
+        viewModel.setMessage(exception.getMessage() + exception.getStackTrace().toString());
     }
 
 }

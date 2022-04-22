@@ -1,6 +1,6 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
-public class StatusViewModel {
+public class StatusViewModel implements IViewModel {
     private int _statusCode = 1;
     private String _message;
     public int getStatusCode() {

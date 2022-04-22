@@ -13,15 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
-import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.data.TrainTask;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
-import xjtuse.castingcurvepredict.models.ITaskEventListener;
 
-import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
 import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
@@ -31,7 +27,7 @@ import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
 @CrossOrigin
 @RestController
-public class TrainingServiceConstoller implements ITaskEventListener {
+public class TrainingServiceConstoller {
     @GetMapping("/getModelFromId")
     public MLModelViewModel getModelFromId(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -63,26 +59,6 @@ public class TrainingServiceConstoller implements ITaskEventListener {
             session.commit();
         }
         return viewModel;
-    }
-
-    @GetMapping("/startTrainingTask")
-    public StatusViewModel startTrainingTask(@RequestParam(value = "taskId") int id) {
-        StatusViewModel vm = new StatusViewModel();
-        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-
-        try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            TrainTask task = mapper.getTaskById(id);
-            var taskInstance = task.getInstance();
-            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            sm.saveStatus(TaskStatus.Training);
-            taskInstance.Start();
-        }
-        catch(Exception ex){
-            vm.setStatusCode(-3);
-        }
-
-        return vm;
     }
 
     @GetMapping("/getModels")
@@ -157,24 +133,5 @@ public class TrainingServiceConstoller implements ITaskEventListener {
         }
 
         return viewModel;
-    }
-
-    @Override
-    public void onTaskStarting(TaskModel task) {
-        
-        
-    }
-
-    @Override
-    public void onTaskStarted(TaskModel task) {
-        var sm = RestserviceApplication.getConfig().getStatusManager(task);
-        sm.saveStatus(TaskStatus.Training);
-    }
-
-    @Override
-    public void onTaskStopped(TaskModel task) {
-        var sm = RestserviceApplication.getConfig().getStatusManager(task);
-        sm.saveStatus(TaskStatus.Stopped);
-        
     }
 }

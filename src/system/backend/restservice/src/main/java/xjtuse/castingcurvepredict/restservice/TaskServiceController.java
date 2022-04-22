@@ -3,16 +3,19 @@ package xjtuse.castingcurvepredict.restservice;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
+import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.data.TrainTask;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskCollectionViewModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskStatusViewModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
@@ -42,7 +45,7 @@ public class TaskServiceController {
     }
 
     @GetMapping("/getTaskStatus")
-    public TaskStatusViewModel getStatusByTaskId(@Param(value="taskId") int taskId)
+    public TaskStatusViewModel getStatusByTaskId(@RequestParam(value="taskId") int taskId)
     {
         TaskStatusViewModel vm = new TaskStatusViewModel();
         
@@ -50,6 +53,35 @@ public class TaskServiceController {
         vm.setEpochs(sm.readEpochs());
         vm.setLosses(sm.readLosses());
 
+        return vm;
+    }
+
+    @GetMapping("/startTrainingTask")
+    public StatusViewModel startTrainingTask(@RequestParam(value = "taskId") int id) {
+        StatusViewModel vm = new StatusViewModel();
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            TrainTask task = mapper.getTaskById(id);
+            var taskInstance = task.getInstance();
+            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
+            sm.saveStatus(TaskStatus.Training);
+            taskInstance.Start();
+        }
+        catch(Exception ex){
+            vm.setStatusCode(-3);
+            vm.setMessage(ex.getMessage());
+        }
+
+        return vm;
+    }
+
+    @GetMapping("/StopTask")
+    public StatusViewModel stopTask(@RequestParam(value = "taskId") int id)
+    {
+        StatusViewModel vm = new StatusViewModel();
+        // TODO 实现停止任务功能.
         return vm;
     }
 }
