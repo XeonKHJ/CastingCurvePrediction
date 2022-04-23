@@ -1,97 +1,48 @@
-function TaskViewModel(id = 0, loss = 0.0, status = "Stopped", modelId) {
-    return {
-        id: id,
-        loss: loss,
-        status: status,
-        modelId: modelId
-    }
+function onLoad() {
+    displayLossChart(null)
+    taskId = parseInt(getQueryString("taskId"));
+    getTaskByid(taskId);
+    getTaskStatusById(taskId);
 }
 
-function ModelViewModel(id = 0, loss = 0.0, status = "untrained") {
-    return {
-        id: 0,
-        loss: 0.0,
-        path: "don't know",
-        status: status
-    }
+window.onresize = function(){
+    resizeEverything();
 }
 
-var taskCollectionVueModel = Vue.createApp({
+var taskStatusVm = Vue.createApp({
     data() {
         return {
-            isEmpty: true,
-            taskViewModels: [
-                TaskViewModel()
-            ],
-            currentId: 0
-        }
-    },
-    methods: {
-        onDeleteButtonClicked(id, idx) {
-            axios.get(baseServerAddr + '/deleteTaskById?id=' + id, {
-                Headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                taskCollectionVueModel.taskViewModels.splice(idx, 1);
-            }).then().catch(
-                err => {
-                    console.log(err)
-                    showError(err)
-                })
-        },
-        onStartButtonClicked(task) {
-            task.status = "Starting"
-            axios.get(baseServerAddr + '/startTrainingTask?taskId=' + task.id, {
-                Headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                switch (response.data.statusCode) {
-                    case 1:
-                        task.status = "Training";
-                        break;
-                    default:
-                        task.status = "Stopped"
-                        showError(response.message);
-                }
-            }).then().catch(
-                err => {
-                    task.status = "Stopped"
-                    console.log(err)
-                    showError(err)
-                })
-        },
-        // TODO Stop task.
-        onStopButtonClicked(id, idx) {
-            axios.get(baseServerAddr + '/stopTask?taskId=' + task.id, {
-                Headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                taskCollectionVueModel.taskViewModels.splice(idx, 1);
-            }).then().catch(
-                err => {
-                    console.log(err)
-                    showError(err)
-                })
+            id: 0,
+            status: "training",
+            losses: {
+                time:[],
+                value:[]
+            }
         }
     }
 }).mount("#taskListTable");
 
-function getStatusByTaskId(taskId) {
-    axios.get(baseServerAddr + '/getTaskStatus?taskId=' + taskId, {
+function getQueryString(name) {
+    let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    let r = window.location.search.substr(1).match(reg);
+    if (r != null) {
+        return decodeURIComponent(r[2]);
+    };
+    return null;
+}
+
+function getTaskByid(id) {
+    var result = null;
+    axios.get(baseServerAddr + '/getTaskById?id=' + id, {
         Headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             Accept: "application/json"
         }
     }).then(response => {
-        switch (response.statusCode) {
+        switch (response.data.statusCode) {
             case 1:
-                task.status = "Training";
+                result = response.data;
+                break;
             default:
                 task.status = "Stopped"
                 showError(response.message);
@@ -102,98 +53,18 @@ function getStatusByTaskId(taskId) {
             console.log(err)
             showError(err)
         })
+    return result;
 }
 
-function getTasks() {
-    axios.get(baseServerAddr + '/getTasks', {
+function getTaskStatusById(id) {
+    axios.get(baseServerAddr + '/getTaskStatusById?id=' + id, {
         Headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             Accept: "application/json"
         }
     }).then(response => {
-        for (i = 0; i < response.data.taskViewModels.length; ++i) {
-            taskCollectionVueModel.taskViewModels.push(response.data.taskViewModels[i]);
-        }
-    }).then().catch(
-        err => {
-            console.log(err)
-        })
-}
+        data = response.data;
 
-
-var modelCollectionVueModel = Vue.createApp({
-    data() {
-        return {
-            isEmpty: true,
-            modelViewModels: [
-                ModelViewModel()
-            ],
-            currentId: 0
-        }
-    },
-    methods: {
-        onCreateTaskButtonClicked(id) {
-            axios.get(baseServerAddr + '/createTrainingTask?id=' + id, {
-                Headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                taskCollectionVueModel.taskViewModels.push(response.data);
-            }).then().catch(
-                err => {
-                    console.log(err)
-                    showError(err)
-                }
-            )
-        },
-        onDeleteButtonClicked(id, idx) {
-            axios.get(baseServerAddr + '/deleteModelById?id=' + id, {
-                Headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json"
-                }
-            }).then(response => {
-                if (response.data.statusCode < 0) {
-                    showError(response.data.message)
-                }
-                else {
-                    modelCollectionVueModel.modelViewModels.splice(idx, 1);
-                }
-
-            }).then().catch(
-                err => {
-                    console.log(err)
-                    showError(err)
-                })
-        }
-    }
-}).mount("#modelListTable");
-
-function getModels() {
-    axios.get(baseServerAddr + '/getModels', {
-        Headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json"
-        }
-    }).then(response => {
-        for (i = 0; i < response.data.mlModelViewModels.length; ++i) {
-            modelCollectionVueModel.modelViewModels.push(response.data.mlModelViewModels[i]);
-        }
-    }).then().catch(
-        err => {
-            console.log(err)
-        })
-}
-
-function onCreateModelButtonClicked() {
-    axios.get(baseServerAddr + '/createModel', {
-        Headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json"
-        }
-    }).then(response => {
-        modelCollectionVueModel.modelViewModels.push(response.data);
     }).then().catch(
         err => {
             console.log(err)
@@ -201,5 +72,55 @@ function onCreateModelButtonClicked() {
         })
 }
 
-getModels();
-getTasks();
+function displayLossChart(data)
+{
+    var echart = echarts.init(document.getElementById("lossChartDiv"));
+    currentChart = echart
+    var option = {
+        xAxis: {
+            type: 'category',
+            data: [1,2,3]
+        },
+        yAxis: [
+            {
+                type: 'value',
+                min: -2
+            },
+            {
+                type: 'value',
+                min: -2
+            }
+
+        ],
+        series: [
+            {
+                data: [1,2,3],
+                yAxis: 0,
+                type: 'line'
+            },
+            {
+                data: [1,1.1,1.2],
+                yAxis: 2,
+                type: 'line'
+            }
+        ]
+    };
+
+    echart.setOption(option)
+}
+
+window.setInterval(updateStatus, 2000);
+
+function updateStatus()
+{
+    const taskStatusAndLoss = getTaskStatusById(id)
+    taskStatusAndLoss.losses.forEach(element => {
+        taskStatusVm.losses.time.add(losses.time);
+        taskStatusVm.losses.value.add(losses.value);
+    });
+}
+
+function resizeEverything()
+{
+    echart.resize();
+}

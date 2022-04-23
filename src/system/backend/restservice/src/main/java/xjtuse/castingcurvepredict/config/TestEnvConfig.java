@@ -30,9 +30,10 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
 
     @Override
     public IStatusManager getStatusManager(TaskModel model) {
-        // TODO Auto-generated method stub
         if (taskStatusMapper.get(model.getId()) == null) {
-            taskStatusMapper.put(model.getId(), createStatusManager());
+            var sm = createStatusManager();
+            sm.setTask(model);
+            taskStatusMapper.put(model.getId(), sm);
         }
 
         return taskStatusMapper.get(model.getId());

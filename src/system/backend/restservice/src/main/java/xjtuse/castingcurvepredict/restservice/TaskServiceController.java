@@ -81,7 +81,22 @@ public class TaskServiceController {
     public StatusViewModel stopTask(@RequestParam(value = "taskId") int id)
     {
         StatusViewModel vm = new StatusViewModel();
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+
         // TODO 实现停止任务功能.
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            TrainTask task = mapper.getTaskById(id);
+            var taskInstance = task.getInstance();
+            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
+            sm.saveStatus(TaskStatus.Stopped);
+            taskInstance.Stop();
+        }
+        catch(Exception ex){
+            vm.setStatusCode(-3);
+            vm.setMessage(ex.getMessage());
+        }
+
         return vm;
     }
 }

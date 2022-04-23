@@ -7,7 +7,7 @@ import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 
 public class TaskModel {
 
-    private Vector<ITaskEventListener> mListeners;
+    private Vector<ITaskEventListener> mListeners = new Vector<>();
     private TaskStatus mStatus;
     private Date mStartTime;
     private Date mStopTime;

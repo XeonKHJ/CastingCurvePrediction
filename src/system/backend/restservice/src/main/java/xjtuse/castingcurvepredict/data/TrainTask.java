@@ -55,13 +55,11 @@ public class TrainTask {
 
         try {
             startTimeDate = simpleDateFormat.parse(startTime);
-        } catch (ParseException e) {
-
-        }
-        try {
             endTimeDate = simpleDateFormat.parse(endTime);
         } catch (ParseException e) {
 
+        } catch (NullPointerException e) {
+            
         }
 
         TaskStatus status;
