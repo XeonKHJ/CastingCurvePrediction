@@ -150,7 +150,7 @@ def uploadStatus(date, losses, taskId):
 
 # hz
 sampleRate = 2
-
+taskId = 20
 if __name__ == '__main__':
     config = readConfig()
 
@@ -212,7 +212,9 @@ if __name__ == '__main__':
             mLosses.append(loss.item())
             print("{},{}".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), loss.item()))
         if epoch % 50 == 0:
-            uploadStatus(mTimes, mLosses, 2)
+            uploadStatus(mTimes, mLosses, taskId)
+            mTimes.clear()
+            mLosses.clear()
         if epoch > 1000:
             output = autoencoder(allTensor)
             datasetDict = dict()

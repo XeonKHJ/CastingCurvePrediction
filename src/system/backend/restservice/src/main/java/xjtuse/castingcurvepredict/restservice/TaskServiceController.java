@@ -44,13 +44,13 @@ public class TaskServiceController {
         return new TaskCollectionViewModel(modelViewModels);
     }
 
-    @GetMapping("/getTaskStatus")
+    @GetMapping("/getStatusByTaskId")
     public TaskStatusViewModel getStatusByTaskId(@RequestParam(value="taskId") int taskId)
     {
         TaskStatusViewModel vm = new TaskStatusViewModel();
         
         var sm = RestserviceApplication.getConfig().getStatusManager(new TaskModel(taskId));
-        vm.setEpochs(sm.readEpochs());
+        // vm.setEpochs(sm.readEpochs());
         vm.setLosses(sm.readLosses());
 
         return vm;

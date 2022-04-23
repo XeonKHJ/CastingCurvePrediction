@@ -1,21 +1,33 @@
 package xjtuse.castingcurvepredict.viewmodels;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
 public class TaskStatusViewModel extends StatusViewModel {
-    private Map<Date, Double> mLosses;
+    private ArrayList<String> mLossDates = new ArrayList<>();
+    private ArrayList<Double> mLosses = new ArrayList<>();
     private Map<Date, Integer> mEpochs;
 
     public void setLosses(Map<Date, Double> losses) {
-        mLosses = losses;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for(var d : losses.entrySet())
+        {
+            mLossDates.add(formatter.format(d.getKey()));
+            mLosses.add(d.getValue());
+        }
     }
 
     public void setEpochs(Map<Date, Integer> epochs) {
         mEpochs = epochs;
     }
 
-    public Map<Date, Double> getLosses() {
+    public ArrayList<String> getLossDates(){
+        return mLossDates;
+    }
+
+    public ArrayList<Double> getLosses() {
         return mLosses;
     }
 

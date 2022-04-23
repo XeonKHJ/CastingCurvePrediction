@@ -1,7 +1,8 @@
 function onLoad() {
-    displayLossChart(null)
+    echart = echarts.init(document.getElementById("lossChartDiv"));
+    // displayLossChart(null)
     taskId = parseInt(getQueryString("taskId"));
-    getTaskByid(taskId);
+    // getTaskByid(taskId);
     getTaskStatusById(taskId);
 }
 
@@ -20,7 +21,7 @@ var taskStatusVm = Vue.createApp({
             }
         }
     }
-}).mount("#taskListTable");
+}).mount("#lossChartDiv");
 
 function getQueryString(name) {
     let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -31,40 +32,49 @@ function getQueryString(name) {
     return null;
 }
 
-function getTaskByid(id) {
-    var result = null;
-    axios.get(baseServerAddr + '/getTaskById?id=' + id, {
-        Headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json"
-        }
-    }).then(response => {
-        switch (response.data.statusCode) {
-            case 1:
-                result = response.data;
-                break;
-            default:
-                task.status = "Stopped"
-                showError(response.message);
-        }
-    }).then().catch(
-        err => {
-            task.status = "Stopped"
-            console.log(err)
-            showError(err)
-        })
-    return result;
-}
+// function getTaskByid(id) {
+//     var result = null;
+//     axios.get(baseServerAddr + '/getTaskById?id=' + id, {
+//         Headers: {
+//             "Content-Type": "application/x-www-form-urlencoded",
+//             Accept: "application/json"
+//         }
+//     }).then(response => {
+//         switch (response.data.statusCode) {
+//             case 1:
+//                 result = response.data;
+//                 break;
+//             default:
+//                 task.status = "Stopped"
+//                 showError(response.message);
+//         }
+//     }).then().catch(
+//         err => {
+//             // task.status = "Stopped"
+//             console.log(err)
+//             showError(err)
+//         })
+//     return result;
+// }
 
 function getTaskStatusById(id) {
-    axios.get(baseServerAddr + '/getTaskStatusById?id=' + id, {
+    axios.get(baseServerAddr + '/getStatusByTaskId?taskId=' + id, {
         Headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             Accept: "application/json"
         }
     }).then(response => {
         data = response.data;
+        
+        data.lossDates.forEach(element => {
+            taskStatusVm.losses.time.push(element)
+        });
 
+        data.losses.forEach(element => {
+            taskStatusVm.losses.value.push(element)
+        });
+
+        displayLossChart(data)
     }).then().catch(
         err => {
             console.log(err)
@@ -72,14 +82,13 @@ function getTaskStatusById(id) {
         })
 }
 
-function displayLossChart(data)
+
+function displayLossChart()
 {
-    var echart = echarts.init(document.getElementById("lossChartDiv"));
-    currentChart = echart
     var option = {
         xAxis: {
             type: 'category',
-            data: [1,2,3]
+            data: taskStatusVm.losses.time
         },
         yAxis: [
             {
@@ -94,15 +103,15 @@ function displayLossChart(data)
         ],
         series: [
             {
-                data: [1,2,3],
+                data: taskStatusVm.losses.value,
                 yAxis: 0,
                 type: 'line'
-            },
-            {
-                data: [1,1.1,1.2],
-                yAxis: 2,
-                type: 'line'
             }
+            // {
+            //     data: [1,1.1,1.2],
+            //     yAxis: 2,
+            //     type: 'line'
+            // }
         ]
     };
 
@@ -113,11 +122,12 @@ window.setInterval(updateStatus, 2000);
 
 function updateStatus()
 {
-    const taskStatusAndLoss = getTaskStatusById(id)
-    taskStatusAndLoss.losses.forEach(element => {
-        taskStatusVm.losses.time.add(losses.time);
-        taskStatusVm.losses.value.add(losses.value);
-    });
+    getTaskStatusById(taskId)
+    // const taskStatusAndLoss = getTaskStatusById(taskStatusVm.id)
+    // taskStatusAndLoss.losses.forEach(element => {
+    //     taskStatusVm.losses.time.add(losses.time);
+    //     taskStatusVm.losses.value.add(losses.value);
+    // });
 }
 
 function resizeEverything()

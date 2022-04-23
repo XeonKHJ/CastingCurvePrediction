@@ -76,16 +76,9 @@ public class ImplModuleServiceController {
             TrainTask task = mapper.getTaskById(taskId);
             var taskInstance = task.getInstance();
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            sm.saveStatus(TaskStatus.Training);
-            taskInstance.Start();
+            sm.saveLosses(map);
         }
 
         return vm;
     }
-
-    // @PostMapping("UploadEpoch")
-    // public StatusViewModel uploadEpoch(int taskId)
-    // {
-
-    // }
 }

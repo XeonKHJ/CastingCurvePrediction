@@ -70,7 +70,17 @@ public class StreamStatusManager implements IStatusManager {
 
     @Override
     public SortedMap<Date, Double> readLosses() {
-        return mLosses;
+        SortedMap<Date, Double> result = new TreeMap<>();
+
+        // 上锁
+        for (var entry : mLosses.entrySet()) {
+            Date mapKey = entry.getKey();
+            double mapValue = entry.getValue();
+            result.put(mapKey, mapValue);
+        }
+        mLosses.clear();
+
+        return result;
     }
 
     @Override
