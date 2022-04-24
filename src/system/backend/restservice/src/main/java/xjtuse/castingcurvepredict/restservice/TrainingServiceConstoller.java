@@ -40,27 +40,6 @@ public class TrainingServiceConstoller {
         return null;
     }
 
-    @GetMapping("/createTrainingTask")
-    public TaskViewModel createTrainingTask(@RequestParam(value = "id") int id) {
-        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        TaskViewModel viewModel = null;
-        try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            // TaskModel newTask = TaskManager.CreateTask();
-            TrainTask dataModel = new TrainTask();
-            dataModel.Loss = -10.0;
-            dataModel.startTime = "2022.04.01";
-            dataModel.ModelId = id;
-            dataModel.Status = "Stopped";
-
-            mapper.createTask(dataModel);
-            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
-                    dataModel.ModelId);
-            session.commit();
-        }
-        return viewModel;
-    }
-
     @GetMapping("/getModels")
     public ModelCollectionViewModel getModels() {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -114,22 +93,6 @@ public class TrainingServiceConstoller {
             mapper.createModel(model);
             session.commit();
             viewModel = new MLModelViewModel(model);
-        }
-
-        return viewModel;
-    }
-
-    @GetMapping("/deleteTaskById")
-    public StatusViewModel getMethodName(@RequestParam("id") int id) {
-        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        StatusViewModel viewModel = new StatusViewModel();
-        try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            mapper.deleteTaskById(id);
-            session.commit();
-        } catch (PersistenceException exception) {
-            viewModel.setStatusCode(-100);
-            viewModel.setMessage("有任务正在运行");
         }
 
         return viewModel;
