@@ -8,6 +8,7 @@ import java.util.Date;
 
 import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.utils.utils;
 
 public class TrainTask {
 
@@ -49,13 +50,12 @@ public class TrainTask {
     }
 
     public TaskModel getInstance() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date startTimeDate = null;
         Date endTimeDate = null;
 
         try {
-            startTimeDate = simpleDateFormat.parse(startTime);
-            endTimeDate = simpleDateFormat.parse(endTime);
+            startTimeDate = utils.stringToDate(startTime);
+            endTimeDate = utils.stringToDate(endTime);
         } catch (ParseException e) {
 
         } catch (NullPointerException e) {

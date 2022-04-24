@@ -204,6 +204,7 @@ function save(filename, data) {
 
 var currentChart = null;
 function generatingCastingChart(dataViewModel) {
+    var divId = createEchartContentDiv(dataViewModel.title, dataViewModel.chartId)
     var echart = echarts.init(document.getElementById(divId));
     currentChart = echart
     dataViewModel.echart = echart;

@@ -9,50 +9,36 @@ import xjtuse.castingcurvepredict.castingpredictiors.GeneratorInput;
 import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.models.CastingModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
+import xjtuse.castingcurvepredict.models.TaskModel;
 
-public class DummyCastingGenerator implements ICastingGenerator  {
+public class DummyCastingGenerator implements ICastingGenerator {
 
-    @Override
-    public CastingResultModel PredcitCastingCurve(GeneratorInput input) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	private static String condaEnv = "C:\\Users\\redal\\source\\tools\\miniconda3";
+	private static String activateCondaCmd = "cmd.exe \"/K\" C:\\Users\\redal\\source\\tools\\miniconda3\\Scripts\\activate.bat C:\\Users\\redal\\source\\tools\\miniconda3";
 
-    @Override
-    public void updateModel(CastingModel data) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public CastingResultModel PredcitCastingCurve(GeneratorInput input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public void updateModel(ArrayList<CastingModel> datas) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void updateModel(CastingModel data) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void train() {
-        // TODO 训练模型
-        try {
-			Runtime rt = Runtime.getRuntime();
-			//javac后无具体的参数，会输出错误信息。
-			Process p = rt.exec("javac");
-			//获取错误信息流。
-			InputStream stderr = p.getErrorStream();
-			//将错误信息流输出
-			InputStreamReader isr = new InputStreamReader(stderr);
-			BufferedReader br = new BufferedReader(isr);
-			String line = "";
-			System.out.println("--------------error---------------");
-			while((line = br.readLine()) != null)
-				System.out.println(line);
-			System.out.println("");
-			//等待进程完成。
-			int exitVal = p.waitFor();
-			System.out.println("Process Exitvalue: " + exitVal);
-		}catch(Throwable t) {
-			t.printStackTrace();
-		}
-    }
-    
+	}
+
+	@Override
+	public void updateModel(ArrayList<CastingModel> datas) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void train(TaskModel task) {
+		// TODO 训练模型
+		PythonThread runable = new PythonThread();
+		runable.start();
+	}
+
 }

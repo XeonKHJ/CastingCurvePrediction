@@ -3,6 +3,7 @@ package xjtuse.castingcurvepredict.models;
 import java.util.Date;
 import java.util.Vector;
 
+import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 
 public class TaskModel {
@@ -85,12 +86,12 @@ public class TaskModel {
         mListeners.add(listener);
     }
 
-    public void Start() {
+    public void Start(ICastingGenerator generator) {
         for (ITaskEventListener listener : mListeners) {
             listener.onTaskStarting(this);
         }
-
-        // TODO: start the task.
+        
+        generator.train(this);
 
         for (ITaskEventListener listener : mListeners) {
             listener.onTaskStarted(this);

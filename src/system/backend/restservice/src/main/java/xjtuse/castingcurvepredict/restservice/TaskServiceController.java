@@ -3,6 +3,7 @@ package xjtuse.castingcurvepredict.restservice;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,12 +53,12 @@ public class TaskServiceController {
         var sm = RestserviceApplication.getConfig().getStatusManager(new TaskModel(taskId));
         // vm.setEpochs(sm.readEpochs());
         vm.setLosses(sm.readLosses());
-
         return vm;
     }
 
     @GetMapping("/startTrainingTask")
     public StatusViewModel startTrainingTask(@RequestParam(value = "taskId") int id) {
+        System.out.println("StartTrainningTask" + id);
         StatusViewModel vm = new StatusViewModel();
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
 
@@ -67,13 +68,13 @@ public class TaskServiceController {
             var taskInstance = task.getInstance();
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
             sm.saveStatus(TaskStatus.Training);
-            taskInstance.Start();
+            taskInstance.Start(RestserviceApplication.getConfig().getCastingGenerator());
         }
         catch(Exception ex){
             vm.setStatusCode(-3);
             vm.setMessage(ex.getMessage());
         }
-
+        System.out.println("StartTrainningTask" + id + " return");
         return vm;
     }
 
@@ -98,5 +99,42 @@ public class TaskServiceController {
         }
 
         return vm;
+    }
+
+    @GetMapping("/deleteTaskById")
+    public StatusViewModel getMethodName(@RequestParam("id") int id) {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        StatusViewModel viewModel = new StatusViewModel();
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            mapper.deleteTaskById(id);
+            session.commit();
+        } catch (PersistenceException exception) {
+            viewModel.setStatusCode(-100);
+            viewModel.setMessage(exception.getMessage());
+        }
+
+        return viewModel;
+    }
+
+    @GetMapping("/createTrainingTask")
+    public TaskViewModel createTrainingTask(@RequestParam(value = "id") int id) {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        TaskViewModel viewModel = null;
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            // TaskModel newTask = TaskManager.CreateTask();
+            TrainTask dataModel = new TrainTask();
+            dataModel.Loss = -10.0;
+            dataModel.startTime = "2022.04.01";
+            dataModel.ModelId = id;
+            dataModel.Status = "Stopped";
+
+            mapper.createTask(dataModel);
+            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
+                    dataModel.ModelId);
+            session.commit();
+        }
+        return viewModel;
     }
 }

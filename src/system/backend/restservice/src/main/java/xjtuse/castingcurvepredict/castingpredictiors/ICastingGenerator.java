@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import xjtuse.castingcurvepredict.models.CastingModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
+import xjtuse.castingcurvepredict.models.TaskModel;
 
 public interface ICastingGenerator {
     // 做预测
@@ -13,5 +14,5 @@ public interface ICastingGenerator {
 
     void updateModel(ArrayList<CastingModel> datas);
 
-    void train();
+    void train(TaskModel task);
 }

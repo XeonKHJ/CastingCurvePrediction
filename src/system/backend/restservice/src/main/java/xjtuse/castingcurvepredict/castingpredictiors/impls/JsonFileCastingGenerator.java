@@ -62,7 +62,7 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
     }
 
     @Override
-    public void train() {
+    public void train(TaskModel task) {
         // TODO Auto-generated method stub
         
     }

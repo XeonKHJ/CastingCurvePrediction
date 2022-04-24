@@ -9,6 +9,7 @@ import xjtuse.castingcurvepredict.castingpredictiors.GeneratorInput;
 import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.models.CastingModel;
 import xjtuse.castingcurvepredict.models.CastingResultModel;
+import xjtuse.castingcurvepredict.models.TaskModel;
 
 public class ConstCastingGenerator implements ICastingGenerator {
 
@@ -56,8 +57,9 @@ public class ConstCastingGenerator implements ICastingGenerator {
         
     }
 
+
     @Override
-    public void train() {
+    public void train(TaskModel task) {
         // TODO Auto-generated method stub
         
     }

@@ -148,6 +148,7 @@ def shuffle():
 sampleRate = 2
 
 if __name__ == '__main__':
+    print ("dada")
     config = readConfig()
 
     print ('now __name__ is %s' %__name__)

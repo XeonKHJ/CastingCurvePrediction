@@ -23,12 +23,14 @@ import xjtuse.castingcurvepredict.data.TrainTask;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.inputmodels.UploadTaskLossesInputModel;
 import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.utils.utils;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
 
 @RestController
 public class ImplModuleServiceController {
     @GetMapping("/uploadTaskStatus")
     public StatusViewModel uploadTaskStatus(@RequestParam("taskId") int taskId, String status) {
+        System.out.println("uploadTaskStatus");
         // TODO 获取任务模型
         TaskModel model = new TaskModel(12);
         StatusViewModel vm = new StatusViewModel();
@@ -53,21 +55,21 @@ public class ImplModuleServiceController {
 
         // TODO 返回状态
         vm.setStatusCode(1);
-
+        System.out.println("uploadTaskStatus return");
         return vm;
     }
 
     @PostMapping("/UploadLosses")
     public StatusViewModel uploadLosses(@RequestBody UploadTaskLossesInputModel payload) throws ParseException {
+        System.out.println("UploadLosses");
         StatusViewModel vm = new StatusViewModel();
         int taskId = payload.getTaskId();
         double[] losses = payload.getLosses();
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         SortedMap<Date, Double> map = new TreeMap<>();
  
-        var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < losses.length; ++i) {
-            Date d = dateFormat.parse(payload.getTimes()[i]);
+            Date d = utils.stringToDate(payload.getTimes()[i]);
             map.put(d, losses[i]);
         }
 
@@ -78,7 +80,7 @@ public class ImplModuleServiceController {
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
             sm.saveLosses(map);
         }
-
+        System.out.println("UploadLosses return");
         return vm;
     }
 }

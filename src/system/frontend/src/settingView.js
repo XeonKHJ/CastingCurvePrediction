@@ -78,6 +78,10 @@ var taskCollectionVueModel = Vue.createApp({
                     console.log(err)
                     showError(err)
                 })
+        },
+        onViewTaskButtonClicked(task)
+        {
+            window.location.href=("./task.html?taskId=" + task.id);
         }
     }
 }).mount("#taskListTable");

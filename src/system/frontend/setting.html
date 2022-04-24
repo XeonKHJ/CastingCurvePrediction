@@ -35,7 +35,7 @@
                             <a class="nav-link text-dark" href="train.html">训练</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="tasks.html">设置</a>
+                            <a class="nav-link text-dark" href="setting.html">设置</a>
                         </li>
                     </ul>
                 </div>
@@ -66,7 +66,7 @@
                         <td class="col">{{taskViewModel.modelId}}</td>
                         <td class="col text-end">
                         <td class="col text-end">
-                            <button class="btn btn-secondary btn-sm">查看</button>
+                            <button class="btn btn-secondary btn-sm" @click="onViewTaskButtonClicked(taskViewModel)">查看</button>
                             <button class="btn btn-secondary btn-sm ms-2" v-if="taskViewModel.status == 'Stopped'"
                                 @click="onStartButtonClicked(taskViewModel)">开始</button>
                             <button class="btn btn-secondary btn-sm ms-2" v-else

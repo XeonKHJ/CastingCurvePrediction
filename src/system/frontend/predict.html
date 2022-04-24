@@ -34,7 +34,7 @@
                             <a class="nav-link text-dark" href="train.html">训练</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="tasks.html">设置</a>
+                            <a class="nav-link text-dark" href="setting.html">设置</a>
                         </li>
                     </ul>
                 </div>
@@ -57,6 +57,11 @@
                         <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
                         <div class="col my-auto" style="text-align: right;">目标液位</div>
                         <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col my-auto" style="text-align: right;">模型</div>
+                        <div class="col my-auto"><select class="form-select" aria-label="Default select example">
+                            <option value="1">20</option>
+                            <option value="2">21</option>
+                          </select></div>
                         <div class="col my-auto"><input class="btn btn-primary" type="submit"
                                 v-bind:value="predictButton"></input></div>
                     </div>
