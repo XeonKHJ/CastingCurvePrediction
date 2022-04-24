@@ -100,6 +100,7 @@ public class TaskModel {
 
     public void Stop() {
         // TODO: stop the task.
+        
 
         for (ITaskEventListener listener : mListeners) {
             listener.onTaskStopped(this);

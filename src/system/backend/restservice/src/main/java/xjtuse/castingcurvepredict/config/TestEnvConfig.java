@@ -3,13 +3,18 @@ package xjtuse.castingcurvepredict.config;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.apache.ibatis.exceptions.PersistenceException;
+import org.apache.ibatis.session.SqlSession;
+
 import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.DummyCastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.restservice.RestserviceApplication;
 import xjtuse.castingcurvepredict.viewmodels.IViewModel;
 
 public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListener {

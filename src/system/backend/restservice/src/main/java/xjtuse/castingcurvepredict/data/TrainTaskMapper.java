@@ -9,11 +9,11 @@ public interface TrainTaskMapper {
 
     public List<TrainTask> getWorkingTasks();
 
-    public void deleteModelById(int id);
+    public void deleteModelById(long id);
 
     void createModel(MlModel model);
 
     public TrainTask getTaskById(long id);
 
-    public void deleteTaskById(int id);
+    public void deleteTaskById(long id);
 }

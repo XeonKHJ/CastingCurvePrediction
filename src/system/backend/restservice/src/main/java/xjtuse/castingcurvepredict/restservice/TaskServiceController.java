@@ -78,8 +78,8 @@ public class TaskServiceController {
         return vm;
     }
 
-    @GetMapping("/StopTask")
-    public StatusViewModel stopTask(@RequestParam(value = "taskId") int id)
+    @GetMapping("/stopTaskById")
+    public StatusViewModel stopTaskById(@RequestParam(value = "taskId") int id)
     {
         StatusViewModel vm = new StatusViewModel();
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -92,6 +92,7 @@ public class TaskServiceController {
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
             sm.saveStatus(TaskStatus.Stopped);
             taskInstance.Stop();
+            deleteTaskById(id);
         }
         catch(Exception ex){
             vm.setStatusCode(-3);
@@ -101,8 +102,34 @@ public class TaskServiceController {
         return vm;
     }
 
+    @GetMapping("/pauseTaskById")
+    public StatusViewModel pauseTaskById(@RequestParam(value = "taskId") int id)
+    {
+        StatusViewModel vm = new StatusViewModel();
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+
+        // TODO 实现停止任务功能.
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            TrainTask task = mapper.getTaskById(id);
+            var taskInstance = task.getInstance();
+            IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
+            sm.saveStatus(TaskStatus.Stopped);
+            taskInstance.Stop();
+            deleteTaskById(id);
+        }
+        catch(Exception ex){
+            vm.setStatusCode(-3);
+            vm.setMessage(ex.getMessage());
+        }
+
+        return vm;
+    }
+
+
+
     @GetMapping("/deleteTaskById")
-    public StatusViewModel getMethodName(@RequestParam("id") int id) {
+    public StatusViewModel deleteTaskById(@RequestParam("taskId") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         StatusViewModel viewModel = new StatusViewModel();
         try (SqlSession session = sessionFactory.openSession()) {

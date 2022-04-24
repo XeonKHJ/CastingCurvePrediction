@@ -70,7 +70,7 @@
                             <button class="btn btn-secondary btn-sm ms-2" v-if="taskViewModel.status == 'Stopped'"
                                 @click="onStartButtonClicked(taskViewModel)">开始</button>
                             <button class="btn btn-secondary btn-sm ms-2" v-else
-                                @click="onStopButtonClicked(taskViewModel)">暂停</button>
+                                @click="onStopButtonClicked(taskViewModel, index)">暂停</button>
                             <button class="btn btn-secondary btn-sm ms-2"
                                 @click="onDeleteButtonClicked(taskViewModel.id, index)">删除
                             </button>

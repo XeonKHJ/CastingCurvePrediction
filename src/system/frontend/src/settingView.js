@@ -65,8 +65,8 @@ var taskCollectionVueModel = Vue.createApp({
                 })
         },
         // TODO Stop task.
-        onStopButtonClicked(id, idx) {
-            axios.get(baseServerAddr + '/stopTask?taskId=' + task.id, {
+        onStopButtonClicked(task, idx) {
+            axios.get(baseServerAddr + '/stopTaskById?taskId=' + task.id, {
                 Headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     Accept: "application/json"
@@ -79,9 +79,8 @@ var taskCollectionVueModel = Vue.createApp({
                     showError(err)
                 })
         },
-        onViewTaskButtonClicked(task)
-        {
-            window.location.href=("./task.html?taskId=" + task.id);
+        onViewTaskButtonClicked(task) {
+            window.location.href = ("./task.html?taskId=" + task.id);
         }
     }
 }).mount("#taskListTable");

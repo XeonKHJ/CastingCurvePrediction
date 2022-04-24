@@ -6,11 +6,11 @@ import java.io.InputStreamReader;
 public class PythonThread implements Runnable {
     private static String condaEnv = "C:\\Users\\redal\\source\\tools\\miniconda3";
     private static String activateCondaCmd = "cmd.exe \"/K\" C:\\Users\\redal\\source\\tools\\miniconda3\\Scripts\\activate.bat C:\\Users\\redal\\source\\tools\\miniconda3";
-    private Thread mThread;
+    private Thread mThread = null;
     private String threadName = "trainThread";
+    Process process = null;
 
-    public void start()
-    {
+    public void start() {
         System.out.println("Starting new thread: " + threadName);
         if (mThread == null) {
             mThread = new Thread(this, threadName);
@@ -18,11 +18,22 @@ public class PythonThread implements Runnable {
         }
     }
 
+    public void stop() {
+        if (process != null) {
+            process.destroy();
+        }
+
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
+    }
+
     @Override
     public void run() {
         try {
             System.out.println("开始训练程序。");
-            Process process = Runtime.getRuntime().exec(activateCondaCmd
+            process = Runtime.getRuntime().exec(activateCondaCmd
                     + "&& conda activate CastingCurvePredictEnv && python C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\approaches\\rnn\\predict_app.py && exit");
             System.out.println("训练进程启动。");
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
