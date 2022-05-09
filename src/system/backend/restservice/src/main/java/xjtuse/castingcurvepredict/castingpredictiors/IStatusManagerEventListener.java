@@ -3,7 +3,7 @@ package xjtuse.castingcurvepredict.castingpredictiors;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
 
 public interface IStatusManagerEventListener {
-    void onTaskStarting(StreamStatusManager statusManager);
-    void onTaskStarted(StreamStatusManager statusManager);
-    void onTaskStopped(StreamStatusManager statusManager);
+    void onTaskStarting(IStatusManager statusManager);
+    void onTaskStarted(IStatusManager statusManager);
+    void onTaskStopped(IStatusManager statusManager);
 }

@@ -23,11 +23,10 @@ import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
 import xjtuse.castingcurvepredict.viewmodels.TaskViewModel;
 
-//import xjtuse.castingcurvepredict.data.MlModelMapper;
-
+// 所有从模型开始的请求都在这个控制器中定义
 @CrossOrigin
 @RestController
-public class TrainingServiceConstoller {
+public class LearningModelServiceConstoller {
     @GetMapping("/getModelFromId")
     public MLModelViewModel getModelFromId(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
@@ -95,6 +94,28 @@ public class TrainingServiceConstoller {
             viewModel = new MLModelViewModel(model);
         }
 
+        return viewModel;
+    }
+
+    
+    @GetMapping("/createTrainingTaskFromModelId")
+    public TaskViewModel createTrainingTaskFromModelId(@RequestParam(value = "id") int id) {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        TaskViewModel viewModel = null;
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            // TaskModel newTask = TaskManager.CreateTask();
+            TrainTask dataModel = new TrainTask();
+            dataModel.Loss = -10.0;
+            dataModel.startTime = "2022.04.01";
+            dataModel.ModelId = id;
+            dataModel.Status = "Stopped";
+
+            mapper.createTask(dataModel);
+            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
+                    dataModel.ModelId);
+            session.commit();
+        }
         return viewModel;
     }
 }

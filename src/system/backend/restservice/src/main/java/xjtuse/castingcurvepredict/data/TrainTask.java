@@ -63,10 +63,10 @@ public class TrainTask {
         }
 
         TaskStatus status;
-        if (Status.equals("Training")) {
-            status = TaskStatus.Training;
+        if (Status.equals("Running")) {
+            status = TaskStatus.Running;
         } else {
-            status = TaskStatus.Stopped;
+            status = TaskStatus.Created;
         }
 
         TaskModel model = new TaskModel(Id, Loss, Epoch, status, startTimeDate, endTimeDate);

@@ -37,22 +37,7 @@ public class ImplModuleServiceController {
         StatusViewModel vm = new StatusViewModel();
         IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(model);
 
-        if (status.equals("Training")) {
-            sm.saveStatus(TaskStatus.Training);
-        } else if (status.equals("Stopped")) {
-            sm.saveStatus(TaskStatus.Stopped);
-        } else if (status.equals("Updating")) {
-            sm.saveStatus(TaskStatus.Updating);
-        } else if (status.equals("Stopping")) {
-            // TODO Stop the task.
-
-            // Stop the task
-            sm.saveStatus(TaskStatus.Stopped);
-
-            // take it out of the manager.
-
-            // update database.
-        }
+        sm.saveStatus(utils.StringToTaskStatus(status));
 
         // TODO 返回状态
         vm.setStatusCode(1);

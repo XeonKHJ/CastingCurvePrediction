@@ -32,30 +32,6 @@ function getQueryString(name) {
     return null;
 }
 
-// function getTaskByid(id) {
-//     var result = null;
-//     axios.get(baseServerAddr + '/getTaskById?id=' + id, {
-//         Headers: {
-//             "Content-Type": "application/x-www-form-urlencoded",
-//             Accept: "application/json"
-//         }
-//     }).then(response => {
-//         switch (response.data.statusCode) {
-//             case 1:
-//                 result = response.data;
-//                 break;
-//             default:
-//                 task.status = "Stopped"
-//                 showError(response.message);
-//         }
-//     }).then().catch(
-//         err => {
-//             // task.status = "Stopped"
-//             console.log(err)
-//             showError(err)
-//         })
-//     return result;
-// }
 
 function getTaskStatusById(id) {
     axios.get(baseServerAddr + '/getStatusByTaskId?taskId=' + id, {

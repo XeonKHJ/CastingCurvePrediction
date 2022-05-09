@@ -1,5 +1,5 @@
 package xjtuse.castingcurvepredict.castingpredictiors;
 
 public enum TaskStatus {
-    Training, Untrained, Trained, Updating, Stopping, Stopped
+    Created, Starting, Running, Stopping, Deleting, Completed, Unknown
 }

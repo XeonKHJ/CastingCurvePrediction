@@ -42,7 +42,7 @@ public class StreamStatusManager implements IStatusManager {
         mStatus = status;
         mTask.setStatus(status);
         switch (status) {
-            case Stopped:
+            case Stopping:
                 for (var listener : mListeners) {
                     listener.onTaskStopped(this);
                 }

@@ -67,7 +67,7 @@ public class TaskServiceController {
             TrainTask task = mapper.getTaskById(id);
             var taskInstance = task.getInstance();
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            sm.saveStatus(TaskStatus.Training);
+            sm.saveStatus(TaskStatus.Running);
             taskInstance.Start(RestserviceApplication.getConfig().getCastingGenerator());
         }
         catch(Exception ex){
@@ -90,7 +90,7 @@ public class TaskServiceController {
             TrainTask task = mapper.getTaskById(id);
             var taskInstance = task.getInstance();
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            sm.saveStatus(TaskStatus.Stopped);
+            sm.saveStatus(TaskStatus.Completed);
             taskInstance.Stop();
             deleteTaskById(id);
         }
@@ -114,7 +114,7 @@ public class TaskServiceController {
             TrainTask task = mapper.getTaskById(id);
             var taskInstance = task.getInstance();
             IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            sm.saveStatus(TaskStatus.Stopped);
+            sm.saveStatus(TaskStatus.Stopping);
             taskInstance.Stop();
             deleteTaskById(id);
         }
@@ -141,27 +141,6 @@ public class TaskServiceController {
             viewModel.setMessage(exception.getMessage());
         }
 
-        return viewModel;
-    }
-
-    @GetMapping("/createTrainingTask")
-    public TaskViewModel createTrainingTask(@RequestParam(value = "id") int id) {
-        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        TaskViewModel viewModel = null;
-        try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            // TaskModel newTask = TaskManager.CreateTask();
-            TrainTask dataModel = new TrainTask();
-            dataModel.Loss = -10.0;
-            dataModel.startTime = "2022.04.01";
-            dataModel.ModelId = id;
-            dataModel.Status = "Stopped";
-
-            mapper.createTask(dataModel);
-            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
-                    dataModel.ModelId);
-            session.commit();
-        }
         return viewModel;
     }
 }

@@ -51,19 +51,19 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
     }
 
     @Override
-    public void onTaskStarting(StreamStatusManager statusManager) {
+    public void onTaskStarting(IStatusManager statusManager) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onTaskStarted(StreamStatusManager statusManager) {
+    public void onTaskStarted(IStatusManager statusManager) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onTaskStopped(StreamStatusManager statusManager) {
+    public void onTaskStopped(IStatusManager statusManager) {
         var task = statusManager.getTask();
         if (task != null) {
             taskStatusMapper.remove(task.getId());
