@@ -38,14 +38,14 @@ section{
 
 #animationSection{
     left: 0px;
-    width: 70%;
+    width: 20%;
     
     /* background-color: blue; */
 }
 
 #chartSection{
     right: 0px;
-    width: 30%;
+    width: 80%;
     /* background-color: rgb(154, 158, 154); */
 }
 

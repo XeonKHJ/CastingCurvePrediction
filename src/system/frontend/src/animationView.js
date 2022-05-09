@@ -51,7 +51,7 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, 0, 0);
+    globalModelMatrix.translate(0.4, 0, 0);
     globalModelMatrix.scale(0.5, 0.5, 1)
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
@@ -232,17 +232,17 @@ function initVertices(gl) {
     }
 
     var moldLeftVertices = new Float32Array([
-        -180 / width, -300 / height,
+        -190 / width, -300 / height,
         -150 / width, -300 / height,
-        -180 / width, -2000 / height,
-        -150 / width, -2000 / height
+        -190 / width, -1200 / height,
+        -150 / width, -1200 / height
     ])
 
     var moldLeftVerticesInside = new Float32Array([
-        (-180 + borderThinkness) / width, (-300 - borderThinkness) / height,
+        (-190 + borderThinkness) / width, (-300 - borderThinkness) / height,
         (-150 - borderThinkness) / width, (-300 - borderThinkness) / height,
-        (-180 + borderThinkness) / width, -2000 / height,
-        (-150 - borderThinkness) / width, -2000 / height
+        (-190 + borderThinkness) / width, -1200 / height,
+        (-150 - borderThinkness) / width, -1200 / height
     ])
 
     var moldRightVertices = reverseVertices(moldLeftVertices)
@@ -346,7 +346,7 @@ function initVertices(gl) {
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
     //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
-    var bundles = [tudishObj, stoperObj, coolingObj, middleUnknownObj]
+    var bundles = [tudishObj, stoperObj, coolingObj, middleUnknownObj, moldPipe]
 
     // Animation
     // var modelMatrix = new Matrix4();

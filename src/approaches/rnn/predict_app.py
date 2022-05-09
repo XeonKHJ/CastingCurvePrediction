@@ -150,7 +150,7 @@ def uploadStatus(date, losses, taskId):
 
 # hz
 sampleRate = 2
-taskId = 20
+taskId = 29
 if __name__ == '__main__':
     print ("dada")
     config = readConfig()

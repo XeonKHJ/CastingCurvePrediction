@@ -26,13 +26,14 @@ import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.utils.utils;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
 
+// 该Controller由实现训练和预测的程序调用，并非由前端调用。
 @RestController
 public class ImplModuleServiceController {
     @GetMapping("/uploadTaskStatus")
     public StatusViewModel uploadTaskStatus(@RequestParam("taskId") int taskId, String status) {
         System.out.println("uploadTaskStatus");
-        // TODO 获取任务模型
-        TaskModel model = new TaskModel(12);
+
+        TaskModel model = new TaskModel(taskId);
         StatusViewModel vm = new StatusViewModel();
         IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(model);
 
