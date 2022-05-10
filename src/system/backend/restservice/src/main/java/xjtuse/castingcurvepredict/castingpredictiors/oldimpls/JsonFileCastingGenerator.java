@@ -1,4 +1,4 @@
-package xjtuse.castingcurvepredict.castingpredictiors.impls;
+package xjtuse.castingcurvepredict.castingpredictiors.oldimpls;
 
 import java.io.BufferedReader;
 import java.io.File;
