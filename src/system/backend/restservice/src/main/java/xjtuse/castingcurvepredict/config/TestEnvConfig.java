@@ -12,7 +12,7 @@ import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener
 import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.DummyCastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
-import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.castingpredictiors.oldimpls.ConstCastingGenerator;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.models.TaskModel;

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import xjtuse.castingcurvepredict.castingpredictiors.*;
-import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
-import xjtuse.castingcurvepredict.castingpredictiors.impls.JsonFileCastingGenerator;
+import xjtuse.castingcurvepredict.castingpredictiors.oldimpls.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.castingpredictiors.oldimpls.JsonFileCastingGenerator;
 import xjtuse.castingcurvepredict.models.*;
 import xjtuse.castingcurvepredict.viewmodels.*;
 
