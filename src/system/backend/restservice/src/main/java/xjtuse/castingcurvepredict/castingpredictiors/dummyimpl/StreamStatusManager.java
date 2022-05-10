@@ -117,13 +117,11 @@ public class StreamStatusManager implements IStatusManager {
 
     @Override
     public void setTask(TaskModel task) {
-        // TODO Auto-generated method stub
         mTask = task;
     }
 
     @Override
     public TaskModel getTask() {
-        // TODO Auto-generated method stub
         return mTask;
     }
 }

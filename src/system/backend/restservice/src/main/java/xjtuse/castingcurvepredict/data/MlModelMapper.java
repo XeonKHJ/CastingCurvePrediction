@@ -8,4 +8,5 @@ public interface MlModelMapper
 {
     public MlModel getMlModelById(@Param("id") long id);
     public List<MlModel> getModels();
+    public void UpdateMlModelStatusById(@Param("id") long id, @Param("status") String status);
 }

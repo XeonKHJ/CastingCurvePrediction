@@ -15,7 +15,7 @@ public class TaskModel {
     private long mId;
     private Double mLoss;
     private int mEpoch;
-
+    ICastingGenerator _generator;
     public TaskModel(long id, double loss, int epoch, TaskStatus status, Date startTime, Date stopTime) {
         mId = id;
         mLoss = loss;
@@ -100,7 +100,11 @@ public class TaskModel {
 
     public void Stop() {
         // TODO: stop the task.
-        
+        if(_generator != null)
+        {
+            _generator.stop(this);
+        }
+
 
         for (ITaskEventListener listener : mListeners) {
             listener.onTaskStopped(this);
@@ -108,10 +112,10 @@ public class TaskModel {
     }
 
     public void Pause() {
-
+        // TODO 暂停任务
     }
 
     public void Update() {
-
+        // TODO: 更新模型
     }
 }

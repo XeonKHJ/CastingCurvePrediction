@@ -10,4 +10,7 @@
   <select id="getModels" resultType="MlModel">
     SELECT * FROM MLModel
   </select>
+  <update id="updateMlModelStatusById">
+    UPDATE MLModel SET '${status}' = xxx WHERE (`Id` = '${id}')
+  </update>
 </mapper>

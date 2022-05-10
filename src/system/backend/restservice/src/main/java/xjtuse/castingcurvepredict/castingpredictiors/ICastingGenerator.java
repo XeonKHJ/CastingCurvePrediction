@@ -15,4 +15,6 @@ public interface ICastingGenerator {
     void updateModel(ArrayList<CastingModel> datas);
 
     void train(TaskModel task);
+
+    void stop(TaskModel task);
 }

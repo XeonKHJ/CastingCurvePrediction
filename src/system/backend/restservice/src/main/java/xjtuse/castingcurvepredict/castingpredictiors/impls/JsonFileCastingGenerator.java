@@ -14,7 +14,6 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
 
     @Override
     public CastingResultModel PredcitCastingCurve(GeneratorInput input) {
-        // TODO Auto-generated method stub
         File file = (File) input.getKeyValues().get("file");
         CastingResultModel resultModel = new CastingResultModel();
         BufferedReader bfReader = null;
@@ -41,7 +40,7 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
                     }
                 }
             } catch (NumberFormatException | IOException e) {
-                // TODO Auto-generated catch block
+                // TODO 开浇曲线预测会出现的错误。
                 e.printStackTrace();
             }
         }
@@ -63,6 +62,12 @@ public class JsonFileCastingGenerator implements ICastingGenerator {
 
     @Override
     public void train(TaskModel task) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void stop(TaskModel task) {
         // TODO Auto-generated method stub
         
     }

@@ -64,4 +64,10 @@ public class ConstCastingGenerator implements ICastingGenerator {
         
     }
 
+    @Override
+    public void stop(TaskModel task) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -10,6 +10,15 @@ public class PythonThread implements Runnable {
     private String threadName = "trainThread";
     Process process = null;
 
+    private long _taskId;
+    private long _modelId;
+
+    public PythonThread(long taskId, long modelId)
+    {
+        _taskId = taskId;
+        _modelId = modelId;
+    }
+
     public void start() {
         System.out.println("Starting new thread: " + threadName);
         if (mThread == null) {
@@ -33,15 +42,16 @@ public class PythonThread implements Runnable {
     public void run() {
         try {
             System.out.println("开始训练程序。");
-            process = Runtime.getRuntime().exec(activateCondaCmd
-                    + "&& conda activate CastingCurvePredictEnv && python C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\approaches\\rnn\\predict_app.py && exit");
+            String commandLine = activateCondaCmd
+            + "&& conda activate CastingCurvePredictEnv && python C:\\Users\\redal\\source\\repos\\CastingCurvePrediction\\src\\approaches\\rnn\\predict_app.py " + _modelId + " " + _taskId + " && exit";
+            process = Runtime.getRuntime().exec(commandLine);
             System.out.println("训练进程启动。");
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             in = new BufferedReader(new InputStreamReader(process.getInputStream(), "gbk"));
             // 接收错误流
             BufferedReader isError = new BufferedReader(new InputStreamReader(process.getErrorStream(), "gbk"));
             StringBuilder sb = new StringBuilder();
-            StringBuilder sbError = new StringBuilder();
+
             String line = null;
             String lineError = null;
 
@@ -54,10 +64,7 @@ public class PythonThread implements Runnable {
 
             while ((lineError = isError.readLine()) != null) {
                 System.out.println(lineError);
-                // sbError.append(lineError);
-                // sbError.append("\n");
             }
-            // System.out.println(sbError);
 
         } catch (Throwable t) {
             t.printStackTrace();

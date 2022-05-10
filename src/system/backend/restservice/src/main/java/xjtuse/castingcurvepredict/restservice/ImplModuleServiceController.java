@@ -39,7 +39,6 @@ public class ImplModuleServiceController {
 
         sm.saveStatus(utils.StringToTaskStatus(status));
 
-        // TODO 返回状态
         vm.setStatusCode(1);
         System.out.println("uploadTaskStatus return");
         return vm;

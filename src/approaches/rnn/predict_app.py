@@ -1,11 +1,13 @@
 import torch
 import torch.nn as nn
 import os
+import sys
 from castingPredictModel import CastingPredictModel
 from autoEncoderModel import CastingEncoderModel
 from datetime import datetime, timedelta
 import pandas
 import requests, json
+from request_config import RequestConfig
 
 
 def preProcessData(dataset, window1, window2):
@@ -150,12 +152,11 @@ def uploadStatus(date, losses, taskId):
 
 # hz
 sampleRate = 2
-taskId = 29
-if __name__ == '__main__':
-    print ("dada")
-    config = readConfig()
 
-    print('now __name__ is %s' %__name__)
+if __name__ == '__main__':
+    config = readConfig()
+    modelId = int(sys.argv[1])
+    taskId = int(sys.argv[2])
     context = ReadContext()
     stageSpliter = [41,150]
     allStage = ReadData(stageSpliter)
@@ -224,99 +225,4 @@ if __name__ == '__main__':
             dataframe = pandas.DataFrame(datasetDict)
             dataframe.to_csv("autoencoderresult.csv",index=False,sep=',')
             break
-
-            
-
-    # # validationTensor = preProcessData(validationTensor, 4, 2)
-
-        
-    
-
-    # # ------------ try auto-encoder -----------------------
-
-    # # ++++++++++++ generate first phase +++++++++++++++++++
-    
-    # contextList = list()
-    # for i in context.values():
-    #     contextList.append(i)
-    
-    # contextTensor = torch.tensor(contextList).reshape([contextList.__len__(), -1, 2]).float()
-    # # yTensor = torch.tensor(allStage[0][0:4]).reshape([contextList.__len__(), 1, -1])
-    # # while(True):   
-    # #     output = lstm_model.firstStageForward(contextTensor)
-    # #     loss = loss_function(output, yTensor)
-    # #     print(loss)
-    # #     loss.backward()
-    # #     optimizer.step()
-    # #     optimizer.zero_grad()
-
-    # # ------------------------end---------------------------
-        
-    
-
-
-
-
-
-    # max_epochs = 10000000
-    # border = 3
-    # timeAndLoss = list([list(),list()])
-    # now = datetime.now()
-    # for epoch in range(max_epochs):
-    #     if (epoch % 100 == 0):
-    #         length = 4
-    #         # extract trainning and vaidation sets.
-    #         trainningSet = list([allStage[0][0:border] + allStage[0][border+1:length], allStage[1][0:border] + allStage[1][border+1:length]])
-    #         validationSet = list([allStage[0][border:border+1], allStage[1][border:border+1]])
-    #         trainningTensor = torch.tensor(trainningSet[0]).reshape([trainningSet[0].__len__(),-1,1])
-    #         yTensor = torch.tensor(trainningSet[1]).reshape([trainningSet[1].__len__(),-1,1])
-    #         trainningTensor = preProcessData(trainningTensor, 4, 2)
-    #         validationTensor = torch.tensor(validationSet[0]).reshape([validationSet[0].__len__(),-1,1])
-    #         validationYTensor = torch.tensor(validationSet[1]).reshape([validationSet[1].__len__(),-1,1])
-    #         validationTensor = preProcessData(validationTensor, 4, 2)
-    #         trainningContextSet = contextList[0:border]
-    #         trainningContextTensor = torch.Tensor(trainningContextSet)
-    #         validationContextSet = contextList[border:length]
-    #         validationContextTensor = torch.tensor(validationContextSet)
-    #         #border = 6
-    #         print("shuffle!")
-    #     output = lstm_model(trainningTensor, torch.tensor(trainningContextSet))
-    #     loss = loss_function(output, yTensor.reshape([yTensor.shape[0],-1]))
-    #     loss.backward()
-    #     optimizer.step()
-    #     optimizer.zero_grad()
-    #     timeAndLoss[0].append((datetime.now() - now).total_seconds())
-    #     timeAndLoss[1].append(loss.item())
-    #     #print(loss)
-    #     if loss.item() < 1e-3:
-    #         # print('Epoch [{}/{}], Loss: {:.5f}'.format(epoch+1, max_epochs, loss.item()))
-    #         # print("The loss value is reached")
-    #         #break
-    #         abc = 1 # do nothing
-    #         break
-    #     elif (epoch+1) % 10 == 0:     
-    #         print('Epoch: [{}/{}], Loss:{}'.format(epoch+1, max_epochs, loss.item()))
-    #         val = lstm_model(validationTensor, torch.tensor(validationContextSet))
-    #         print('validation loss:{}'.format(loss_function(val, validationYTensor.reshape([validationYTensor.shape[0], -1]))))
-
-    # timeAndLossDict = dict()
-    # timeAndLossDict['timespan'] = timeAndLoss[0]
-    # timeAndLossDict['loss'] = timeAndLoss[1]
-    # dataframe = pandas.DataFrame(timeAndLossDict)
-    # dataframe.to_csv("timeAndLoss.csv",index=False,sep=',')
-
-
-    # lstm_model.eval()
-    # # output eval data
-    # predSet = list([allStage[0][0:length], allStage[1][0:length]])
-    # predTensor = preProcessData(torch.tensor(predSet[0]).reshape([predSet[0].__len__(),-1,1]), 4, 2)
-    # result = lstm_model(predTensor, torch.tensor(contextList))
-    # result = result.tolist()
-    
-    # datasetDict = dict()
-    # for i in range(len(result)):
-    #     datasetDict[('value'+str(i))] = allStage[0][i] + result[i]
-    # dataframe = pandas.DataFrame(datasetDict)
-    # dataframe.to_csv("predData.csv",index=False,sep=',')
-    
 

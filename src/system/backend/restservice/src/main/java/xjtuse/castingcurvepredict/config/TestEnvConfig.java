@@ -9,9 +9,11 @@ import org.apache.ibatis.session.SqlSession;
 import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener;
+import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.DummyCastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.impls.ConstCastingGenerator;
+import xjtuse.castingcurvepredict.data.MlModelMapper;
 import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.restservice.RestserviceApplication;
@@ -62,11 +64,26 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
 
     }
 
+    
+
     @Override
     public void onTaskStopped(IStatusManager statusManager) {
         var task = statusManager.getTask();
         if (task != null) {
             taskStatusMapper.remove(task.getId());
+        }
+
+        var sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        // TODO 实现停止任务功能.
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            var taskDm = mapper.getTaskById(task.getId());
+            var mlModelMapper = session.getMapper(MlModelMapper.class);
+
+            // IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
+            // sm.saveStatus(TaskStatus.Stopping);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -74,6 +91,23 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
     public void setErrorMessageOnViewModel(IViewModel viewModel, Exception exception) {
         // TODO Auto-generated method stub
         viewModel.setMessage(exception.getMessage() + exception.getStackTrace().toString());
+    }
+
+    @Override
+    public void onTaskCompleted(IStatusManager statusManager) {
+        var task = statusManager.getTask();
+        task.Stop();
+        var sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        
+        try (SqlSession session = sessionFactory.openSession()) {
+            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            var taskDm = mapper.getTaskById(task.getId());
+            var mlModelMapper = session.getMapper(MlModelMapper.class);
+            mlModelMapper.UpdateMlModelStatusById(taskDm.getModelId(), "trained"); 
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
 }
