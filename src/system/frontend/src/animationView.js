@@ -51,8 +51,8 @@ function startDrawing(gl) {
     // set global scale matrix
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0.4, 0, 0);
-    globalModelMatrix.scale(0.5, 0.5, 1)
+    globalModelMatrix.translate(0, 0.3, 0);
+    globalModelMatrix.scale(0.4, 0.4, 1);
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -116,7 +116,7 @@ function initVertices(gl) {
     var tan60 = Math.tan(a2r(60));
     var borderThinkness = 3;
     const tudishBorderHeight = 400
-    const tudishTotalWidth = 1000
+    const tudishTotalWidth = 1200
     const tudishTotalHeight = 250
     var tudishLeftVertices = new Float32Array(
         [
@@ -231,18 +231,20 @@ function initVertices(gl) {
         index += 2;
     }
 
+    var moldBoldness = 60
+    var moldGap = 200
     var moldLeftVertices = new Float32Array([
-        -190 / width, -300 / height,
-        -150 / width, -300 / height,
-        -190 / width, -1200 / height,
-        -150 / width, -1200 / height
+        -(moldGap + moldBoldness) / width, -150 / height,
+        -moldGap / width, -150 / height,
+        -(moldGap + moldBoldness) / width, -1600 / height,
+        -moldGap / width, -1600 / height
     ])
 
     var moldLeftVerticesInside = new Float32Array([
-        (-190 + borderThinkness) / width, (-300 - borderThinkness) / height,
-        (-150 - borderThinkness) / width, (-300 - borderThinkness) / height,
-        (-190 + borderThinkness) / width, -1200 / height,
-        (-150 - borderThinkness) / width, -1200 / height
+        (-(moldGap + moldBoldness) + borderThinkness) / width, (-150 - borderThinkness) / height,
+        (-moldGap - borderThinkness) / width, (-150 - borderThinkness) / height,
+        (-(moldGap + moldBoldness) + borderThinkness) / width, -1600 / height,
+        (-moldGap - borderThinkness) / width, -1600 / height
     ])
 
     var moldRightVertices = reverseVertices(moldLeftVertices)
@@ -296,6 +298,13 @@ function initVertices(gl) {
     var middleUnknownRightHeadVerticesInside = reverseVertices(middleUnknownLeftHeadVerticesInside)
     var middleUnknownRightHeadVertices = reverseVertices(middleUnknownLeftHeadVertices)
 
+    var middleInwardInsideVertice = new Float32Array([
+        88 / width, 460 / height,
+        -88 / width, 460 / height,
+        88/ width, -910 / height,
+        -88 / width, -910 / height
+    ])
+
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
@@ -303,6 +312,7 @@ function initVertices(gl) {
     var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
     var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
+    var middleInwardColor = new Float32Array([0.5, 0.5, 0.5, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
@@ -337,16 +347,19 @@ function initVertices(gl) {
     middleUnknownRightHead = AnimObj(middleUnknownRightHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
     middleUnknownRightHeadInside = AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
 
+    middleInward = AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
 
     tudishObj = AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59 / height, 0])
     stoperObj = AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430 / height, 0])
     coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside])
     moldPipe = AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
+    middleInwordObj = AnimObjBundle([middleInward])
+
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
     //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
-    var bundles = [tudishObj, stoperObj, coolingObj, middleUnknownObj, moldPipe]
+    var bundles = [middleInwordObj, tudishObj, stoperObj,middleUnknownObj, moldPipe, coolingObj]
 
     // Animation
     // var modelMatrix = new Matrix4();

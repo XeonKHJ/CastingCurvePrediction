@@ -51,7 +51,7 @@ var taskCollectionVueModel = Vue.createApp({
             }).then(response => {
                 switch (response.data.statusCode) {
                     case 1:
-                        task.status = "Training";
+                        task.status = "Running";
                         break;
                     default:
                         task.status = "Stopped"
@@ -107,22 +107,6 @@ function getStatusByTaskId(taskId) {
         })
 }
 
-function getTasks() {
-    axios.get(baseServerAddr + '/getTasks', {
-        Headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json"
-        }
-    }).then(response => {
-        for (i = 0; i < response.data.taskViewModels.length; ++i) {
-            taskCollectionVueModel.taskViewModels.push(response.data.taskViewModels[i]);
-        }
-    }).then().catch(
-        err => {
-            console.log(err)
-        })
-}
-
 
 var modelCollectionVueModel = Vue.createApp({
     data() {
@@ -136,13 +120,20 @@ var modelCollectionVueModel = Vue.createApp({
     },
     methods: {
         onCreateTaskButtonClicked(id) {
-            axios.get(baseServerAddr + '/createTrainingTask?id=' + id, {
+            axios.get(baseServerAddr + '/createTrainingTaskFromModelId?modelId=' + id, {
                 Headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     Accept: "application/json"
                 }
             }).then(response => {
-                taskCollectionVueModel.taskViewModels.push(response.data);
+                if(response.data.statusCode <= 0)
+                {
+                    showError(response.data.message)
+                }
+                else
+                {
+                    taskCollectionVueModel.taskViewModels.push(response.data);
+                }
             }).then().catch(
                 err => {
                     console.log(err)
@@ -172,6 +163,22 @@ var modelCollectionVueModel = Vue.createApp({
         }
     }
 }).mount("#modelListTable");
+
+function getTasks() {
+    axios.get(baseServerAddr + '/getTasks', {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        for (i = 0; i < response.data.taskViewModels.length; ++i) {
+            taskCollectionVueModel.taskViewModels.push(response.data.taskViewModels[i]);
+        }
+    }).then().catch(
+        err => {
+            console.log(err)
+        })
+}
 
 function getModels() {
     axios.get(baseServerAddr + '/getModels', {

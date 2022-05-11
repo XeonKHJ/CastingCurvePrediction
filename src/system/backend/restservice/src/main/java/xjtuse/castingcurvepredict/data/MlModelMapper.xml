@@ -10,7 +10,17 @@
   <select id="getModels" resultType="MlModel">
     SELECT * FROM MLModel
   </select>
-  <update id="updateMlModelStatusById">
-    UPDATE MLModel SET '${status}' = xxx WHERE (`Id` = '${id}')
+
+  <delete id="deleteModelById">
+    DELETE FROM `MLModel` WHERE (`Id` = '${id}')
+  </delete>
+  <insert id="createModel" useGeneratedKeys="true" keyProperty="Id" parameterType="MlModel">
+    INSERT INTO `MLModel` (`Path`, `Loss`, `Name`, `Status`) VALUES ('${Path}', '${mLoss}', '${Name}', '${mStatus}');
+  </insert>
+  <update id="UpdateMlModelStatusById">
+    UPDATE MLModel SET `status` = '${status}' WHERE (`Id` = '${id}')
+  </update>
+  <update id="UpdateMlModelLossById">
+    UPDATE `castingcurvedb`.`MLModel` SET `Loss` = '${loss}' WHERE (`Id` = '${id}');
   </update>
 </mapper>

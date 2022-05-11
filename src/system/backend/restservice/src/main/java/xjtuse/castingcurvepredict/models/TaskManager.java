@@ -12,7 +12,7 @@ public class TaskManager implements ITaskEventListener {
 
     static public TaskModel CreateTask() {
         // Write to database first
-
+        
         TaskModel result = new TaskModel(123);
         return result;
     }

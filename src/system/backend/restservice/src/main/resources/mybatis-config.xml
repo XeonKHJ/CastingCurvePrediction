@@ -22,6 +22,5 @@
   </environments>
   <mappers>
     <mapper resource="xjtuse/castingcurvepredict/data/MlModelMapper.xml"/>
-    <mapper resource="xjtuse/castingcurvepredict/data/TrainTaskMapper.xml"/>
   </mappers>
 </configuration>

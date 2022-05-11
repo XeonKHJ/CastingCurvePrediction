@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
+import xjtuse.castingcurvepredict.config.IConfigFactory;
 import xjtuse.castingcurvepredict.data.MlModel;
 import xjtuse.castingcurvepredict.data.MlModelMapper;
-import xjtuse.castingcurvepredict.data.TrainTask;
-import xjtuse.castingcurvepredict.data.TrainTaskMapper;
-
+import xjtuse.castingcurvepredict.models.TaskModel;
+import xjtuse.castingcurvepredict.utils.utils;
 import xjtuse.castingcurvepredict.viewmodels.MLModelViewModel;
 import xjtuse.castingcurvepredict.viewmodels.ModelCollectionViewModel;
 import xjtuse.castingcurvepredict.viewmodels.StatusViewModel;
@@ -67,10 +68,18 @@ public class LearningModelServiceConstoller {
     public StatusViewModel deleteModelById(@RequestParam(value = "id") int id) {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         StatusViewModel viewModel = new StatusViewModel();
+
         try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            mapper.deleteModelById(id);
-            session.commit();
+            if(RestserviceApplication.getConfig().getTaskFromModelId(id) == null)
+            {
+                MlModelMapper mapper = session.getMapper(MlModelMapper.class);
+                mapper.deleteModelById(id);
+                session.commit();
+            }
+            else
+            {
+                throw new PersistenceException("有任务正在运行");
+            }
         } catch (PersistenceException exception) {
             viewModel.setStatusCode(-100);
             viewModel.setMessage("有任务正在运行");
@@ -84,38 +93,15 @@ public class LearningModelServiceConstoller {
         SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
         MLModelViewModel viewModel = null;
         try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
+            var mapper = session.getMapper(MlModelMapper.class);
             MlModel model = new MlModel();
             model.setName("model-" + Instant.now().toString());
-            // 路径命名：
             model.setPath("C:\\model-" + Instant.now().toString() + ".model");
             mapper.createModel(model);
             session.commit();
             viewModel = new MLModelViewModel(model);
         }
 
-        return viewModel;
-    }
-
-    
-    @GetMapping("/createTrainingTaskFromModelId")
-    public TaskViewModel createTrainingTaskFromModelId(@RequestParam(value = "id") int id) {
-        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        TaskViewModel viewModel = null;
-        try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            // TaskModel newTask = TaskManager.CreateTask();
-            TrainTask dataModel = new TrainTask();
-            dataModel.Loss = -10.0;
-            dataModel.startTime = "2022.04.01";
-            dataModel.ModelId = id;
-            dataModel.Status = "Stopped";
-
-            mapper.createTask(dataModel);
-            viewModel = new TaskViewModel(dataModel.Id, dataModel.Loss, dataModel.Status, dataModel.Epoch,
-                    dataModel.ModelId);
-            session.commit();
-        }
         return viewModel;
     }
 }

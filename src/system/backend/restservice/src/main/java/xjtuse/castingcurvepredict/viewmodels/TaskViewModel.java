@@ -4,19 +4,28 @@ import xjtuse.castingcurvepredict.models.TaskModel;
 
 public class TaskViewModel extends StatusViewModel {
     private String _status;
-    private int _id;
+    private long _id;
     private double _loss;
     private int _epoch;
-    private int _modelId;
+    private long _modelId;
+
+
+    // 只有在出错的时候才使用该构造函数。
+    public TaskViewModel(int statusCode, String message)
+    {
+        setStatusCode(statusCode);
+        setMessage(message);
+    }
 
     public TaskViewModel(TaskModel tm) {
         _status = tm.getStatus().toString();
-        _id = (int)tm.getId();
+        _id = tm.getId();
         _loss = tm.getLoss();
         _epoch = tm.getEpoch();
+        _modelId = tm.getModelId();
     }
 
-    public TaskViewModel(int id, double loss, String status, int epoch, int modelId) {
+    public TaskViewModel(long id, double loss, String status, int epoch, int modelId) {
         _id = id;
         _loss = loss;
         _status = status;
@@ -28,11 +37,11 @@ public class TaskViewModel extends StatusViewModel {
         _modelId = value;
     }
 
-    public int getModelId() {
+    public long getModelId() {
         return _modelId;
     }
 
-    public int getId() {
+    public long getId() {
         return _id;
     }
 

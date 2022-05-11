@@ -1,20 +1,18 @@
 package xjtuse.castingcurvepredict.config;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
-
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
 import xjtuse.castingcurvepredict.castingpredictiors.ICastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener;
-import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
+
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.DummyCastingGenerator;
 import xjtuse.castingcurvepredict.castingpredictiors.dummyimpl.StreamStatusManager;
-import xjtuse.castingcurvepredict.castingpredictiors.oldimpls.ConstCastingGenerator;
+
 import xjtuse.castingcurvepredict.data.MlModelMapper;
-import xjtuse.castingcurvepredict.data.TrainTaskMapper;
 import xjtuse.castingcurvepredict.models.TaskModel;
 import xjtuse.castingcurvepredict.restservice.RestserviceApplication;
 import xjtuse.castingcurvepredict.viewmodels.IViewModel;
@@ -24,9 +22,7 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
 
     @Override
     public ICastingGenerator getCastingGenerator() {
-        // TODO Auto-generated method stub
         ICastingGenerator generator = new DummyCastingGenerator();
-
         return generator;
     }
 
@@ -53,18 +49,65 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
     }
 
     @Override
+    public void setErrorMessageOnViewModel(IViewModel viewModel, Exception exception) {
+        // TODO 给ViewModel设置错误信息
+        viewModel.setMessage(exception.getMessage() + exception.getStackTrace().toString());
+    }
+
+
+    @Override
+    public IStatusManager getStatusManager(long taskId) {
+        if (taskStatusMapper.get(taskId) == null) {
+            // TODO 当taskid不存在时应该怎么处理
+        }
+
+        return taskStatusMapper.get(taskId);
+    }
+
+    @Override
+    public long generateTaskId() throws IndexOutOfBoundsException {
+        long avaliableId = -1;
+        for (avaliableId = 0; avaliableId < Long.MAX_VALUE; ++avaliableId) {
+            if (taskStatusMapper.get(avaliableId) == null) {
+                break;
+            }
+        }
+
+        if (avaliableId == Long.MAX_VALUE) {
+            throw new IndexOutOfBoundsException("任务数量达到上限");
+        }
+
+        return avaliableId;
+    }
+
+    @Override
+    public Collection<TaskModel> getTasks() {
+        ArrayList<TaskModel> tasks = new ArrayList<>();
+        for (var key : taskStatusMapper.keySet()) {
+            tasks.add(taskStatusMapper.get(key).getTask());
+        }
+
+        return tasks;
+    }
+
+    @Override
     public void onTaskStarting(IStatusManager statusManager) {
-        // TODO Auto-generated method stub
+        // TODO 任务开始时触发，更新数据库中学习模型的状体。
 
     }
 
     @Override
     public void onTaskStarted(IStatusManager statusManager) {
-        // TODO Auto-generated method stub
-
+        var sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        
+        try (SqlSession session = sessionFactory.openSession()) {
+            var mlModelMapper = session.getMapper(MlModelMapper.class);
+            mlModelMapper.UpdateMlModelStatusById(statusManager.getTask().getModelId(), "Training");
+            session.commit();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
-
-    
 
     @Override
     public void onTaskStopped(IStatusManager statusManager) {
@@ -74,40 +117,39 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
         }
 
         var sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        // TODO 实现停止任务功能.
         try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            var taskDm = mapper.getTaskById(task.getId());
             var mlModelMapper = session.getMapper(MlModelMapper.class);
-
-            // IStatusManager sm = RestserviceApplication.getConfig().getStatusManager(taskInstance);
-            // sm.saveStatus(TaskStatus.Stopping);
+            mlModelMapper.UpdateMlModelLossById(statusManager.getTask().getModelId(), task.getLoss());
+            session.commit();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    @Override
-    public void setErrorMessageOnViewModel(IViewModel viewModel, Exception exception) {
-        // TODO Auto-generated method stub
-        viewModel.setMessage(exception.getMessage() + exception.getStackTrace().toString());
-    }
-
+    
     @Override
     public void onTaskCompleted(IStatusManager statusManager) {
         var task = statusManager.getTask();
         task.Stop();
         var sessionFactory = RestserviceApplication.getSqlSessionFactory();
-        
+
         try (SqlSession session = sessionFactory.openSession()) {
-            TrainTaskMapper mapper = session.getMapper(TrainTaskMapper.class);
-            var taskDm = mapper.getTaskById(task.getId());
             var mlModelMapper = session.getMapper(MlModelMapper.class);
-            mlModelMapper.UpdateMlModelStatusById(taskDm.getModelId(), "trained"); 
-            
+            mlModelMapper.UpdateMlModelStatusById(task.getModelId(), "trained");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
+    @Override
+    public TaskModel getTaskFromModelId(long id) {
+        TaskModel result = null;
+        for (var key : taskStatusMapper.keySet()) {
+            if(id == taskStatusMapper.get(key).getTask().getModelId())
+            {
+                result = taskStatusMapper.get(key).getTask();
+            }
+        }
+        return result;
+    }
 }

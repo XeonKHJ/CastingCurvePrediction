@@ -1,6 +1,6 @@
 package xjtuse.castingcurvepredict.models;
 
-public class PredictionModel {
+public class LearningModel {
     private String modelPath;
 
     public String getModelPath() {

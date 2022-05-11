@@ -5,7 +5,7 @@ public class MlModel {
     private String Name;
     private String Path;
     private double mLoss = -10;
-    private String mStatus = "Untrained";
+    private String mStatus = "Created";
     
     public int getId() {
         return Id;

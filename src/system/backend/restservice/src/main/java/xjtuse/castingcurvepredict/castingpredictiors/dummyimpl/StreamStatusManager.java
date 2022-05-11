@@ -12,12 +12,13 @@ import org.springframework.scheduling.config.Task;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManager;
 import xjtuse.castingcurvepredict.castingpredictiors.IStatusManagerEventListener;
 import xjtuse.castingcurvepredict.castingpredictiors.TaskStatus;
+import xjtuse.castingcurvepredict.models.ITaskEventListener;
 import xjtuse.castingcurvepredict.models.TaskModel;
 
 // 以流的方式实现状态管理。
 // 一旦状态被读取后，就会从缓冲区中删除，不可再读。
 // 线程安全。
-public class StreamStatusManager implements IStatusManager {
+public class StreamStatusManager implements IStatusManager, ITaskEventListener {
 
     SortedMap<Date, Double> mLosses = new TreeMap<Date, Double>();
     SortedMap<Date, Integer> mEpochs = new TreeMap<Date, Integer>();
@@ -47,6 +48,10 @@ public class StreamStatusManager implements IStatusManager {
                     listener.onTaskStopped(this);
                 }
                 break;
+            case Completed:
+                for (var listener : mListeners) {
+                    listener.onTaskCompleted(this);
+                }
             default:
                 break;
         }
@@ -118,10 +123,34 @@ public class StreamStatusManager implements IStatusManager {
     @Override
     public void setTask(TaskModel task) {
         mTask = task;
+        if (task != null) {
+            task.AddEventListener(this);
+        }
     }
 
     @Override
     public TaskModel getTask() {
         return mTask;
+    }
+
+    @Override
+    public void onTaskStarting(TaskModel task) {
+        for (IStatusManagerEventListener iStatusManagerEventListener : mListeners) {
+            iStatusManagerEventListener.onTaskStarting(this);
+        }
+    }
+
+    @Override
+    public void onTaskStarted(TaskModel task) {
+        for (IStatusManagerEventListener iStatusManagerEventListener : mListeners) {
+            iStatusManagerEventListener.onTaskStarted(this);
+        }
+    }
+
+    @Override
+    public void onTaskStopped(TaskModel task) {
+        for (IStatusManagerEventListener iStatusManagerEventListener : mListeners) {
+            iStatusManagerEventListener.onTaskStopped(this);
+        }
     }
 }
