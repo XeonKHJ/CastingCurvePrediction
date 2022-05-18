@@ -9,6 +9,8 @@ public interface MlModelMapper {
 
     public List<MlModel> getModels();
 
+    public List<MlModel> getTrainedModels();
+
     public void UpdateMlModelStatusById(@Param("id") long id, @Param("status") String status);
 
     public void deleteModelById(long id);

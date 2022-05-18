@@ -21,7 +21,7 @@ var taskCollectionVueModel = Vue.createApp({
         return {
             isEmpty: true,
             taskViewModels: [
-                TaskViewModel()
+                // TaskViewModel()
             ],
             currentId: 0
         }
@@ -113,7 +113,7 @@ var modelCollectionVueModel = Vue.createApp({
         return {
             isEmpty: true,
             modelViewModels: [
-                ModelViewModel()
+                // ModelViewModel()
             ],
             currentId: 0
         }

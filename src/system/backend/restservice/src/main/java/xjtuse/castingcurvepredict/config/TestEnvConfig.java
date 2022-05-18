@@ -120,6 +120,7 @@ public class TestEnvConfig implements IConfigFactory, IStatusManagerEventListene
         try (SqlSession session = sessionFactory.openSession()) {
             var mlModelMapper = session.getMapper(MlModelMapper.class);
             mlModelMapper.UpdateMlModelLossById(statusManager.getTask().getModelId(), task.getLoss());
+            mlModelMapper.UpdateMlModelStatusById(statusManager.getTask().getModelId(), "Trained");
             session.commit();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

@@ -13,6 +13,7 @@
 </head>
 
 <body onload="drawAnimation()">
+    <script src="src/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
@@ -49,18 +50,22 @@
                         <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >钢种</label></div>
                         <div class="col my-auto">
                             <select class="form-select" aria-label="Default select example">
-                                <option selected>SPHC(C0.06)</option>
-                                <option value="2">Q235B</option>
+                                <option v-for="(steelGrade,index) in steelGrades">
+                                    {{steelGrade}}
+                            </option>
                             </select>
                         </div>
-                        <div class="col my-auto" style="text-align: right;">面积</div>
+                        <div class="col my-auto" style="text-align: right;">截面宽度</div>
+                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                        <div class="col my-auto" style="text-align: right;">截面厚度</div>
                         <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
                         <div class="col my-auto" style="text-align: right;">目标液位</div>
                         <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
                         <div class="col my-auto" style="text-align: right;">模型</div>
-                        <div class="col my-auto"><select class="form-select" aria-label="Default select example">
-                            <option value="1">28</option>
-                            <option value="2">29</option>
+                        <div id="trainedModelsDiv" class="col my-auto"><select class="form-select" aria-label="Default select example">
+                            <option v-for="(modelViewModel,index) in modelViewModels">
+                                    {{modelViewModel.id}}
+                            </option>
                           </select></div>
                         <div class="col my-auto"><input class="btn btn-primary" type="submit"
                                 v-bind:value="predictButton"></input></div>
@@ -119,7 +124,6 @@
     <script src="src/lib/cuon-utils.js"></script>
     <script src="src/lib/cuon-matrix.js"></script>
     <script src="src/lib/utils.js"></script>
-    <script src="src/config.js"></script>
 </body>
 
 </html>

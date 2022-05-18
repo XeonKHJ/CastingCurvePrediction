@@ -85,6 +85,7 @@ public class TaskServiceController {
             }
 
             task = new TaskModel(RestserviceApplication.getConfig().generateTaskId(), id);
+            task.setLoss(mlModel.getLoss());
             viewModel = new TaskViewModel(task);
             var sm = RestserviceApplication.getConfig().getStatusManager(task);
         } catch (IndexOutOfBoundsException e) {

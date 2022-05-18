@@ -104,4 +104,29 @@ public class LearningModelServiceConstoller {
 
         return viewModel;
     }
+
+    @GetMapping("/getTrainedModels")
+    public ModelCollectionViewModel getTrainedModel()
+    {
+        SqlSessionFactory sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        List<MlModel> models = null;
+        ModelCollectionViewModel collectionViewModel = new ModelCollectionViewModel(new ArrayList<MLModelViewModel>());
+        ArrayList<MLModelViewModel> modelViewModels = new ArrayList<MLModelViewModel>();
+        try (SqlSession session = sessionFactory.openSession()) {
+            MlModelMapper mlModelMapper = session.getMapper(MlModelMapper.class);
+            models = mlModelMapper.getTrainedModels();
+        }
+
+        if (models == null) {
+
+        } else {
+            for (int i = 0; i < models.size(); ++i) {
+                MLModelViewModel mlViewModel = new MLModelViewModel(models.get(i));
+                modelViewModels.add(mlViewModel);
+                collectionViewModel = new ModelCollectionViewModel(modelViewModels);
+            }
+        }
+
+        return collectionViewModel;
+    }
 }

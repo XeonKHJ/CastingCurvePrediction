@@ -10,7 +10,9 @@
   <select id="getModels" resultType="MlModel">
     SELECT * FROM MLModel
   </select>
-
+  <select id="getTrainedModels" resultType="MlModel">
+    select * from MLModel WHERE Status = 'Trained'
+  </select>
   <delete id="deleteModelById">
     DELETE FROM `MLModel` WHERE (`Id` = '${id}')
   </delete>
