@@ -52,7 +52,7 @@ function startDrawing(gl) {
     var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
     var globalModelMatrix = new Matrix4();
     globalModelMatrix.translate(0, 0.3, 0);
-    globalModelMatrix.scale(0.4, 0.4, 1);
+    globalModelMatrix.scale(0.5, 0.5, 1);
     gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
 
@@ -303,6 +303,10 @@ function initVertices(gl) {
         -88 / width, 460 / height,
         88/ width, -910 / height,
         -88 / width, -910 / height
+    ])
+
+    var moldBreachVertex = new Float32Array([
+        
     ])
 
 

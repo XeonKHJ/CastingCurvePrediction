@@ -7,7 +7,17 @@ var formViewModel = Vue.createApp({
             billetThickness: "流速",
             mode: "模式",
             targetLV: "目标液位",
-            predictButton: "预测"
+            predictButton: "预测",
+            isEmpty: true,
+            steelGrades: [
+                "SPHC(C0.06)",
+                "Q235B",
+                "SPA-H"
+            ],
+            modelViewModels: [
+                
+            ],
+            currentId: 0
         }
     }
 }).mount('#steelInfoForm')
@@ -365,3 +375,23 @@ function playAnimation(data) {
     translateData = data;
     startTime = Date.now();
 }
+
+
+function loadTrainedModels()
+{
+    axios.get(baseServerAddr + '/getTrainedModels', {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        for (i = 0; i < response.data.mlModelViewModels.length; ++i) {
+            formViewModel.modelViewModels.push(response.data.mlModelViewModels[i]);
+        }
+    }).then().catch(
+        err => {
+            console.log(err)
+        })
+}
+
+loadTrainedModels();
