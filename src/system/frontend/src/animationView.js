@@ -189,25 +189,38 @@ function initVertices(gl) {
 
     var coolingPipeBottomLeftVertices = new Float32Array([
         -90 / width, -910 / height,
-        -90/ width, -(910-100) / height,
-        -32.5 / width, -(910-100) / height, 
-        -32.5 / width, -(910-100+50) / height,
-        0, -(910-100+50) / height,
+        -90 / width, -(800 - 100) / height,
+        -32.5 / width, -(800 - 100) / height,
+        -32.5 / width, -(910 - 100 + 50) / height,
+        0, -(910 - 100 + 50) / height,
         0, -910 / height
     ])
 
     var coolingPipeBottomLeftVerticesInside = new Float32Array([
         (-90 + borderThinkness) / width, (-910 + borderThinkness) / height,
-        (-90  + borderThinkness) / width, -(910-100 + borderThinkness) / height,
-        (-32.5 - borderThinkness) / width, -(910-100 + borderThinkness) / height, 
-        (-32.5 - borderThinkness) / width, -(910-100+50 + borderThinkness) / height,
-        0, -(910-100+50 + borderThinkness) / height,
+        (-90 + borderThinkness) / width, -(800 - 100 - borderThinkness) / height,
+        (-32.5 - borderThinkness) / width, -(800 - 100 - borderThinkness) / height,
+        (-32.5 - borderThinkness) / width, -(910 - 100 + 50 + borderThinkness) / height,
+        0, -(910 - 100 + 50 + borderThinkness) / height,
         0, (-910 + borderThinkness) / height
     ])
 
     var coolingPipeBottomRightVertices = reverseVertices(coolingPipeBottomLeftVertices);
     var coolingPipeBottomRightVerticesInside = reverseVertices(coolingPipeBottomLeftVerticesInside)
 
+    var coolingPipeBreachVertices = new Float32Array([
+        -32.5 / width, -700 / height,
+        32.5 / width, -700 / height,
+        32.5 / width, -810 / height,
+        -32.5 / width, -810 / height
+    ])
+
+    var coolingPipeBreachVerticesInside = new Float32Array([
+        (-32.5 + borderThinkness) / width, (-700 - borderThinkness) / height,
+        (32.5 - borderThinkness) / width, (-700 - borderThinkness)  / height,
+        (32.5 - borderThinkness) / width, (-810 + borderThinkness) / height,
+        (-32.5 + borderThinkness) / width, (-810 + borderThinkness) / height
+    ])
 
     var stoperBottomVertices = new Float32Array(104);
     stoperBottomVertices[0] = 0;
@@ -301,12 +314,8 @@ function initVertices(gl) {
     var middleInwardInsideVertice = new Float32Array([
         88 / width, 460 / height,
         -88 / width, 460 / height,
-        88/ width, -910 / height,
+        88 / width, -910 / height,
         -88 / width, -910 / height
-    ])
-
-    var moldBreachVertex = new Float32Array([
-        
     ])
 
 
@@ -334,7 +343,8 @@ function initVertices(gl) {
     leftCoolingPipeBottomInside = AnimObj(coolingPipeBottomLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipeBottom = AnimObj(coolingPipeBottomRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipeBottomInside = AnimObj(coolingPipeBottomRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-
+    coolingPipeBreach = AnimObj(coolingPipeBreachVertices, new Float32Array([0, 0, 0, 1]), gl.TRIANGLE_FAN, 2);
+    coolingPipeBreachInside = AnimObj(coolingPipeBreachVerticesInside, new Float32Array([1, 1, 1, 1]), gl.TRIANGLE_FAN, 2);
 
     leftMoldPipe = AnimObj(moldLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
     leftMoldPipeInside = AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
@@ -355,7 +365,7 @@ function initVertices(gl) {
 
     tudishObj = AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59 / height, 0])
     stoperObj = AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430 / height, 0])
-    coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside])
+    coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
     middleInwordObj = AnimObjBundle([middleInward])
@@ -363,7 +373,7 @@ function initVertices(gl) {
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
     //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
-    var bundles = [middleInwordObj, tudishObj, stoperObj,middleUnknownObj, moldPipe, coolingObj]
+    var bundles = [middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj]
 
     // Animation
     // var modelMatrix = new Matrix4();

@@ -47,6 +47,14 @@
                 <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
                     method="post">
                     <div class="row mb-1">
+                        <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >项目</label></div>
+                        <div class="col my-auto">
+                            <select class="form-select" aria-label="Default select example">
+                                <option v-for="(steelGrade,index) in steelGrades">
+                                    {{steelGrade}}
+                            </option>
+                            </select>
+                        </div>
                         <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >钢种</label></div>
                         <div class="col my-auto">
                             <select class="form-select" aria-label="Default select example">
