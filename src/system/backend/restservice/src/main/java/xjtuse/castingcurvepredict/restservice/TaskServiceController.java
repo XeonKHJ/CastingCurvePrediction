@@ -96,4 +96,33 @@ public class TaskServiceController {
         
         return viewModel;
     }
+
+    @GetMapping("/createUpdateTaskFromModelId")
+    public TaskViewModel createUpdateTaskFromModelId(@RequestParam(value = "modelId") int id)
+    {
+        TaskViewModel viewModel = null;
+        TaskModel task;
+        var sessionFactory = RestserviceApplication.getSqlSessionFactory();
+        try(var session = sessionFactory.openSession()) {
+            // 验证model是否存在。
+            var mlModelMapper = session.getMapper(MlModelMapper.class);
+            var mlModel = mlModelMapper.getMlModelById(id);
+
+            if(mlModel == null)
+            {
+                throw  new NullPointerException("学习模型不存在");
+            }
+
+            task = new TaskModel(RestserviceApplication.getConfig().generateTaskId(), id);
+            task.setLoss(mlModel.getLoss());
+            viewModel = new TaskViewModel(task);
+            var sm = RestserviceApplication.getConfig().getStatusManager(task);
+        } catch (IndexOutOfBoundsException e) {
+            viewModel = new TaskViewModel(-1, e.getMessage());
+        } catch(NullPointerException e){
+            viewModel = new TaskViewModel(-2, e.getMessage());
+        }
+        
+        return viewModel;
+    }
 }

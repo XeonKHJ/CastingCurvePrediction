@@ -84,14 +84,21 @@ section{
     /* padding-left: 5px; */
 } 
 
-.echartContentDiv{
+.echartMainDiv{
     position: absolute;
     top: 35px;
     left: 0px;
     right: 0px;
     bottom: 0px;
     background-color: #ddefff;
+}
 
+.echartContentDiv{
+    position: absolute;
+    top: 55px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 }
 
 .tabItemSelected

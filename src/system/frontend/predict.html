@@ -43,43 +43,45 @@
         </nav>
     </header>
     <section id="headerSection">
-            <div class="container shadow-sm p-2 rounded">
-                <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
-                    method="post">
-                    <div class="row mb-1">
-                        <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >项目</label></div>
-                        <div class="col my-auto">
-                            <select class="form-select" aria-label="Default select example">
-                                <option v-for="(steelGrade,index) in steelGrades">
-                                    {{steelGrade}}
-                            </option>
-                            </select>
-                        </div>
-                        <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto" >钢种</label></div>
-                        <div class="col my-auto">
-                            <select class="form-select" aria-label="Default select example">
-                                <option v-for="(steelGrade,index) in steelGrades">
-                                    {{steelGrade}}
-                            </option>
-                            </select>
-                        </div>
-                        <div class="col my-auto" style="text-align: right;">截面宽度</div>
-                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col my-auto" style="text-align: right;">截面厚度</div>
-                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col my-auto" style="text-align: right;">目标液位</div>
-                        <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col my-auto" style="text-align: right;">模型</div>
-                        <div id="trainedModelsDiv" class="col my-auto"><select class="form-select" aria-label="Default select example">
-                            <option v-for="(modelViewModel,index) in modelViewModels">
-                                    {{modelViewModel.id}}
-                            </option>
-                          </select></div>
-                        <div class="col my-auto"><input class="btn btn-primary" type="submit"
-                                v-bind:value="predictButton"></input></div>
+        <div class="container shadow-sm p-2 rounded">
+            <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
+                <div class="row mb-1">
+                    <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto">项目</label>
                     </div>
-                </form>
-            </div>
+                    <div class="col my-auto">
+                        <select class="form-select" aria-label="Default select example">
+                            <option v-for="(steelGrade,index) in steelGrades">
+                                {{steelGrade}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto">钢种</label>
+                    </div>
+                    <div class="col my-auto">
+                        <select class="form-select" aria-label="Default select example">
+                            <option v-for="(steelGrade,index) in steelGrades">
+                                {{steelGrade}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col my-auto" style="text-align: right;">宽度</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">厚度</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">目标液位</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">模型</div>
+                    <div id="trainedModelsDiv" class="col my-auto"><select class="form-select"
+                            aria-label="Default select example">
+                            <option v-for="(modelViewModel,index) in modelViewModels">
+                                {{modelViewModel.id}}
+                            </option>
+                        </select></div>
+                    <div class="col my-auto"><input class="btn btn-primary" type="submit"
+                            v-bind:value="predictButton"></input></div>
+                </div>
+            </form>
+        </div>
     </section>
     <section id="animationSection">
         <div id="animationDiv">
@@ -99,13 +101,19 @@
                     </li>
                 </ul>
             </div>
-            <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
-                class="echartContentDiv" :key="chartViewModel.chartId"
-                v-bind:id="'echartContent' + chartViewModel.chartId">
+            <div class="echartMainDiv">
+                <button class="btn btn-success m-2" v-for="(chartViewModel,index) in chartViewModels"
+                    v-show="chartViewModel.isSelected && chartViewModel.chartId > 0"
+                    :key="chartViewModel.chartId">正确</button>
+                <button class="btn btn-danger m-2" v-for="(chartViewModel,index) in chartViewModels"
+                    v-show="chartViewModel.isSelected && chartViewModel.chartId > 0"
+                    :key="chartViewModel.chartId">错误</button>
+                <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
+                    class="echartContentDiv" :key="chartViewModel.chartId"
+                    v-bind:id="'echartContent' + chartViewModel.chartId">
+                </div>
             </div>
-            <!-- <button id="updateButton" style="top: 35px; left: 5px; position:absolute">加入数据集</button> -->
         </div>
-
     </section>
     <div class="modal fade" id="dialogDiv" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -126,7 +134,7 @@
     <script src="src/view.js"></script>
     <script src="src/predictView.js"></script>
     <script src="src/animationView.js"></script>
-    
+
     <script src="src/lib/webgl-utils.js"></script>
     <script src="src/lib/webgl-debug.js"></script>
     <script src="src/lib/cuon-utils.js"></script>
