@@ -240,12 +240,6 @@ if __name__ == '__main__':
 
     # ------------------------end---------------------------
         
-    
-
-
-
-
-
     max_epochs = 10000000
     border = 3
     timeAndLoss = list([list(),list()])
