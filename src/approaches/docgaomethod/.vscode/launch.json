@@ -5,10 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 当前文件",
+            "name": "Python: 传统方法",
             "type": "python",
             "request": "launch",
-            "program": "gaomethod.py",
+            "program": "traditional_method.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: 机器学习方法",
+            "type": "python",
+            "request": "launch",
+            "program": "mlmethod.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

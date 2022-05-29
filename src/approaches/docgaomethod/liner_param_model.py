@@ -17,11 +17,11 @@ class LinerParamModel(nn.Module):
         hidden_size = 4
         num_layers = 10
         self.lstm = nn.LSTM(input_size=1, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
-        self.bp1 = nn.Linear(3, 4)
+        self.bp1 = nn.Linear(1, 4)
         self.relu1 = nn.ReLU()
         self.bp2 = nn.Linear(4, 4)
         self.relu2 = nn.ReLU()
-        self.bp3 = nn.Linear(4, 2)
+        self.bp3 = nn.Linear(4, 1)
 
 
     def forward(self, x):

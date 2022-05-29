@@ -15,12 +15,9 @@ class ParamModel(nn.Module):
     def __init__(self):
         super().__init__()
         hidden_size = 4
-        num_layers = 10
+        num_layers = 5
         self.lstm = nn.LSTM(input_size=1, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
-        self.bp1 = nn.Linear(3, 4)
-        self.bp2 = nn.Linear(4, 4)
-        self.bp3 = nn.Linear(4, 2)
-        self.forwardCalculation = nn.Linear(hidden_size * num_layers,4)
+        self.forwardCalculation = nn.Linear(hidden_size * num_layers, 2)
 
 
     def forward(self, x):
