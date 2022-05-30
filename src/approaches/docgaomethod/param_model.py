@@ -17,7 +17,7 @@ class ParamModel(nn.Module):
         hidden_size = 4
         num_layers = 5
         self.lstm = nn.LSTM(input_size=1, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
-        self.forwardCalculation = nn.Linear(hidden_size * num_layers, 2)
+        self.forwardCalculation = nn.Linear(hidden_size * num_layers, 4)
 
 
     def forward(self, x):
@@ -25,5 +25,3 @@ class ParamModel(nn.Module):
         reshape_lstm_out = h.reshape([-1])
         foward_out = self.forwardCalculation(reshape_lstm_out)
         return foward_out
-
-                
