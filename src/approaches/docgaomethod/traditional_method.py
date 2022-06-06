@@ -4,6 +4,8 @@ from param_model import ParamModel
 import torch
 import torch.nn as nn
 
+# 最好不要动这里面的算法
+
 B = 1250  # 连铸坯宽度
 W = 230  # 连铸坯厚度
 L = 1  # 结晶器内液面高度
