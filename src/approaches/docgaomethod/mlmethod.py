@@ -21,13 +21,17 @@ def get_input():
     file_path = "dataset/2021-04-07-17-54-00-strand-1.csv"
     file = open(file_path)
     lines = file.readlines()
+    
+    # 液位能被检测之后的数据
     hs = list()
     ts = list()
     ls = list()
 
+    # 液位能被检测之前的数据
     phs = list()
     pts = list()
 
+    # completed data
     chs = list()
     cts = list()
 
@@ -110,7 +114,7 @@ def calculate_lv_acts_tensor(hs, ts, params, batch_size, batch_first = True, pre
             previousTime += ts[stage-1]
         for time in range(int(stopTimeSpan / 0.5)):
             current_lv = stp_pos_flow_tensor(hs[stage], lv, previousTime + time / 2, 1 / sampleRate, params)
-            print(current_lv.reshape([-1]).item())
+            # print(current_lv.reshape([-1]).item())
             lv += current_lv
             tlvs[sample_count] = lv
             sample_count += 1
@@ -123,6 +127,12 @@ def init_ml_models():
     pm = ParamModel()
     lpm = LinerParamModel()
     return (pm, lpm)
+
+def convert_result_to_csv_str(hs, lv_acts, lv_preds):
+    print("STP_POS,LV_ACT,LV_PRED")
+    for i in range(hs.__len__()):
+        print(str(hs[i])+","+str(lv_acts[i])+","+str(lv_preds[i]))
+
 
 if __name__ == '__main__':
     hs, ls, ts, phs, pts, pre_lv_act, chs, cts = get_input()
@@ -149,10 +159,12 @@ if __name__ == '__main__':
     tls_act = torch.tensor(ls)
     tls_act = tls_act.reshape([ -1, ls.__len__(), 1])
 
-    # output_act = calculate_lv_acts(ths[0], ts, [651, 42/19, -2.0283, 0.2184], 1, previousTime=phs.__len__()*0.5)
     tpls_act = calculate_lv_acts_tensor(torch.tensor(chs).reshape([-1,1]), pts, trained_params, 1)
     print("---------------------------------------------")
     tpls_act = calculate_lv_acts_tensor(ths[0], ts, trained_params, 1, previousTime=phs.__len__()*0.5, pre_lv_act=pre_lv_act)
+    convert_result_to_csv_str(hs, ls, tpls_act.reshape([-1]).tolist())
+    for tpl_act in tpls_act.reshape([-1]).tolist():
+        print(tpl_act)
     epoch = 0
     while True:
         epoch += 1

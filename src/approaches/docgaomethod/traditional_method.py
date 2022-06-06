@@ -14,7 +14,7 @@ H1t = 1  # 中间包液面高度
 H2 = 1300  # 下水口水头高度
 H3 = 2  # 下侧孔淹没高度，需要计算
 h = 1  # 塞棒高度
-
+sensor_to_dummy_bar_height = 350
 def get_input():
     file_path = "dataset/2021-04-07-17-54-00-strand-1.csv"
     file = open(file_path)
@@ -25,8 +25,6 @@ def get_input():
 
     phs = list()
     pts = list()
-
-    sensor_to_dummy_bar_height = 150
 
     is_header_passed = False
     is_lv_detected = False  # 在结晶器中的钢液是否能被检测到
@@ -56,69 +54,53 @@ def get_input():
 def steelTypeRelatedParams(steelType="dont't know"):
     return {0.2184, 2.0283}
 
-# TODO 能用机器学习的方式拟合H1
 
-
-def calculate_h1(a, b, t):
-    # H1t = 651+(42/19)*(t)
-    H1t = a+(b)*(t)
+def calculate_h1(t):
+    H1t = 651+(42/19)*(t)
     return H1t
 
-# TODO 能用机器学习的方式拟合
-
-
-def calculate_c2(a, b, h):
-    # c2param1, c2param2 = steelTypeRelatedParams()
-    # c2h = c2param1*(h)-c2param2  # c值，action是-15至15，先加15
-    c2h =  a+ b * h
+def calculate_c2(h):
+    c2param1, c2param2 = steelTypeRelatedParams()
+    c2h = c2param1*(h)-c2param2  # c值，action是-15至15，先加15
     return c2h
 
 
-def stp_pos_flow(h_act, lv_act, t, dt=0.5, params=[0,0,0,0]):
-    H1t = calculate_h1(651, 42/19, t)  # H1：中间包液位高度，t的函数
+def stp_pos_flow(h_act, lv_act, t, dt=0.5):
+    H1t = calculate_h1(t)  # H1：中间包液位高度，t的函数
     g = 9.8                 # 重力
-    c2h = calculate_c2(params[2], params[3], h_act)  # C2：和钢种有关的系数
+    c2h = calculate_c2(h_act)  # C2：和钢种有关的系数
 
     # 引锭头顶部距离结晶器底部高度350+结晶器液位高度（距离引锭头）283
-    if lv_act < 633:
+    if lv_act < 283:
         H3 = 0
     else:
-        H3 = lv_act-633  # H3下侧出口淹没高度
+        H3 = lv_act - 283  # H3下侧出口淹没高度
     Ht = H1t+H2-H3
     dL = (pow(2 * g * Ht, 0.5) * c2h * A * dt) / (B * W)
     return dL
 
-def calculate_lv_acts(hs, ts, params):
+def calculate_lv_acts(hs, ts, init_lv_act = 0.0, previous_time = 0):
     sampleRate = 2  # 采样率是2Hz。
     lv_acts = list()
-    lv_act = 0.0
+    lv_act = init_lv_act
     for stage in range(hs.__len__()):
         stopTimeSpan = ts[stage]
         if stage > 0:
-            previousTime += ts[stage-1]
+            previous_time += ts[stage-1]
         else:
-            previousTime = 0
+            previous_time = 0
         for time in range(int(stopTimeSpan / 0.5)):
             # print(previousTime + time / 2)
-            lv_act += stp_pos_flow(hs[stage], lv_act,
-                                   previousTime + time / 2, 1 / sampleRate, params)
-            lv_acts.append(lv_act)
+            dlv_act = stp_pos_flow(hs[stage], lv_act,
+                                   previous_time + time / 2, 1 / sampleRate)
+            lv_act += dlv_act
+            lv_acts.append(lv_act[0].item())
     # for c in lv_acts:
     #     print(c)
     return lv_acts
 
-def init_ml_models():
-    pm = ParamModel()
-    lpm = LinerParamModel()
-    return (pm, lpm)
-
 if __name__ == '__main__':
     hs, ls, ts, phs, pts, pre_lv_act = get_input()
-    pm, lpm = init_ml_models()
-
-    loss_function = nn.MSELoss()
-    optimizer = torch.optim.Adam(pm.parameters(), lr=1e-2)
-    loptimizer = torch.optim.Adam(lpm.parameters(), lr=1e-2)
 
     # 处理hs，phs代表tesnor hs。
     ths = torch.tensor(hs)  # 代表处理过后的hs，1维。Shape为(时长)
@@ -132,29 +114,8 @@ if __name__ == '__main__':
     tls_act = torch.tensor(ls)
     tls_act = tls_act.reshape([ -1, ls.__len__(), 1])
 
-    # output_act = calculate_lv_acts(ths[0], ts, [651, 42/19, -2.0283, 0.2184], 1, previousTime=phs.__len__()*0.5)
-
-    epoch = 0
-    while True:
-        epoch += 1
-        pm_output = pm(ths)
-        linear_output = lpm(thstob)
-        # print(linear_output)
-        tls_pred = calculate_lv_acts_tensor(ths[0], ts, pm_output, ths.shape[0], previousTime=phs.__len__()*0.5, pre_lv_act=pre_lv_act)
-        # tls_pred = tls_pred / 500
-        loss = loss_function(tls_pred, tls_act)
-        print(loss)
-        loss.backward()
-        optimizer.step()
-        optimizer.zero_grad()
-        loptimizer.step()
-        loptimizer.zero_grad()
-
-        if epoch % 1000 == 0:
-            tphs_output = pm(tphs)
-            tpls_act = calculate_lv_acts_tensor(phs, pts, tphs_output, 1)
-            for tpl_act in tpls_act.reshape([-1]).tolist():
-                print(tpl_act)
-            for lv_ptr in tls_pred.reshape([-1]).tolist():
-                print(lv_ptr)
-
+    output_acts = calculate_lv_acts(ths[0], ts, init_lv_act = sensor_to_dummy_bar_height, previous_time=phs.__len__()*0.5)
+    print("STP_POS,LV_ACT,LV_PRED")
+    for i in range(output_acts.__len__()):
+        print(str(hs[i]) + ',' + str(ls[i]) + ',' + str(output_acts[i]))
+    
