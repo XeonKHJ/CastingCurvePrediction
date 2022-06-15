@@ -102,6 +102,38 @@
                 </ul>
             </div>
             <div class="echartMainDiv">
+                <div class="row m-2">
+                    <div class="form-check col">
+                        <input class="form-check-input" type="checkbox" value="" id="tudishWeightCheckBox"
+                            v-model="isTudishWeightVisible" @change="onChartDataContentChanged()">
+                        <label class="form-check-label" for="tudishWeightChart">
+                            中包重量
+                        </label>
+                    </div>
+                    <div class="form-check col">
+                        <input class="form-check-input" type="checkbox" value="" id="ladleWeightCheckBox"
+                            v-model="isLadleWeightVisible" @change="onChartDataContentChanged()">
+                        <label class="form-check-label" for="ladleWeightChart">
+                            大包重量
+                        </label>
+                    </div>
+                    <div class="form-check col">
+                        <input class="form-check-input" type="checkbox" value="" id="stpPosCheckBox"
+                            v-model="isStpPosVisible" @change="onChartDataContentChanged()">
+                        <label class="form-check-label" for="stpPosChart">
+                            塞棒位置
+                        </label>
+                    </div>
+                    <div class="form-check col">
+                        <input class="form-check-input" type="checkbox" value="" id="lvActCheckBox"
+                            v-model="isLvActVisible" @change="onChartDataContentChanged()">
+                        <label class="form-check-label" for="lvActChart">
+                            钢液高度
+                        </label>
+                    </div>
+
+                </div>
+
                 <button class="btn btn-success m-2" v-for="(chartViewModel,index) in chartViewModels"
                     v-show="chartViewModel.isSelected && chartViewModel.chartId > 0"
                     :key="chartViewModel.chartId">正确</button>

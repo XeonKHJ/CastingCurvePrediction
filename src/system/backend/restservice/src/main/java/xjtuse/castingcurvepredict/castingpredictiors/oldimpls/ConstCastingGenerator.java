@@ -20,7 +20,7 @@ public class ConstCastingGenerator implements ICastingGenerator {
 
         BufferedReader bfReader;
         try {
-            bfReader = new BufferedReader(new FileReader("C:/Users/redal/source/repos/CastingCurvePrediction/datasets/data2.csv"));
+            bfReader = new BufferedReader(new FileReader("C:/Users/redal/source/repos/CastingCurvePrediction/datasets/constdata.csv"));
             Boolean firstLine = true;
             String line;
             while((line = bfReader.readLine()) != null)
@@ -33,8 +33,11 @@ public class ConstCastingGenerator implements ICastingGenerator {
                     String itemToSplit = line;
                     String[] item = itemToSplit.split(",");
                     String date = item[0];
-                    double value = Double.parseDouble(item[1]);
-                    resultModel.addResultItem(date, value);
+                    double lv_act = Double.parseDouble(item[2]);
+                    double std_pos = Double.parseDouble(item[3]);
+                    double tudishWeight = Double.parseDouble(item[5]);
+                    double ladleWeight = Double.parseDouble(item[6]);
+                    resultModel.addResultItem(date, std_pos, lv_act, tudishWeight, ladleWeight);
                 }
             }
         } catch (IOException e) {

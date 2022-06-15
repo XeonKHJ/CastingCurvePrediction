@@ -30,9 +30,9 @@ function submitCastingPriorInfo(form, title = "预测结果") {
             Accept: "application/json"
         }
     }).then(response => {
-        if (chartCollectionVueModel.isEmpty) {
-            chartCollectionVueModel.chartViewModels.splice(0, 1);
-            chartCollectionVueModel.isEmpty = false;
+        if (chartCollectionViewModel.isEmpty) {
+            chartCollectionViewModel.chartViewModels.splice(0, 1);
+            chartCollectionViewModel.isEmpty = false;
         }
         vmId = hashCode(title, seedCounter++);
         var filePaths = title.split('\\');
@@ -59,7 +59,7 @@ var chartListViewModel = Vue.createApp({
 
 function onTabClicked() {
     console.log("ontabclicked")
-    chartCollectionVueModel.selectItem(chartCollectionVueModel.currentId)
+    chartCollectionViewModel.selectItem(chartCollectionViewModel.currentId)
 }
 
 function onUpdateClicked() {
@@ -67,14 +67,18 @@ function onUpdateClicked() {
 }
 
 
-var chartCollectionVueModel = Vue.createApp({
+var chartCollectionViewModel = Vue.createApp({
     data() {
         return {
             isEmpty: true,
             chartViewModels: [
                 ChartViewModel()
             ],
-            currentId: 0
+            currentId: 0,
+            isStpPosVisible:true,
+            isLvActVisible:false,
+            isTudishWeightVisible:false,
+            isLadleWeightVisible:false
         }
     },
     methods: {
@@ -114,8 +118,22 @@ var chartCollectionVueModel = Vue.createApp({
                 }
             }
         },
-        selectItem(id) {
+        getItemFromId(id){
+            if (id == 0) {
+                return null
+            }
+            else {
+                var result = true;
+                this.chartViewModels.forEach(element => {
+                    if (element.chartId == id) {
+                        result = element;
+                    }
+                });
 
+                return result
+            }
+        },
+        selectItem(id) {
             if (id == 0) {
                 var echartDiv = document.getElementById('echartDiv');
             }
@@ -131,7 +149,7 @@ var chartCollectionVueModel = Vue.createApp({
                 });
             }
 
-            chartCollectionVueModel.$nextTick(() => {
+            chartCollectionViewModel.$nextTick(() => {
                 resizeEverything();
             });
         },
@@ -147,9 +165,16 @@ var chartCollectionVueModel = Vue.createApp({
                 generatingCastingChart(newDataViewModel);
                 this.selectItem(id);
             });
+        },
+        onChartDataContentChanged(){
+            refreshCastingChart();
         }
     }
 }).mount("#chartSection");
+
+function onStpPosChecked(){
+    console.log("sdfsdf")
+}
 
 function ChartViewModel() {
     var defaultChartViewModel = {
@@ -159,6 +184,7 @@ function ChartViewModel() {
         isPredictResult: false,
         isSelected: true,
         echart: null,
+        isStpPosVisible:true,
     };
 
     return defaultChartViewModel;
@@ -174,14 +200,14 @@ function showCastingCurve(data, title, id) {
         newDataViewModel.isPredictResult = false,
         newDataViewModel.isSelected = true
 
-    chartCollectionVueModel.addAndDisplayChart(newDataViewModel);
+    chartCollectionViewModel.addAndDisplayChart(newDataViewModel);
 }
 
 function exportToCsv() {
     var viewModel = null;
-    for (var i = 0; i < chartCollectionVueModel.chartViewModels.length; ++i) {
-        if (chartCollectionVueModel.currentId == chartCollectionVueModel.chartViewModels[i].chartId) {
-            viewModel = chartCollectionVueModel.chartViewModels[i];
+    for (var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i) {
+        if (chartCollectionViewModel.currentId == chartCollectionViewModel.chartViewModels[i].chartId) {
+            viewModel = chartCollectionViewModel.chartViewModels[i];
             break;
         }
     }
@@ -218,34 +244,83 @@ function generatingCastingChart(dataViewModel) {
     var echart = echarts.init(document.getElementById(divId));
     currentChart = echart
     dataViewModel.echart = echart;
+    displayOrRefreshCastingChart(dataViewModel)
+    //_animationStarted = true;
+}
+
+function displayOrRefreshCastingChart(dataViewModel)
+{
+    echart = dataViewModel.echart
+    yAxises = []
+    ySeries = []
+    if(chartCollectionViewModel.isStpPosVisible){
+        yAxises.push({
+            type: 'value',
+            min: -2
+        })
+        ySeries.push({
+            data: dataViewModel.data.stpPos,
+            yAxis: 0,
+            type: 'line'
+        })
+    }
+
+    if(chartCollectionViewModel.isLvActVisible){
+        yAxises.push({
+            type: 'value',
+            min: -2
+        })
+        ySeries.push({
+            data: dataViewModel.data.liqLevel,
+            yAxis: 1,
+            type: 'line'
+        })
+    }
+
+    if(chartCollectionViewModel.isTudishWeightVisible){
+        yAxises.push({
+            type:'value',
+            min: 0
+        });
+        ySeries.push({
+            data: dataViewModel.data.tudishWeights,
+            yAxis: 2,
+            type: 'line'
+        })
+    }
+
+    if(chartCollectionViewModel.isLadleWeightVisible){
+        yAxises.push({
+            type:'value',
+            min: 0
+        });
+        ySeries.push({
+            data: dataViewModel.data.ladleWeights,
+            yAxis: 3,
+            type: 'line'
+        })
+    }
+
+    if(ySeries.length == 0)
+    {
+        yAxises.push({
+            type: 'value',
+            min: -2
+        })
+        ySeries.push({
+            data: [],
+            yAxis: 0,
+            type: 'line'
+        })
+    }
+
     var option = {
         xAxis: {
             type: 'category',
             data: dataViewModel.data.times
         },
-        yAxis: [
-            {
-                type: 'value',
-                min: -2
-            },
-            {
-                type: 'value',
-                min: -2
-            }
-
-        ],
-        series: [
-            {
-                data: dataViewModel.data.values,
-                yAxis: 0,
-                type: 'line'
-            },
-            {
-                data: dataViewModel.data.liqLevel,
-                yAxis: 2,
-                type: 'line'
-            }
-        ],
+        yAxis: yAxises,
+        series: ySeries,
         toolbox: {
             show: true,
             feature: {
@@ -276,9 +351,13 @@ function generatingCastingChart(dataViewModel) {
         }
     };
 
-    echart.setOption(option)
+    echart.setOption(option, true)
+}
 
-    //_animationStarted = true;
+function refreshCastingChart()
+{
+    item = chartCollectionViewModel.getItemFromId(chartCollectionViewModel.currentId)
+    displayOrRefreshCastingChart(item)
 }
 
 function createEchartContentDiv(name, chartId) {
@@ -307,9 +386,9 @@ function onOpenFileInputChanged(event) {
         }
     }).then(response => {
         openFileInput.value = "";
-        if (chartCollectionVueModel.isEmpty) {
-            chartCollectionVueModel.chartViewModels.splice(0, 1);
-            chartCollectionVueModel.isEmpty = false;
+        if (chartCollectionViewModel.isEmpty) {
+            chartCollectionViewModel.chartViewModels.splice(0, 1);
+            chartCollectionViewModel.isEmpty = false;
         }
         const vmId = hashCode(fileName, seedCounter++);
 
@@ -326,16 +405,17 @@ window.onresize = function () {
 function onCloseTabButtonClicked(el) {
 
     idToDelete = el.id.substring(8, el.id.length)
-    chartCollectionVueModel.revmoveItem(idToDelete)
+    chartCollectionViewModel.revmoveItem(idToDelete)
 
 }
 
 function resizeEverything() {
 
-    for (var i = 0; i < chartCollectionVueModel.chartViewModels.length; ++i) {
-        if (chartCollectionVueModel.chartViewModels[i].chartId == chartCollectionVueModel.currentId) {
-            if (chartCollectionVueModel.chartViewModels[i].echart != null) {
-                chartCollectionVueModel.chartViewModels[i].echart.resize();
+    for (var i = 0; i < chartCollectionViewModel.chartViewModels.length; ++i) {
+        if (chartCollectionViewModel.chartViewModels[i].chartId == chartCollectionViewModel.currentId) {
+            if (chartCollectionViewModel.chartViewModels[i].echart != null) {
+                const curChart = chartCollectionViewModel.chartViewModels[i].echart;
+                curChart.resize();
             }
             break;
         }
@@ -355,7 +435,7 @@ function resizeEverything() {
 
 function getChartViewModelById(id) {
     var requestViewModel = null;
-    chartCollectionVueModel.chartViewModels.forEach(element => {
+    chartCollectionViewModel.chartViewModels.forEach(element => {
         if (element.chartId == id) {
             requestViewModel = element;
         }
@@ -365,7 +445,7 @@ function getChartViewModelById(id) {
 }
 
 function onPlayButtonClicked() {
-    currentViewModel = getChartViewModelById(chartCollectionVueModel.currentId);
+    currentViewModel = getChartViewModelById(chartCollectionViewModel.currentId);
     if (currentViewModel.data != null) {
         playAnimation(currentViewModel.data);
     }
