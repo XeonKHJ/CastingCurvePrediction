@@ -48,7 +48,7 @@
             <table class="table" id="taskListTable">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>编号</th>
                         <th>损失</th>
                         <th>Epoch</th>
                         <th>状态</th>
@@ -66,7 +66,8 @@
                         <td class="col">{{taskViewModel.modelId}}</td>
                         <td class="col text-end">
                         <td class="col text-end">
-                            <button class="btn btn-secondary btn-sm" @click="onViewTaskButtonClicked(taskViewModel)">查看</button>
+                            <button class="btn btn-secondary btn-sm"
+                                @click="onViewTaskButtonClicked(taskViewModel)">查看</button>
                             <button class="btn btn-secondary btn-sm ms-2" v-if="taskViewModel.status == 'Running'"
                                 @click="onStopButtonClicked(taskViewModel, index)">停止</button>
                             <button class="btn btn-secondary btn-sm ms-2" v-else
@@ -102,6 +103,36 @@
                         <td class="col text-end">
                             <button class="btn btn-secondary btn-sm"
                                 @click="onCreateTaskButtonClicked(modelViewModel.id)">创建任务</button>
+                            <button class="btn btn-secondary btn-sm ms-2"
+                                @click="onDeleteButtonClicked(modelViewModel.id, index)">删除
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container shadow-sm rounded">
+            <h4>数据管理</h4>
+            <table class="table" id="datasetListTable">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>数量</th>
+                        <th>文件夹路径</th>
+                        <th>备注</th>
+                        <th style="text-align: right;"><button class="btn btn-primary btn-sm" id="createModelButton"
+                                onclick="javascript:onCreateModelButtonClicked()">添加数据集</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(datasetViewModel,index) in datasetViewModels">
+                        <td class="col">{{datasetViewModel.id}}</td>
+                        <td class="col">{{datasetViewModel.count}}</td>
+                        <td class="col">{{datasetViewModel.folderPath}}</td>
+                        <td class="col">{{datasetViewModel.description}}</td>
+                        <td class="col text-end">
+                            <button class="btn btn-secondary btn-sm"
+                                @click="onCreateTaskButtonClicked(modelViewModel.id)">添加数据</button>
                             <button class="btn btn-secondary btn-sm ms-2"
                                 @click="onDeleteButtonClicked(modelViewModel.id, index)">删除
                             </button>

@@ -16,6 +16,24 @@ function ModelViewModel(id = 0, loss = 0.0, status = "untrained") {
     }
 }
 
+function DatasetViewModel()
+{
+    return {
+        id: 0,
+        count: 0,
+        folderPath: "null",
+        description: "None"
+    }
+}
+
+var datasetCollectionVueModel = Vue.createApp({
+    data(){
+        return {
+            datasetViewModels:[DatasetViewModel()]
+        }
+    }
+}).mount('#datasetListTable')
+
 var taskCollectionVueModel = Vue.createApp({
     data() {
         return {
