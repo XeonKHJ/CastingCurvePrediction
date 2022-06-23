@@ -318,6 +318,20 @@ function initVertices(gl) {
         -88 / width, -910 / height
     ])
 
+    const dummyBarParams = {
+        length : 1000,
+        width : 80,
+        offset : -400,
+        y : -1300
+    }
+
+    const dummyBarHeadVertice = new Float32Array([
+        (0-dummyBarParams.length - dummyBarParams.offset) / width, dummyBarParams.y/height,
+        (0 - dummyBarParams.offset) / width, dummyBarParams.y /height,
+        (0-dummyBarParams.offset) / width, (dummyBarParams.y - dummyBarParams.width) / height,
+        (0-dummyBarParams.length - dummyBarParams.offset) / width, (dummyBarParams.y-dummyBarParams.width) / height
+    ])
+
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
@@ -326,6 +340,7 @@ function initVertices(gl) {
     var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
     var middleInwardColor = new Float32Array([0.5, 0.5, 0.5, 1.0])
+    var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
 
     leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
@@ -362,18 +377,21 @@ function initVertices(gl) {
     middleUnknownRightHeadInside = AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
 
     middleInward = AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
+    dummybar = AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
 
+    // Animation object bundles.
     tudishObj = AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59 / height, 0])
     stoperObj = AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430 / height, 0])
     coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
     middleInwordObj = AnimObjBundle([middleInward])
-
+    dummybarObj = AnimObjBundle([dummybar])
+    
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
     //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
-    var bundles = [middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj]
+    var bundles = [middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
 
     // Animation
     // var modelMatrix = new Matrix4();
