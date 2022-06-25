@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>Bootstrap自动拉伸改变大小</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <link href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" type="text/css" rel="stylesheet"
+        media="all">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+        integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+    <script type='text/javascript' src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <style>
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .row .sp {
+            height: 300px;
+            margin-bottom: 10px;
+            border-bottom: 3px #eee solid;
+        }
+
+        .editor {
+            height: 300px;
+            border-right: 3px #eee solid;
+        }
+
+
+        @media (max-width: 939px) {
+
+            .row .sp {
+                width: 48.62% !important;
+
+            }
+
+        }
+
+        @media (max-width: 767px) {
+
+            .row .sp {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+        }
+
+        @media (max-width: 1200px) {
+            .row .sp {
+                width: 49.62% !important;
+
+            }
+        }
+
+        @media (max-width: 767px) {
+
+            .row .sp {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+        }
+
+        .cont {
+            width: 100%;
+        }
+
+
+        .inner {
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+
+        .ui-resizable {
+            position: relative;
+        }
+
+        .ui-resizable-handle {
+            position: absolute;
+            font-size: 0.1px;
+            z-index: 99999;
+            display: block;
+        }
+
+        .ui-resizable-w {
+            cursor: w-resize;
+            width: 7px;
+            left: -5px;
+            top: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cont">
+        <div class="row">
+            <div class="col-sm-6 sp editor">
+                <div class="inner">
+                    豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。雄州雾列，俊采星驰。台隍枕夷夏之交，宾主尽东南之美。都督阎公之雅望，棨戟遥临；宇文新州之懿范，襜帷暂驻。十旬休假，胜友如云；千里逢迎，高朋满座。腾蛟起凤，孟学士之词宗；紫电青霜，王将军之武库。家君作宰，路出名区；童子何知，躬逢胜饯。
+
+                    时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿；临帝子之长洲，得天人之旧馆。层峦耸翠，上出重霄；飞阁流丹，下临无地。鹤汀凫渚，穷岛屿之萦回；桂殿兰宫，即冈峦之体势。
+
+                    披绣闼，俯雕甍，山原旷其盈视，川泽纡其骇瞩。闾阎扑地，钟鸣鼎食之家；舸舰弥津，青雀黄龙之舳。云销雨霁，彩彻区明。落霞与孤鹜齐飞，秋水共长天一色。渔舟唱晚，响穷彭蠡之滨；雁阵惊寒，声断衡阳之浦。
+
+                    遥襟甫畅，逸兴遄飞。爽籁发而清风生，纤歌凝而白云遏。睢园绿竹，气凌彭泽之樽；邺水朱华，光照临川之笔。四美具，二难并。穷睇眄于中天，极娱游于暇日。天高地迥，觉宇宙之无穷；兴尽悲来，识盈虚之有数。望长安于日下，目吴会于云间。地势极而南溟深，天柱高而北辰远。关山难越，谁悲失路之人？萍水相逢，尽是他乡之客。怀帝阍而不见，奉宣室以何年？
+
+                    嗟乎！时运不齐，命途多舛。冯唐易老，李广难封。屈贾谊于长沙，非无圣主；窜梁鸿于海曲，岂乏明时？所赖君子见机，达人知命。老当益壮，宁移白首之心？穷且益坚，不坠青云之志。酌贪泉而觉爽，处涸辙以犹欢。北海虽赊，扶摇可接；东隅已逝，桑榆非晚。孟尝高洁，空余报国之情；阮籍猖狂，岂效穷途之哭！
+
+                    勃，三尺微命，一介书生。无路请缨，等终军之弱冠；有怀投笔，慕宗悫之长风。舍簪笏于百龄，奉晨昏于万里。非谢家之宝树，接孟氏之芳邻。他日趋庭，叨陪鲤对；今兹捧袂，喜托龙门。杨意不逢，抚凌云而自惜；钟期既遇，奏流水以何惭？
+
+                    呜乎！胜地不常，盛筵难再；兰亭已矣，梓泽丘墟。临别赠言，幸承恩于伟饯；登高作赋，是所望于群公。敢竭鄙怀，恭疏短引；一言均赋，四韵俱成。请洒潘江，各倾陆海云尔：
+
+                    滕王高阁临江渚，佩玉鸣鸾罢歌舞。
+
+                    画栋朝飞南浦云，珠帘暮卷西山雨。
+
+                    闲云潭影日悠悠，物换星移几度秋。
+
+                    阁中帝子今何在？槛外长江空自流。</div>
+            </div>
+            <div class="col-sm-6 sp">
+                <div class="inner">
+
+                    朝搴阰之木兰兮，夕揽洲之宿莽。
+
+                    日月忽其不淹兮，春与秋其代序。
+
+                    唯草木之零落兮，恐美人之迟暮。
+
+                    不抚壮而弃秽兮，何不改乎此度？
+
+                    乘骐骥以驰骋兮，来吾道夫先路！
+
+                    昔三后之纯粹兮，固众芳之所在。
+
+                    杂申椒与菌桂兮，岂惟纫夫蕙茞！
+
+                    彼尧、舜之耿介兮，既遵道而得路。
+
+                    何桀纣之昌披兮，夫惟捷径以窘步。
+
+                    惟夫党人之偷乐兮，路幽昧以险隘。
+
+                    岂余身之殚殃兮，恐皇舆之败绩。
+
+                    忽奔走以先后兮，及前王之踵武。
+
+                    荃不查余之中情兮，反信谗而齌怒。
+
+                    余固知謇謇之为患兮，忍而不能舍也。
+
+                    指九天以为正兮，夫惟灵修之故也。
+
+                    曰黄昏以为期兮，羌中道而改路。
+
+                    初既与余成言兮，后悔遁而有他。
+
+                    余既不难夫离别兮，伤灵修之数化。
+
+                    余既滋兰之九畹兮，又树蕙之百亩。
+
+                    畦留夷与揭车兮，杂杜衡与芳芷。
+
+                    冀枝叶之峻茂兮，愿俟时乎吾将刈。
+
+                    虽萎绝其亦何伤兮，哀众芳之芜秽。
+
+                    众皆竞进以贪婪兮，凭不厌乎求索。
+
+                    羌内恕己以量人兮，各兴心而嫉妒。
+
+                    忽驰骛以追逐兮，非余心之所急。
+
+                    老冉冉其将至兮，恐修名之不立。
+
+                    朝饮木兰之坠露兮，夕餐秋菊之落英。
+
+                    苟余情其信姱以练要兮，长顑颔亦何伤。
+
+                    掔木根以结茝兮，贯薜荔之落蕊。
+
+                    矫菌桂以纫蕙兮，索胡绳之纚纚。
+
+                    謇吾法夫前修兮，非世俗之所服。
+
+                    虽不周于今之人兮，愿依彭咸之遗则。
+
+                    长太息以掩涕兮，哀民生之多艰。
+
+                    余虽好修姱以鞿羁兮，謇朝谇而夕替。
+
+                    既替余以蕙纕兮，又申之以揽茝。
+
+                    亦余心之所善兮，虽九死其犹未悔。
+
+                    怨灵修之浩荡兮，终不察夫民心。
+
+                    众女嫉余之蛾眉兮，谣诼谓余以善淫。
+
+                    固时俗之工巧兮，偭规矩而改错。
+
+                    背绳墨以追曲兮，竞周容以为度。
+
+                    忳郁邑余侘傺兮，吾独穷困乎此时也。
+
+                    宁溘死以流亡兮，余不忍为此态也。
+
+                    鸷鸟之不群兮，自前世而固然。
+
+                    何方圜之能周兮，夫孰异道而相安？
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="inner">
+                    <h1>Bootstrap 布局</h1>
+                    忽吾行此流沙兮，遵赤水而容与。
+                    麾蛟龙使梁津兮，诏西皇使涉予。
+                    路修远以多艰兮，腾众车使径待。
+                    路不周以左转兮，指西海以为期。
+                    屯余车其千乘兮，齐玉轪而并驰。
+                    驾八龙之婉婉兮，载云旗之委蛇。
+                    抑志而弭节兮，神高驰之邈邈。
+                    奏《九歌》而舞《韶》兮，聊假日以媮乐。
+                    陟升皇之赫戏兮，忽临睨夫旧乡。
+                    仆夫悲余马怀兮，蜷局顾而不行。
+                    乱曰：已矣哉！
+                    国无人莫我知兮，又何怀乎故都！
+                    既莫足与为美政兮，吾将从彭咸之所居！
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var maxY = 0;  //取高度最高panel作为分割栏位置
+    $(window).bind("resize", function (event) {
+        if (this == event.target) {
+            $('.sp').removeAttr('style');
+        }
+    });
+
+
+    $('.editor').resizable({
+        handles: 'e, s',
+        minWidth: 100,
+        maxWidth: 900,
+        resize: function (event, ui) {
+            var x = ui.element.outerWidth();
+            var y = ui.element.outerHeight();
+            var ele = ui.element;
+            var factor = $(this).parent().width() - x;
+            var f2 = $(this).parent().width() * .02999;
+            $.each(ele.siblings(), function (idx, item) {
+
+                ele.siblings().eq(idx).css('height', y + 'px');
+                //ele.siblings().eq(idx).css('width',(factor-41)+'px');
+                ele.siblings().eq(idx).width((factor - f2) + 'px');
+
+            });
+        }
+    });
+
+    $('.sp:not(.editor)').resizable({
+        handles: 's',
+        resize: function (event, ui) {
+
+            var y = ui.element.outerHeight();
+            var ele = ui.element;
+            $.each(ele.siblings(), function (idx, item) {
+                ele.siblings().eq(idx).css('height', y + 'px');
+            });
+        }
+    });
+
+
+
+</script>
+
+</html>
