@@ -115,17 +115,19 @@ function initVertices(gl) {
     var sin80 = Math.sin(a2r(70));
     var tan60 = Math.tan(a2r(60));
     var borderThinkness = 3;
-    const tudishBorderHeight = 400
-    const tudishTotalWidth = 1200
-    const tudishTotalHeight = 250
+    const tudishParams = {
+        borderHeight : 400,
+        width : 1500,
+        height : 250
+    }
     var tudishLeftVertices = new Float32Array(
         [
-            -tudishTotalWidth / width, (tudishTotalHeight * tan80) / height,
-            -(tudishTotalWidth - ((tudishBorderHeight / sin80))) / width, (tudishTotalHeight * tan80) / height,
-            -(tudishTotalWidth - (tudishTotalHeight)) / width, 0,
-            (-(tudishTotalWidth - ((tudishBorderHeight / sin80)) - (tudishTotalHeight * tan80 - tudishBorderHeight) / tan80)) / width, tudishBorderHeight / height,
+            -tudishParams.width / width, (tudishParams.height * tan80) / height,
+            -(tudishParams.width - ((tudishParams.borderHeight / sin80))) / width, (tudishParams.height * tan80) / height,
+            -(tudishParams.width - (tudishParams.height)) / width, 0,
+            (-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) / width, tudishParams.borderHeight / height,
             -50 / width, 0,
-            -50 / width, tudishBorderHeight / height
+            -50 / width, tudishParams.borderHeight / height
         ]
     );
 
@@ -133,12 +135,12 @@ function initVertices(gl) {
 
     var tudishLeftInsideVertices = new Float32Array(
         [
-            (-(tudishTotalWidth) + borderThinkness / sin80) / width, ((tudishTotalHeight * tan80) - borderThinkness) / height,
-            (-(tudishTotalWidth - ((tudishBorderHeight / sin80))) - borderThinkness / sin80) / width, ((tudishTotalHeight * tan80) - borderThinkness) / height,
-            (-(tudishTotalWidth - (tudishTotalHeight)) + borderThinkness / sin80) / width, (0 + borderThinkness) / height,
-            ((-(tudishTotalWidth - ((tudishBorderHeight / sin80)) - (tudishTotalHeight * tan80 - tudishBorderHeight) / tan80)) - borderThinkness) / width, (tudishBorderHeight - borderThinkness) / height,
+            (-(tudishParams.width) + borderThinkness / sin80) / width, ((tudishParams.height * tan80) - borderThinkness) / height,
+            (-(tudishParams.width - ((tudishParams.borderHeight / sin80))) - borderThinkness / sin80) / width, ((tudishParams.height * tan80) - borderThinkness) / height,
+            (-(tudishParams.width - (tudishParams.height)) + borderThinkness / sin80) / width, (0 + borderThinkness) / height,
+            ((-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) - borderThinkness) / width, (tudishParams.borderHeight - borderThinkness) / height,
             (-50 - borderThinkness) / width, (0 + borderThinkness) / height,
-            (-50 - borderThinkness) / width, (tudishBorderHeight - borderThinkness) / height
+            (-50 - borderThinkness) / width, (tudishParams.borderHeight - borderThinkness) / height
         ]
     );
 
