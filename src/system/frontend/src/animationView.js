@@ -128,7 +128,7 @@ function initVertices(gl) {
     const tudishParams = {
         borderHeight: 400,
         width: 1500,
-        height: 250
+        height: 250,
     }
     width = 400
     height = 500
@@ -354,6 +354,22 @@ function initVertices(gl) {
         (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
     ])
 
+    // Define steel liquid
+    const steelLiquidParams = {
+        // 中包中的液体高度。从下到上计算
+        tudishHeight : 400,
+
+        // 冷凝管中的液体高度。从上到下开始算
+        coolingPipe : 0,
+    }
+
+    const steelLiquidInTudishVertices = new Float32Array([
+        -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50+steelLiquidParams.tudishHeight+ tudishParams.height,
+        (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50+steelLiquidParams.tudishHeight+ tudishParams.height,
+        -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height, 
+        (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height 
+    ])
+
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
@@ -362,7 +378,8 @@ function initVertices(gl) {
     var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
     var middleInwardColor = new Float32Array([0.5, 0.5, 0.5, 1.0])
-    var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
+    var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 0.5])
+    var steelLiquidColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
 
     leftTudish = AnimObjHelper.AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     leftTudishInside = AnimObjHelper.AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
@@ -401,6 +418,10 @@ function initVertices(gl) {
     middleInward = AnimObjHelper.AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
     dummybar = AnimObjHelper.AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
 
+    // for steelwater
+    steelLiquidInTudish = AnimObjHelper.AnimObj(steelLiquidInTudishVertices, steelLiquidColor, gl.TRIANGLE_STRIP, 2)
+
+
     // Animation object bundles.
     tudishObj = AnimObjHelper.AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59, 0])
     stoperObj = AnimObjHelper.AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430, 0])
@@ -409,11 +430,11 @@ function initVertices(gl) {
     middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
     middleInwordObj = AnimObjHelper.AnimObjBundle([middleInward])
     dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
-
+    steelLiquidObj = AnimObjHelper.AnimObjBundle([steelLiquidInTudish])
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
     //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
-    var bundles = [middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
+    var bundles = [steelLiquidObj, middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
 
     // Animation
     // var modelMatrix = new Matrix4();
