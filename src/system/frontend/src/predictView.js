@@ -1,3 +1,10 @@
+// Cross js file variables
+var context = {
+    translateData : null,
+    animationStartTime : null
+}
+
+// ViewModels section
 var formViewModel = Vue.createApp({
     data() {
         return {
@@ -186,9 +193,24 @@ var chartCollectionViewModel = Vue.createApp({
         },
         onChartDataContentChanged() {
             refreshCastingChart();
+        },
+        onPlayButtonClicked()
+        {
+            curItem = this.getItemFromId(this.currentId)
+
+            if(curItem == null || curItem == undefined)
+            {
+                showError("得先有条线吧？")
+            }
+            else
+            {
+                playAnimation(curItem.data);
+            }
+            
         }
     }
 }).mount("#chartSection");
+
 
 function onStpPosChecked() {
     console.log("sdfsdf")
@@ -207,6 +229,7 @@ function ChartViewModel() {
     return defaultChartViewModel;
 }
 
+// other functions section;
 function onTabClicked() {
     console.log("ontabclicked")
     chartCollectionViewModel.selectItem(chartCollectionViewModel.currentId)
@@ -465,16 +488,8 @@ function getChartViewModelById(id) {
     return requestViewModel;
 }
 
-function onPlayButtonClicked() {
-    currentViewModel = getChartViewModelById(chartCollectionViewModel.currentId);
-    if (currentViewModel.data != null) {
-        playAnimation(currentViewModel.data);
-    }
-}
-
 function playAnimation(data) {
-    translateData = data;
-    startTime = Date.now();
+    AnimationController.startAnimation(data)
 }
 
 

@@ -1,5 +1,63 @@
 var _animationStarted = true;
 
+var AnimationController = {
+    isPlaying : true,
+    height : 2000,
+    width : 1000,
+    webGlContext : null,
+    session : null,
+    renderFrame(gl){
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    
+        bundles = initVertices(gl);
+    
+        // set global scale matrix
+        var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
+        var globalModelMatrix = new Matrix4();
+        globalModelMatrix.translate(0, 0.3, 0);
+        globalModelMatrix.scale(0.4, 0.4, 1);
+        gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
+    
+        var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+        drawAnimObjBundle(gl, a_Position, bundles);
+    },
+    createSession(data, startTime){
+        return {
+            data : data,
+            startTime : startTime
+        }
+    },
+    startAnimation(data){
+        this.session = this.createSession(data, Date.now())
+    },
+    stopAnimation(){
+        this.session = null
+    }
+}
+
+var AnimObjHelper = {
+    AnimObj(vertices, colors, drawMethod, verticeSize, borderWidth = 0, borderColor = null) {
+        return {
+            vertices: vertices,
+            drawMethod: drawMethod,
+            verticeSize: verticeSize,
+            colors: colors,
+            borderWidth: borderWidth,
+            borderColor: null,
+            buffer: null
+        }
+    },
+    AnimObjBundle(objList, translationMatrix = [0, 0, 0], scaleMatrix = [0, 0, 0]) {
+        return {
+            objects: objList,
+            transMatrix: translationMatrix,
+            scaleMatrix: scaleMatrix
+        }
+    },
+    
+}
+
 var GLOBAL_VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' +
     'uniform mat4 u_ModelMatrix; \n' +
@@ -24,7 +82,7 @@ function drawAnimation() {
     canvas.height = canvasDiv.clientHeight;
     canvas.width = canvasDiv.clientWidth;
 
-    // Initialize shaders
+    // Initializev shaders
     if (!initShaders(gl, GLOBAL_VSHADER_SOURCE, GLOBAL_FSHADER_SOURCE)) {
         console.log('Failed to intialize shaders.');
         return;
@@ -34,7 +92,7 @@ function drawAnimation() {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         height = canvasDiv.clientHeight;
         width = canvasDiv.clientWidth;
-        startDrawing(gl);
+        AnimationController.renderFrame(gl);
         if (_animationStarted) {
             requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
         }
@@ -42,54 +100,10 @@ function drawAnimation() {
     tick();
 }
 
-function startDrawing(gl) {
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    bundles = initVertices(gl);
-
-    // set global scale matrix
-    var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
-    var globalModelMatrix = new Matrix4();
-    globalModelMatrix.translate(0, 0.3, 0);
-    globalModelMatrix.scale(0.4, 0.4, 1);
-    gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
-
-
-    var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-    // var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
-    // var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
-
-    drawAnimObjBundle(gl, a_Position, bundles);
-    //drawAnimObjs(gl, a_Position, animObjs);
-}
-
-var startTime = null;
-var translateData = null;
 
 var height = 2000;
 var width = 1000;
 var offset = 0;
-
-function AnimObj(vertices, colors, drawMethod, verticeSize, borderWidth = 0, borderColor = null) {
-    return {
-        vertices: vertices,
-        drawMethod: drawMethod,
-        verticeSize: verticeSize,
-        colors: colors,
-        borderWidth: borderWidth,
-        borderColor: null,
-        buffer: null
-    }
-}
-
-function AnimObjBundle(objList, translationMatrix = [0, 0, 0], scaleMatrix = [0, 0, 0]) {
-    return {
-        objects: objList,
-        transMatrix: translationMatrix,
-        scaleMatrix: scaleMatrix
-    }
-}
 
 function reverseVertices(verticesIn) {
     var verticesOut = new Float32Array(
@@ -146,13 +160,21 @@ function initVertices(gl) {
 
     var tudishRightInsideVertices = reverseVertices(tudishLeftInsideVertices);
 
+    const stoperParams = {
+        // 不包含下面半圆的塞棒长度
+        height:280,
+        width:127,
+        // 西方扇形部分的圆半径
+        r:10
+    }
+
     var sin60 = Math.sin(60 / 180 * Math.PI);
     var sin30 = Math.sin(30 / 180 * Math.PI);
     var stoperVertices = new Float32Array([
-        -63.5 / width, 300 / height,
-        63.5 / width, 300 / height,
-        -63.5 / width, 20 / height,
-        63.5 / width, 20 / height,
+        -(stoperParams.width / 2) / width, 300 / height,
+        (stoperParams.width / 2) / width, 300 / height,
+        -(stoperParams.width / 2) / width, 20 / height,
+        stoperParams.width / 2 / width, 20 / height,
         -47.625 / width, 10 / height,
         47.625 / width, 10 / height
     ]);
@@ -344,51 +366,51 @@ function initVertices(gl) {
     var middleInwardColor = new Float32Array([0.5, 0.5, 0.5, 1.0])
     var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
 
-    leftTudish = AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
-    leftTudishInside = AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
-    rightTudish = AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
-    rightTudishInside = AnimObj(tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
-    stoper = AnimObj(stoperVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    stoperInside = AnimObj(stoperVerticesInside, stoperColor, gl.TRIANGLE_STRIP, 2);
-    stoperBottom = AnimObj(stoperBottomVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    stoperBottomInside = AnimObj(stoperBottomVerticesInside, stoperColor, gl.TRIANGLE_FAN, 2);
-    leftCoolingPipe = AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    rightCoolingPipe = AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    leftCoolingPipeInside = AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-    rightCoolingPipeInside = AnimObj(coolingPipeRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-    leftCoolingPipeBottom = AnimObj(coolingPipeBottomLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    leftCoolingPipeBottomInside = AnimObj(coolingPipeBottomLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-    rightCoolingPipeBottom = AnimObj(coolingPipeBottomRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    rightCoolingPipeBottomInside = AnimObj(coolingPipeBottomRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
-    coolingPipeBreach = AnimObj(coolingPipeBreachVertices, new Float32Array([0, 0, 0, 1]), gl.TRIANGLE_FAN, 2);
-    coolingPipeBreachInside = AnimObj(coolingPipeBreachVerticesInside, new Float32Array([1, 1, 1, 1]), gl.TRIANGLE_FAN, 2);
+    leftTudish = AnimObjHelper.AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
+    leftTudishInside = AnimObjHelper.AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
+    rightTudish = AnimObjHelper.AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
+    rightTudishInside = AnimObjHelper.AnimObj(tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
+    stoper = AnimObjHelper.AnimObj(stoperVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    stoperInside = AnimObjHelper.AnimObj(stoperVerticesInside, stoperColor, gl.TRIANGLE_STRIP, 2);
+    stoperBottom = AnimObjHelper.AnimObj(stoperBottomVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    stoperBottomInside = AnimObjHelper.AnimObj(stoperBottomVerticesInside, stoperColor, gl.TRIANGLE_FAN, 2);
+    leftCoolingPipe = AnimObjHelper.AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    rightCoolingPipe = AnimObjHelper.AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    leftCoolingPipeInside = AnimObjHelper.AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    rightCoolingPipeInside = AnimObjHelper.AnimObj(coolingPipeRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    leftCoolingPipeBottom = AnimObjHelper.AnimObj(coolingPipeBottomLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    leftCoolingPipeBottomInside = AnimObjHelper.AnimObj(coolingPipeBottomLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    rightCoolingPipeBottom = AnimObjHelper.AnimObj(coolingPipeBottomRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    rightCoolingPipeBottomInside = AnimObjHelper.AnimObj(coolingPipeBottomRightVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
+    coolingPipeBreach = AnimObjHelper.AnimObj(coolingPipeBreachVertices, new Float32Array([0, 0, 0, 1]), gl.TRIANGLE_FAN, 2);
+    coolingPipeBreachInside = AnimObjHelper.AnimObj(coolingPipeBreachVerticesInside, new Float32Array([1, 1, 1, 1]), gl.TRIANGLE_FAN, 2);
 
-    leftMoldPipe = AnimObj(moldLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    leftMoldPipeInside = AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
-    rightMoldPipe = AnimObj(moldRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    rightMoldPipeInside = AnimObj(moldRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    leftMoldPipe = AnimObjHelper.AnimObj(moldLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    leftMoldPipeInside = AnimObjHelper.AnimObj(moldLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    rightMoldPipe = AnimObjHelper.AnimObj(moldRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    rightMoldPipeInside = AnimObjHelper.AnimObj(moldRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
 
     // for middle unknown stuffs.
-    middleUnknownLeft = AnimObj(middleUnknownLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    middleUnknownLeftInside = AnimObj(middleUnknownLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
-    middleUnknownLeftHead = AnimObj(middleUnknownLeftHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    middleUnknownLeftHeadInside = AnimObj(middleUnknownLeftHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
-    middleUnknownRight = AnimObj(middleUnknownRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    middleUnknownRightInside = AnimObj(middleUnknownRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
-    middleUnknownRightHead = AnimObj(middleUnknownRightHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    middleUnknownRightHeadInside = AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownLeft = AnimObjHelper.AnimObj(middleUnknownLeftVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownLeftInside = AnimObjHelper.AnimObj(middleUnknownLeftVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownLeftHead = AnimObjHelper.AnimObj(middleUnknownLeftHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownLeftHeadInside = AnimObjHelper.AnimObj(middleUnknownLeftHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownRight = AnimObjHelper.AnimObj(middleUnknownRightVertices, borderColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownRightInside = AnimObjHelper.AnimObj(middleUnknownRightVerticesInside, moldColor, gl.TRIANGLE_STRIP, 2);
+    middleUnknownRightHead = AnimObjHelper.AnimObj(middleUnknownRightHeadVertices, borderColor, gl.TRIANGLE_FAN, 2);
+    middleUnknownRightHeadInside = AnimObjHelper.AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
 
-    middleInward = AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
-    dummybar = AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
+    middleInward = AnimObjHelper.AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
+    dummybar = AnimObjHelper.AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
 
     // Animation object bundles.
-    tudishObj = AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59 / height, 0])
-    stoperObj = AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430 / height, 0])
-    coolingObj = AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
-    moldPipe = AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
-    middleUnknownObj = AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
-    middleInwordObj = AnimObjBundle([middleInward])
-    dummybarObj = AnimObjBundle([dummybar])
+    tudishObj = AnimObjHelper.AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59 / height, 0])
+    stoperObj = AnimObjHelper.AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430 / height, 0])
+    coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
+    moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
+    middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
+    middleInwordObj = AnimObjHelper.AnimObjBundle([middleInward])
+    dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
     
 
     // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
@@ -398,18 +420,15 @@ function initVertices(gl) {
     // Animation
     // var modelMatrix = new Matrix4();
     // modelMatrix.translate(0, 460/height, 0);
-    if (startTime != null) {
-        var deltaTime = Date.now() - startTime;
+    if (AnimationController.session != null) {
+        const animSession  = AnimationController.session
+        var deltaTime = Date.now() - animSession.startTime;
         deltaNo = parseInt(deltaTime / (250 / 25));
         console.log(deltaNo)
-        console.log(translateData.values[deltaNo])
-        stoperObj.transMatrix = [stoperObj.transMatrix[0], (translateData.values[deltaNo] + 460) / height, stoperObj.transMatrix[2]]
+        console.log(animSession.data.stpPos[deltaNo])
+        stoperObj.transMatrix = [stoperObj.transMatrix[0], (animSession.data.stpPos[deltaNo] + 460) / height, stoperObj.transMatrix[2]]
         // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
-    // stoper.modelMatrix = modelMatrix;
-    // stoperInside.modelMatrix = modelMatrix;
-    // stoperBottom.modelMatrix = modelMatrix;
-    // stoperBottomInside.modelMatrix = modelMatrix;
 
     // Init buffer for later use.
     bundles.forEach(bundle => {
