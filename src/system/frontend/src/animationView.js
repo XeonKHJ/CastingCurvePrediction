@@ -110,31 +110,7 @@ function initVertices(gl) {
     }
     width = 400
     height = 500
-    var tudishLeftVertices = new Float32Array(
-        [
-            -tudishParams.width , (tudishParams.height * tan80) ,
-            -(tudishParams.width - ((tudishParams.borderHeight / sin80))) , (tudishParams.height * tan80) ,
-            -(tudishParams.width - (tudishParams.height)) , 0,
-            (-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) , tudishParams.borderHeight ,
-            -50 , 0,
-            -50 , tudishParams.borderHeight 
-        ]
-    );
 
-    var tudishRightVertices = reverseVertices(tudishLeftVertices);
-
-    var tudishLeftInsideVertices = new Float32Array(
-        [
-            (-(tudishParams.width) + borderThinkness / sin80) , ((tudishParams.height * tan80) - borderThinkness) ,
-            (-(tudishParams.width - ((tudishParams.borderHeight / sin80))) - borderThinkness / sin80) , ((tudishParams.height * tan80) - borderThinkness) ,
-            (-(tudishParams.width - (tudishParams.height)) + borderThinkness / sin80) , (0 + borderThinkness) ,
-            ((-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) - borderThinkness) , (tudishParams.borderHeight - borderThinkness) ,
-            (-50 - borderThinkness) , (0 + borderThinkness) ,
-            (-50 - borderThinkness) , (tudishParams.borderHeight - borderThinkness) 
-        ]
-    );
-
-    var tudishRightInsideVertices = reverseVertices(tudishLeftInsideVertices);
 
     var sin60 = Math.sin(60 / 180 * Math.PI);
     var sin30 = Math.sin(30 / 180 * Math.PI);
@@ -311,10 +287,7 @@ function initVertices(gl) {
     var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 0.5])
     var steelLiquidColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
 
-    leftTudish = AnimObjHelper.AnimObj(tudishLeftVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
-    leftTudishInside = AnimObjHelper.AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
-    rightTudish = AnimObjHelper.AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
-    rightTudishInside = AnimObjHelper.AnimObj(tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
+
     leftCoolingPipe = AnimObjHelper.AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipe = AnimObjHelper.AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipeInside = AnimObjHelper.AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
@@ -348,7 +321,7 @@ function initVertices(gl) {
     steelLiquidInTudish = AnimObjHelper.AnimObj(steelLiquidInTudishVertices, steelLiquidColor, gl.TRIANGLE_STRIP, 2)
 
     // Animation object bundles.
-    tudishObj = AnimObjHelper.AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59, 0])
+    const tudishObjBundle = tudishAnimBundleBuilder.init().build(gl)
     
     // stoper animation control.
     // Animation
@@ -360,8 +333,7 @@ function initVertices(gl) {
         console.log(animSession.data.stpPos[deltaNo])
         // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
-
-    stoperObj = stoperAnimBundleBuilder.init(AnimationController.session == null ? 0 : AnimationController.session.data.stpPos[deltaNo]).build(gl)
+    const stoperObjBundle = stoperAnimBundleBuilder.init(AnimationController.session == null ? 0 : AnimationController.session.data.stpPos[deltaNo]).build(gl)
 
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
@@ -370,7 +342,7 @@ function initVertices(gl) {
     dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
     steelLiquidObj = AnimObjHelper.AnimObjBundle([steelLiquidInTudish])
 
-    var bundles = [steelLiquidObj, middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
+    var bundles = [steelLiquidObj, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
 
 
 
