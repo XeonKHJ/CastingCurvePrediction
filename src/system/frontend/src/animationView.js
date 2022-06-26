@@ -52,28 +52,6 @@ var AnimationController = {
     }
 }
 
-var AnimObjHelper = {
-    AnimObj(vertices, colors, drawMethod, verticeSize, borderWidth = 0, borderColor = null) {
-        return {
-            vertices: vertices,
-            drawMethod: drawMethod,
-            verticeSize: verticeSize,
-            colors: colors,
-            borderWidth: borderWidth,
-            borderColor: null,
-            buffer: null
-        }
-    },
-    AnimObjBundle(objList, translationMatrix = [0, 0, 0], scaleMatrix = [0, 0, 0]) {
-        return {
-            objects: objList,
-            transMatrix: translationMatrix,
-            scaleMatrix: scaleMatrix
-        }
-    },
-
-}
-
 function drawAnimation() {
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
@@ -158,33 +136,8 @@ function initVertices(gl) {
 
     var tudishRightInsideVertices = reverseVertices(tudishLeftInsideVertices);
 
-    const stoperParams = {
-        // 不包含下面半圆的塞棒长度
-        height: 280,
-        width: 127,
-        // 西方扇形部分的圆半径
-        r: 10
-    }
-
     var sin60 = Math.sin(60 / 180 * Math.PI);
     var sin30 = Math.sin(30 / 180 * Math.PI);
-    var stoperVertices = new Float32Array([
-        -(stoperParams.width / 2) , 300 ,
-        (stoperParams.width / 2) , 300 ,
-        -(stoperParams.width / 2) , 20 ,
-        stoperParams.width / 2 , 20 ,
-        -47.625 , 10 ,
-        47.625 , 10 
-    ]);
-
-    var stoperVerticesInside = new Float32Array([
-        (-63.5 + borderThinkness) , (300 - borderThinkness) ,
-        (63.5 - borderThinkness) , (300 - borderThinkness) ,
-        (-63.5 + borderThinkness) , (20 + borderThinkness) ,
-        (63.5 - borderThinkness) , (20 + borderThinkness) ,
-        (-47.625 + borderThinkness) , (10 + borderThinkness * sin60 * sin30) ,
-        (47.625 - borderThinkness) , (10 + borderThinkness * sin60 * sin30) 
-    ]);
 
     var coolingPipeLeftVertices = new Float32Array([
         -40 , 0 ,
@@ -243,28 +196,6 @@ function initVertices(gl) {
         (32.5 - borderThinkness) , (-810 + borderThinkness) ,
         (-32.5 + borderThinkness) , (-810 + borderThinkness) 
     ])
-
-    var stoperBottomVertices = new Float32Array(104);
-    stoperBottomVertices[0] = 0;
-    stoperBottomVertices[1] = (47.625 + 10) ;
-    index = 2;
-    r = 47.625 * Math.sqrt(2);
-    for (i = -40; i <= -10; i++) {
-        stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100) ;
-        stoperBottomVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) ;
-        index += 2;
-    }
-
-    var stoperBottomVerticesInside = new Float32Array(104);
-    stoperBottomVerticesInside[0] = 0;
-    stoperBottomVerticesInside[1] = (47.625 + 10) ;
-    index = 2;
-    rInside = 47.625 * Math.sqrt(2) - borderThinkness;
-    for (i = -40; i <= -10; i++) {
-        stoperBottomVerticesInside[index] = rInside * Math.cos(i * 2 * Math.PI / 100) ;
-        stoperBottomVerticesInside[index + 1] = (rInside * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10) ;
-        index += 2;
-    }
 
     var moldBoldness = 60
     var moldGap = 200
@@ -373,7 +304,6 @@ function initVertices(gl) {
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
-    var stoperColor = new Float32Array([0.8, 0.8, 0.8, 1.0])
     var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
     var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
@@ -385,10 +315,6 @@ function initVertices(gl) {
     leftTudishInside = AnimObjHelper.AnimObj(tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
     rightTudish = AnimObjHelper.AnimObj(tudishRightVertices, tudishColor, gl.TRIANGLE_STRIP, 2);
     rightTudishInside = AnimObjHelper.AnimObj(tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
-    stoper = AnimObjHelper.AnimObj(stoperVertices, borderColor, gl.TRIANGLE_STRIP, 2);
-    stoperInside = AnimObjHelper.AnimObj(stoperVerticesInside, stoperColor, gl.TRIANGLE_STRIP, 2);
-    stoperBottom = AnimObjHelper.AnimObj(stoperBottomVertices, borderColor, gl.TRIANGLE_FAN, 2);
-    stoperBottomInside = AnimObjHelper.AnimObj(stoperBottomVerticesInside, stoperColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipe = AnimObjHelper.AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
     rightCoolingPipe = AnimObjHelper.AnimObj(coolingPipeRightVertices, borderColor, gl.TRIANGLE_FAN, 2);
     leftCoolingPipeInside = AnimObjHelper.AnimObj(coolingPipeLeftVerticesInside, coolingPipeColor, gl.TRIANGLE_FAN, 2);
@@ -421,10 +347,22 @@ function initVertices(gl) {
     // for steelwater
     steelLiquidInTudish = AnimObjHelper.AnimObj(steelLiquidInTudishVertices, steelLiquidColor, gl.TRIANGLE_STRIP, 2)
 
-
     // Animation object bundles.
     tudishObj = AnimObjHelper.AnimObjBundle([leftTudish, leftTudishInside, rightTudish, rightTudishInside], [0, 59, 0])
-    stoperObj = AnimObjHelper.AnimObjBundle([stoper, stoperInside, stoperBottom, stoperBottomInside], [0, 430, 0])
+    
+    // stoper animation control.
+    // Animation
+    if (AnimationController.session != null) {
+        const animSession = AnimationController.session
+        var deltaTime = Date.now() - animSession.startTime;
+        deltaNo = parseInt(deltaTime / (250 / 25));
+        console.log(deltaNo)
+        console.log(animSession.data.stpPos[deltaNo])
+        // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
+    }
+
+    stoperObj = stoperAnimBundleBuilder.init(AnimationController.session == null ? 0 : AnimationController.session.data.stpPos[deltaNo]).build(gl)
+
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
@@ -432,22 +370,9 @@ function initVertices(gl) {
     dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
     steelLiquidObj = AnimObjHelper.AnimObjBundle([steelLiquidInTudish])
 
-    // var animObjs = [leftTudish, rightTudish, leftTudishInside, rightTudishInside, stoper, stoperInside, stoperBottom, stoperBottomInside, leftCoolingPipe,  leftCoolingPipeInside, rightCoolingPipe, rightCoolingPipeInside, leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside,
-    //                 middleUnknownLeft, middleUnknownLeftInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRight, middleUnknownRightInside, middleUnknownRightHead, middleUnknownRightHeadInside];
     var bundles = [steelLiquidObj, middleInwordObj, tudishObj, stoperObj, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
 
-    // Animation
-    // var modelMatrix = new Matrix4();
-    // modelMatrix.translate(0, 460/height, 0);
-    if (AnimationController.session != null) {
-        const animSession = AnimationController.session
-        var deltaTime = Date.now() - animSession.startTime;
-        deltaNo = parseInt(deltaTime / (250 / 25));
-        console.log(deltaNo)
-        console.log(animSession.data.stpPos[deltaNo])
-        stoperObj.transMatrix = [stoperObj.transMatrix[0], (animSession.data.stpPos[deltaNo] + 460), stoperObj.transMatrix[2]]
-        // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
-    }
+
 
     // Init buffer for later use.
     bundles.forEach(bundle => {
