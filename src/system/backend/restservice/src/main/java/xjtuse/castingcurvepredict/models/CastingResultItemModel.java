@@ -17,7 +17,7 @@ public class CastingResultItemModel {
     // 塞棒位置
     private double _stopperPos;
 
-    public CastingResultItemModel(String datetime, double stopperPos, double liqLevel, double ladleWeight, double tudishWeight) {
+    public CastingResultItemModel(String datetime, double stopperPos, double liqLevel, double tudishWeight, double ladleWeight) {
         _datetime = datetime;
         _liqLevel = liqLevel;
         _stopperPos = stopperPos;
