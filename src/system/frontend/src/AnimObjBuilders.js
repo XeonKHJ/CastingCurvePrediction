@@ -46,7 +46,7 @@ const stoperParams = {
 }
 
 const verticeUtils = {
-    reverse(verticesIn){
+    reverse(verticesIn) {
         var verticesOut = new Float32Array(
             verticesIn.length
         );
@@ -139,7 +139,7 @@ const tudishParams = {
     width: 1500,
     height: 250,
     color: [0, 0, 0, 1.0]
-} 
+}
 const tudishAnimBundleBuilder = {
     /**
     * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
@@ -147,44 +147,44 @@ const tudishAnimBundleBuilder = {
     init() {
         return this
     },
-    buildVertices(){
+    buildVertices() {
         let tan80 = Math.tan(a2r(70));
         let sin80 = Math.sin(a2r(70));
         this.tudishLeftVertices = new Float32Array(
             [
-                -tudishParams.width , (tudishParams.height * tan80) ,
-                -(tudishParams.width - ((tudishParams.borderHeight / sin80))) , (tudishParams.height * tan80) ,
-                -(tudishParams.width - (tudishParams.height)) , 0,
-                (-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) , tudishParams.borderHeight ,
-                -50 , 0,
-                -50 , tudishParams.borderHeight 
+                -tudishParams.width, (tudishParams.height * tan80),
+                -(tudishParams.width - ((tudishParams.borderHeight / sin80))), (tudishParams.height * tan80),
+                -(tudishParams.width - (tudishParams.height)), 0,
+                (-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)), tudishParams.borderHeight,
+                -50, 0,
+                -50, tudishParams.borderHeight
             ]
         );
         this.tudishRightVertices = verticeUtils.reverse(this.tudishLeftVertices);
 
         this.tudishLeftInsideVertices = new Float32Array(
             [
-                (-(tudishParams.width) + animConfig.borderThinkness / sin80) , ((tudishParams.height * tan80) - animConfig.borderThinkness) ,
-                (-(tudishParams.width - ((tudishParams.borderHeight / sin80))) - animConfig.borderThinkness / sin80) , ((tudishParams.height * tan80) - animConfig.borderThinkness) ,
-                (-(tudishParams.width - (tudishParams.height)) + animConfig.borderThinkness / sin80) , (0 + animConfig.borderThinkness) ,
-                ((-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) - animConfig.borderThinkness) , (tudishParams.borderHeight - animConfig.borderThinkness) ,
-                (-50 - animConfig.borderThinkness) , (0 + animConfig.borderThinkness) ,
-                (-50 - animConfig.borderThinkness) , (tudishParams.borderHeight - animConfig.borderThinkness) 
+                (-(tudishParams.width) + animConfig.borderThinkness / sin80), ((tudishParams.height * tan80) - animConfig.borderThinkness),
+                (-(tudishParams.width - ((tudishParams.borderHeight / sin80))) - animConfig.borderThinkness / sin80), ((tudishParams.height * tan80) - animConfig.borderThinkness),
+                (-(tudishParams.width - (tudishParams.height)) + animConfig.borderThinkness / sin80), (0 + animConfig.borderThinkness),
+                ((-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) - animConfig.borderThinkness), (tudishParams.borderHeight - animConfig.borderThinkness),
+                (-50 - animConfig.borderThinkness), (0 + animConfig.borderThinkness),
+                (-50 - animConfig.borderThinkness), (tudishParams.borderHeight - animConfig.borderThinkness)
             ]
         );
-    
-        this.tudishRightInsideVertices =  verticeUtils.reverse(this.tudishLeftInsideVertices);
+
+        this.tudishRightInsideVertices = verticeUtils.reverse(this.tudishLeftInsideVertices);
     },
-    buildAnimObj(gl){
+    buildAnimObj(gl) {
         this.leftTudish = AnimObjHelper.AnimObj(this.tudishLeftVertices, tudishParams.color, gl.TRIANGLE_STRIP, 2);
         this.leftTudishInside = AnimObjHelper.AnimObj(this.tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
         this.rightTudish = AnimObjHelper.AnimObj(this.tudishRightVertices, tudishParams.color, gl.TRIANGLE_STRIP, 2);
         this.rightTudishInside = AnimObjHelper.AnimObj(this.tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
     },
-    buildBundle(){
+    buildBundle() {
         this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.leftTudishInside, this.rightTudish, this.rightTudishInside], [0, 59, 0])
     },
-    build(gl){
+    build(gl) {
         this.buildVertices();
         this.buildAnimObj(gl);
         this.buildBundle();
@@ -192,3 +192,92 @@ const tudishAnimBundleBuilder = {
     }
 }
 
+const moldParams = {
+    color: new Float32Array([0.6, 0.6, 0.6, 1.0]),
+    moldBoldness: 60,
+    gap: 200,
+}
+const moldAnimBundleBuilder = {
+    init() {
+        return this
+    },
+    buildVertices() {
+        this.moldLeftVertices = new Float32Array([
+            -(moldParams.gap + moldParams.moldBoldness), -150,
+            -moldParams.gap, -150,
+            -(moldParams.gap + moldParams.moldBoldness), -1600,
+            -moldParams.gap, -1600
+        ])
+
+        this.moldLeftVerticesInside = new Float32Array([
+            (-(moldParams.gap + moldParams.moldBoldness) + animConfig.borderThinkness), (-150 - animConfig.borderThinkness),
+            (-moldParams.gap - animConfig.borderThinkness), (-150 - animConfig.borderThinkness),
+            (-(moldParams.gap + moldParams.moldBoldness) + animConfig.borderThinkness), -1600,
+            (-moldParams.gap - animConfig.borderThinkness), -1600
+        ])
+
+        this.moldRightVertices = verticeUtils.reverse(this.moldLeftVertices)
+        this.moldRightVerticesInside = verticeUtils.reverse(this.moldLeftVerticesInside)
+    },
+    buildAnimObj(gl) {
+        this.leftMoldPipe = AnimObjHelper.AnimObj(this.moldLeftVertices, animConfig.defaultBorderColor, gl.TRIANGLE_STRIP, 2);
+        this.leftMoldPipeInside = AnimObjHelper.AnimObj(this.moldLeftVerticesInside, moldParams.color, gl.TRIANGLE_STRIP, 2);
+        this.rightMoldPipe = AnimObjHelper.AnimObj(this.moldRightVertices, animConfig.defaultBorderColor, gl.TRIANGLE_STRIP, 2);
+        this.rightMoldPipeInside = AnimObjHelper.AnimObj(this.moldRightVerticesInside, moldParams.color, gl.TRIANGLE_STRIP, 2);
+    },
+    buildBundle() {
+        this.bundle = moldPipe = AnimObjHelper.AnimObjBundle([this.leftMoldPipe, this.leftMoldPipeInside, this.rightMoldPipe, this.rightMoldPipeInside])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle;
+    }
+}
+
+const steelLiquidParams = {
+    //颜色
+    color: new Float32Array([0.8, 0.3, 0.2, 1.0]),
+    // 中包中的液体高度。从下到上计算
+    tudishHeight: 400,
+    // 冷凝管中的液体高度。从上到下开始算
+    coolingPipe: 0,
+}
+const steelLiquidAnimBundleBuilder = {
+    init(height, liquidInModeHeight) {
+        this.liquidHeight = height
+        steelLiquidParams.tudishHeight = height
+        this.liquidInMoldHeight = liquidInModeHeight
+        return this;
+    },
+    buildVertices() {
+        let sin80 = Math.sin(a2r(70));
+        this.steelLiquidInTudishVertices = new Float32Array([
+            -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
+            (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
+            -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height,
+            (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height
+        ])
+
+        this.steelLiquidInMoldVertices = new Float32Array([
+            -moldParams.gap, -1300,
+            -moldParams.gap, -(1300  - this.liquidInMoldHeight),
+            moldParams.gap,-1300,
+            moldParams.gap, -(1300  - this.liquidInMoldHeight)
+        ])
+    },
+    buildAnimObj(gl) {
+        this.steelLiquidInTudish = AnimObjHelper.AnimObj(this.steelLiquidInTudishVertices, steelLiquidParams.color, gl.TRIANGLE_STRIP, 2)
+        this.steelLiquidInMold = AnimObjHelper.AnimObj(this.steelLiquidInMoldVertices, steelLiquidParams.color, gl.TRIANGLE_STRIP, 2)
+    },
+    buildBundle() {
+        this.bundle = AnimObjHelper.AnimObjBundle([this.steelLiquidInTudish, this.steelLiquidInMold])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle
+    }
+}

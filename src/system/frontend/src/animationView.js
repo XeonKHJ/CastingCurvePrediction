@@ -48,6 +48,7 @@ var AnimationController = {
         this.session = this.createSession(data, Date.now())
     },
     stopAnimation() {
+        console.log("Stop play")
         this.session = null
     }
 }
@@ -261,22 +262,6 @@ function initVertices(gl) {
         (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
     ])
 
-    // Define steel liquid
-    const steelLiquidParams = {
-        // 中包中的液体高度。从下到上计算
-        tudishHeight : 400,
-
-        // 冷凝管中的液体高度。从上到下开始算
-        coolingPipe : 0,
-    }
-
-    const steelLiquidInTudishVertices = new Float32Array([
-        -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50+steelLiquidParams.tudishHeight+ tudishParams.height,
-        (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50+steelLiquidParams.tudishHeight+ tudishParams.height,
-        -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height, 
-        (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height 
-    ])
-
 
     // Define colors
     var tudishColor = new Float32Array([0, 0, 0, 1.0]);
@@ -317,9 +302,6 @@ function initVertices(gl) {
     middleInward = AnimObjHelper.AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
     dummybar = AnimObjHelper.AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
 
-    // for steelwater
-    steelLiquidInTudish = AnimObjHelper.AnimObj(steelLiquidInTudishVertices, steelLiquidColor, gl.TRIANGLE_STRIP, 2)
-
     // Animation object bundles.
     const tudishObjBundle = tudishAnimBundleBuilder.init().build(gl)
     
@@ -330,19 +312,28 @@ function initVertices(gl) {
         var deltaTime = Date.now() - animSession.startTime;
         deltaNo = parseInt(deltaTime / (250 / 25));
         console.log(deltaNo)
+        if(deltaNo > animSession.data.stpPos.length)
+        {
+            AnimationController.stopAnimation()
+        }
         console.log(animSession.data.stpPos[deltaNo])
         // modelMatrix.translate(0, (translateData.values[deltaNo] + 460) / height, 0);        // Multiply modelMatrix by the calculated translation matrix
     }
     const stoperObjBundle = stoperAnimBundleBuilder.init(AnimationController.session == null ? 0 : AnimationController.session.data.stpPos[deltaNo]).build(gl)
-
+    const liqLevelInTudish = AnimationController.session == null ? 0 : AnimationController.session.data.tudishWeights[deltaNo]  * 3 + 200
+    const liqLevelInMold = 283 +  (AnimationController.session == null ? 0 : AnimationController.session.data.liqLevel[deltaNo])
+    const steelLiquidObjBundle = steelLiquidAnimBundleBuilder.init(liqLevelInTudish, liqLevelInMold).build(gl)
+    
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
     middleInwordObj = AnimObjHelper.AnimObjBundle([middleInward])
     dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
-    steelLiquidObj = AnimObjHelper.AnimObjBundle([steelLiquidInTudish])
+   
+    const moldPipeObjBundle = moldAnimBundleBuilder.init().build(gl)
+    
 
-    var bundles = [steelLiquidObj, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipe, coolingObj, dummybarObj]
+    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummybarObj]
 
 
 
