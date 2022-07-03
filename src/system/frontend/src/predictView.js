@@ -211,7 +211,6 @@ var chartCollectionViewModel = Vue.createApp({
     }
 }).mount("#chartSection");
 
-
 function onStpPosChecked() {
     console.log("sdfsdf")
 }

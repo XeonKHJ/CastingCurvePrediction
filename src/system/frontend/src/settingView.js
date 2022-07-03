@@ -103,6 +103,61 @@ var taskCollectionVueModel = Vue.createApp({
     }
 }).mount("#taskListTable");
 
+
+var projectCollectionVueModel = Vue.createApp({
+    data() {
+        return {
+            newProjectTudishWidth : "中包宽度",
+            newProjectMachineName : "机器类型",
+            isEmpty: true,
+            projectViewModels: [
+                // TaskViewModel()
+            ],
+            currentId: 0
+        }
+    },
+    methods: {
+        onDeleteButtonClicked(id, idx) {
+            axios.get(baseServerAddr + '/deleteTaskById?id=' + id, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                taskCollectionVueModel.taskViewModels.splice(idx, 1);
+            }).then().catch(
+                err => {
+                    console.log(err)
+                    showError(err)
+                })
+        },
+        onAddProjectButtonClick() {
+            axios.get(baseServerAddr + '/createTrainingTaskFromModelId?machineName=' + this.newProjectMachineName + '?tudishWidth=' + this.newProjectTudishWidth, {
+                Headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json"
+                }
+            }).then(response => {
+                if(response.data.statusCode <= 0)
+                {
+                    showError(response.data.message)
+                }
+                else
+                {
+                    taskCollectionVueModel.taskViewModels.push(response.data);
+                }
+            }).then().catch(
+                err => {
+                    console.log(err)
+                    showError(err)
+                }
+            )
+        },
+        
+    }
+}).mount("#projectListTable");
+
+
 function getStatusByTaskId(taskId) {
     axios.get(baseServerAddr + '/getTaskStatus?taskId=' + taskId, {
         Headers: {
@@ -214,6 +269,23 @@ function getModels() {
         })
 }
 
+function getProjects()
+{
+    axios.get(baseServerAddr + '/getProjects', {
+        Headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+        }
+    }).then(response => {
+        for (i = 0; i < response.data.projectViewModels.length; ++i) {
+            projectCollectionVueModel.projectViewModels.push(response.data.projectViewModels[i]);
+        }
+    }).then().catch(
+        err => {
+            console.log(err)
+        })
+}
+
 function onCreateModelButtonClicked() {
     axios.get(baseServerAddr + '/createModel', {
         Headers: {
@@ -231,3 +303,4 @@ function onCreateModelButtonClicked() {
 
 getModels();
 getTasks();
+getProjects();

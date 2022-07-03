@@ -25,4 +25,10 @@
   <update id="UpdateMlModelLossById">
     UPDATE `castingcurvedb`.`MLModel` SET `Loss` = '${loss}' WHERE (`Id` = '${id}');
   </update>
+  <insert id="createProject" useGeneratedKeys="true" keyProperty="Id" parameterType="Project">
+    INSERT INTO `Project` (`MachineName`, `TudishWidth`) VALUES ('${_machineName}', '${_tudishWidth}');
+  </insert>
+  <select id="getProjects" resultType="Project">
+    SELECT * FROM Project
+  </select>
 </mapper>

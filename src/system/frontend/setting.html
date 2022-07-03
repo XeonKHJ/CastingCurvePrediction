@@ -44,6 +44,39 @@
     </header>
     <main role="main" class="pb-3">
         <div class="container shadow-sm mb-2">
+            <h4>项目管理</h4>
+            <table class="table" id="projectListTable">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>机器类型</th>
+                        <th>中包宽度</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(projectViewModel,index) in projectViewModels">
+                        <td class="col">{{projectViewModel.id}}</td>
+                        <td class="col">{{projectViewModel.machineName}}</td>
+                        <td class="col">{{projectViewModel.tudishWidth}}</td>
+                        <td class="col text-end">
+                            <button class="btn btn-secondary btn-sm ms-2"
+                                @click="onStopButtonClicked(taskViewModel, index)">删除</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col"></td>
+                        <td class="col"><input type="text" v-model="newProjectMachineName"></input></td>
+                        <td class="col" ><input type="text" v-model="newProjectTudishWidth"></input></td>
+                        <td class="col text-end">
+                                <button class="btn btn-secondary btn-sm ms-2"
+                                    @click="onAddProjectButtonClick()">添加</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container shadow-sm mb-2">
             <h4>任务管理</h4>
             <table class="table" id="taskListTable">
                 <thead>
@@ -64,7 +97,7 @@
                         <td class="col">{{taskViewModel.status}}</td>
                         <td class="col">{{taskViewModel.startTime}}</td>
                         <td class="col">{{taskViewModel.modelId}}</td>
-                        <td class="col text-end">
+                        <td class="col text-end"></td>
                         <td class="col text-end">
                             <button class="btn btn-secondary btn-sm"
                                 @click="onViewTaskButtonClicked(taskViewModel)">查看</button>
@@ -75,7 +108,6 @@
                             <button class="btn btn-secondary btn-sm ms-2"
                                 @click="onStopButtonClicked(taskViewModel, index)">删除
                             </button>
-                        </td>
                         </td>
                     </tr>
                 </tbody>

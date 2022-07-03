@@ -15,7 +15,11 @@ public interface MlModelMapper {
 
     public void deleteModelById(long id);
 
-    void createModel(MlModel model);
+    public void createModel(MlModel model);
 
     public void UpdateMlModelLossById(@Param("id") long id, @Param("loss") double loss);
+
+    public void createProject(Project project);
+
+    public List<Project> getProjects();
 }
