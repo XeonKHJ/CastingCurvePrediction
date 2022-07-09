@@ -135,9 +135,9 @@ const stoperAnimBundleBuilder = {
 }
 
 const tudishParams = {
-    borderHeight: 400,
-    width: 1500,
-    height: 250,
+    borderHeight: 260,
+    width: 1085,
+    height: 332.65, // 1565 / tan78得到的。
     color: [0, 0, 0, 1.0]
 }
 const tudishAnimBundleBuilder = {
@@ -148,8 +148,8 @@ const tudishAnimBundleBuilder = {
         return this
     },
     buildVertices() {
-        let tan80 = Math.tan(a2r(70));
-        let sin80 = Math.sin(a2r(70));
+        let tan80 = Math.tan(a2r(78));
+        let sin80 = Math.sin(a2r(78));
         this.tudishLeftVertices = new Float32Array(
             [
                 -tudishParams.width, (tudishParams.height * tan80),
@@ -195,7 +195,7 @@ const tudishAnimBundleBuilder = {
 const moldParams = {
     color: new Float32Array([0.6, 0.6, 0.6, 1.0]),
     moldBoldness: 60,
-    gap: 200,
+    gap: 750,
 }
 const moldAnimBundleBuilder = {
     init() {
@@ -240,7 +240,7 @@ const steelLiquidParams = {
     //颜色
     color: new Float32Array([0.8, 0.3, 0.2, 1.0]),
     // 中包中的液体高度。从下到上计算
-    tudishHeight: 400,
+    tudishHeight: tudishParams.height,
     // 冷凝管中的液体高度。从上到下开始算
     coolingPipe: 0,
 }
@@ -262,9 +262,9 @@ const steelLiquidAnimBundleBuilder = {
 
         this.steelLiquidInMoldVertices = new Float32Array([
             -moldParams.gap, -1300,
-            -moldParams.gap, -(1300  - this.liquidInMoldHeight),
-            moldParams.gap,-1300,
-            moldParams.gap, -(1300  - this.liquidInMoldHeight)
+            -moldParams.gap, -(1300 - this.liquidInMoldHeight),
+            moldParams.gap, -1300,
+            moldParams.gap, -(1300 - this.liquidInMoldHeight)
         ])
     },
     buildAnimObj(gl) {
@@ -279,5 +279,69 @@ const steelLiquidAnimBundleBuilder = {
         this.buildAnimObj(gl);
         this.buildBundle();
         return this.bundle
+    }
+}
+
+const ladleParams = {
+    borderHeight: 100,
+    width: 1500,
+    height: 200,
+    color: [0, 0, 0, 1.0],
+    gap: 200,
+    gapPos: 20, // start from left
+}
+const ladleBuilder = {
+    init() {
+        return this
+    },
+    buildVertices() {
+        let tan80 = Math.tan(a2r(85));
+        let sin80 = Math.sin(a2r(85));
+        const bottomWidth = (ladleParams.width - (ladleParams.height))
+        this.tudishLeftVertices = new Float32Array(
+            [
+                -ladleParams.width, (ladleParams.height * tan80),
+                -(ladleParams.width - ((ladleParams.borderHeight / sin80))), (ladleParams.height * tan80),
+                -(ladleParams.width - (ladleParams.height)), 0,
+                (-(ladleParams.width - ((ladleParams.borderHeight / sin80)) - (ladleParams.height * tan80 - ladleParams.borderHeight) / tan80)), ladleParams.borderHeight,
+                -(bottomWidth - ladleParams.gap / 2), 0,
+                -(bottomWidth - ladleParams.gap / 2), ladleParams.borderHeight
+            ]
+        );
+        let toReverseTudishLeftVertices = new Float32Array(12);
+
+        toReverseTudishLeftVertices[8] = (bottomWidth / 2 - ladleParams.gap / 2)
+        toReverseTudishLeftVertices[10] = (bottomWidth / 2 - ladleParams.gap / 2)
+        this.tudishRightVertices = verticeUtils.reverse(this.tudishLeftVertices);
+
+
+
+        this.tudishLeftInsideVertices = new Float32Array(
+            [
+                (-(ladleParams.width) + animConfig.borderThinkness / sin80), ((ladleParams.height * tan80) - animConfig.borderThinkness),
+                (-(ladleParams.width - ((ladleParams.borderHeight / sin80))) - animConfig.borderThinkness / sin80), ((ladleParams.height * tan80) - animConfig.borderThinkness),
+                (-(ladleParams.width - (ladleParams.height)) + animConfig.borderThinkness / sin80), (0 + animConfig.borderThinkness),
+                ((-(ladleParams.width - ((ladleParams.borderHeight / sin80)) - (ladleParams.height * tan80 - ladleParams.borderHeight) / tan80)) - animConfig.borderThinkness), (ladleParams.borderHeight - animConfig.borderThinkness),
+                (-(bottomWidth - ladleParams.gap) - animConfig.borderThinkness), (0 + animConfig.borderThinkness),
+                (-(bottomWidth - ladleParams.gap) - animConfig.borderThinkness), (ladleParams.borderHeight - animConfig.borderThinkness)
+            ]
+        );
+
+        this.tudishRightInsideVertices = verticeUtils.reverse(this.tudishLeftInsideVertices);
+    },
+    buildAnimObj(gl) {
+        this.leftTudish = AnimObjHelper.AnimObj(this.tudishLeftVertices, ladleParams.color, gl.TRIANGLE_STRIP, 2);
+        this.leftTudishInside = AnimObjHelper.AnimObj(this.tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
+        this.rightTudish = AnimObjHelper.AnimObj(this.tudishRightVertices, ladleParams.color, gl.TRIANGLE_STRIP, 2);
+        this.rightTudishInside = AnimObjHelper.AnimObj(this.tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
+    },
+    buildBundle() {
+        this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.leftTudishInside, this.rightTudish, this.rightTudishInside], [0, 59 + 2000, 0])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle;
     }
 }

@@ -31,8 +31,8 @@ var AnimationController = {
         // set global scale matrix
         var u_GlobalModelMatrix = gl.getUniformLocation(gl.program, 'u_GlobalModelMatrix');
         var globalModelMatrix = new Matrix4();
-        globalModelMatrix.translate(0, 0.3, 0);
-        globalModelMatrix.scale(0.4, 0.4, 1);
+        globalModelMatrix.translate(0, -0.5, 0);
+        globalModelMatrix.scale(0.2, 0.2, 1);
         gl.uniformMatrix4fv(u_GlobalModelMatrix, false, globalModelMatrix.elements)
 
         var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
@@ -303,6 +303,7 @@ function initVertices(gl) {
     dummybar = AnimObjHelper.AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
 
     // Animation object bundles.
+    const ladleObjBundle = ladleBuilder.init().build(gl)
     const tudishObjBundle = tudishAnimBundleBuilder.init().build(gl)
     
     // stoper animation control.
@@ -323,7 +324,7 @@ function initVertices(gl) {
     const liqLevelInTudish = AnimationController.session == null ? 0 : AnimationController.session.data.tudishWeights[deltaNo]  * 3 + 200
     const liqLevelInMold = 283 +  (AnimationController.session == null ? 0 : AnimationController.session.data.liqLevel[deltaNo])
     const steelLiquidObjBundle = steelLiquidAnimBundleBuilder.init(liqLevelInTudish, liqLevelInMold).build(gl)
-    
+
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
@@ -333,7 +334,7 @@ function initVertices(gl) {
     const moldPipeObjBundle = moldAnimBundleBuilder.init().build(gl)
     
 
-    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummybarObj]
+    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummybarObj, ladleObjBundle]
 
 
 
