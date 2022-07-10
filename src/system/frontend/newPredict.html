@@ -12,9 +12,12 @@
 </head>
 
 <body onload="drawAnimation()">
+    <script src="src/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.1/dist/echarts.js"></script>
     <script src="src/lib/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-crosshair"></script>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -39,35 +42,51 @@
             </div>
         </nav>
     </header>
-        <div class="container rounded border shadow-sm">
-            <div class="row mx-2">
-                <form class="my-2" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)"
-                    method="post">
-                    <div class="row align-items-center align-self-center">
-                        <div class="col"></div>
-                        <div class="col" style="text-align: right;"><label class="form-label">钢种：</label></div>
-                        <div class="col">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>SPHC(C0.06)</option>
-                                <option value="1">SPHC(C0.06)</option>
-                                <option value="2">Q235B</option>
-                            </select>
-                        </div>
-                        <div class="col" style="text-align: right;"><label class="form-label text-right">面积：</label></div>
-                        <div class="col"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col" style="text-align: right;"><label class="form-label text-right">液位：</label></div>
-                        <div class="col"><input class="form-control" id="billetWidthInput"></input></div>
-                        <div class="col"><input class="btn btn-primary" type="submit"
-                                v-bind:value="predictButton"></input></div>
-                                <div class="col"></div>
-                    </div>
-                </form>
-            </div>
-        </div>
     <div class="container-fluid my-2">
-        <div class="row mx-2" style="min-height: 200px; height: 100%;">
-            <div class="col-2 shadow-sm rounded border" id="animationDiv">
-                <canvas id="animationCanvas"></canvas>
+        <div class="row mx-2 py-2 border">
+            <form id="steelInfoForm" @submit="checkForm" action="javascript:submitCastingPriorInfo(this)" method="post">
+                <div class="row mb-1">
+                    <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto">项目</label>
+                    </div>
+                    <div class="col-2 my-auto">
+                        <select class="form-select" aria-label="Default select example">
+                            <option v-for="(steelGrade,index) in steelGrades">
+                                {{steelGrade}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col my-auto" style="text-align: right;"><label class="form-label my-auto">钢种</label>
+                    </div>
+                    <div class="col-1 my-auto">
+                        <select class="form-select" aria-label="Default select example">
+                            <option v-for="(steelGrade,index) in steelGrades">
+                                {{steelGrade}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col my-auto" style="text-align: right;">宽度</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">厚度</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">目标液位</div>
+                    <div class="col my-auto"><input class="form-control" id="billetWidthInput"></input></div>
+                    <div class="col my-auto" style="text-align: right;">模型</div>
+                    <div id="trainedModelsDiv" class="col my-auto"><select class="form-select"
+                            aria-label="Default select example">
+                            <option v-for="(modelViewModel,index) in modelViewModels">
+                                {{modelViewModel.id}}
+                            </option>
+                        </select></div>
+                    <div class="col my-auto"><input class="btn btn-primary" type="submit"
+                            v-bind:value="predictButton"></input></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container-fluid my-2">
+        <div class="row mx-2">
+            <div class="col-4 shadow-sm rounded border" id="animationDiv">
+                    <canvas id="animationCanvas" v-bind:height="canvasHeight" v-bind:width="canvasWidth"></canvas>
             </div>
             <div class="col ms-2 shadow-sm rounded border" id="chartSection">
                 <ul class="nav nav-tabs">
@@ -81,20 +100,35 @@
                     </li>
                 </ul>
                 <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
-                    class="echartContentDiv container" :key="chartViewModel.chartId"
-                    v-bind:id="'echartContent' + chartViewModel.chartId" style="height: 60vh; width: 95%;">
+                    class="echartContentDiv container-fluid" :key="chartViewModel.chartId"
+                    v-bind:id="'echartContent' + chartViewModel.chartId">
+                    <div class="contianer">
+                        <div class="row"> <canvas id="chartCanvas"></canvas></div>
+                        <div class="row"> <canvas id="chartCanvas2"></canvas></div>
+                        <div class="row"> <canvas id="chartCanvas3"></canvas></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="src/predictView.js"></script>
-    <script src="src/animationView.js"></script>
-    <script src="src/lib/webgl-utils.js"></script>
-    <script src="src/lib/webgl-debug.js"></script>
-    <script src="src/lib/cuon-utils.js"></script>
-    <script src="src/lib/cuon-matrix.js"></script>
-    <script src="src/lib/utils.js"></script>
-    <script src="src/config.js"></script>
+    <footer class="bd-footer">
+        <div class="container-fluid my-2">
+            <div class="row mx-2 border">what</div>
+        </div>
+    </footer>
+    <script>
+
+    </script>
+        <script src="src/view.js"></script>
+        <script src="src/newPredictView.js"></script>
+        <script src="src/AnimObjBuilders.js"></script>
+        <script src="src/animationView.js"></script>
+
+        <script src="src/lib/webgl-utils.js"></script>
+        <script src="src/lib/webgl-debug.js"></script>
+        <script src="src/lib/cuon-utils.js"></script>
+        <script src="src/lib/cuon-matrix.js"></script>
+        <script src="src/lib/utils.js"></script>
 </body>
 
 </html>
