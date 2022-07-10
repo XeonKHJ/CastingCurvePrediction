@@ -306,8 +306,9 @@ function initVertices(gl) {
     }
     const stoperObjBundle = stoperAnimBundleBuilder.init(AnimationController.session == null ? 0 : AnimationController.session.data.stpPos[deltaNo]).build(gl)
     const liqLevelInTudish = AnimationController.session == null ? 0 : AnimationController.session.data.tudishWeights[deltaNo]  * 3 + 200
+    const liqLevelInLadle = AnimationController.session == null ? 0 : AnimationController.session.data.ladleWeights[deltaNo]  * 0.5
     const liqLevelInMold = 283 +  (AnimationController.session == null ? 0 : AnimationController.session.data.liqLevel[deltaNo])
-    const steelLiquidObjBundle = steelLiquidAnimBundleBuilder.init(liqLevelInTudish, liqLevelInMold).build(gl)
+    const steelLiquidObjBundle = steelLiquidAnimBundleBuilder.init(liqLevelInTudish, liqLevelInMold, liqLevelInLadle).build(gl)
 
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])

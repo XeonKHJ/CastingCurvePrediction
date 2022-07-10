@@ -35,16 +35,6 @@ const mathMiscs = {
     sin30: Math.sin(30 / 180 * Math.PI)
 }
 
-const stoperParams = {
-    // 颜色
-    color: new Float32Array([0.8, 0.8, 0.8, 1.0]),
-    // 不包含下面半圆的塞棒长度
-    height: 280,
-    width: 127,
-    // 西方扇形部分的圆半径
-    r: 10
-}
-
 const verticeUtils = {
     reverse(verticesIn) {
         var verticesOut = new Float32Array(
@@ -62,6 +52,15 @@ const verticeUtils = {
     }
 }
 
+const stoperParams = {
+    // 颜色
+    color: new Float32Array([0.8, 0.8, 0.8, 1.0]),
+    // 不包含下面半圆的塞棒长度
+    height: 1000,
+    width: 127,
+    // 西方扇形部分的圆半径
+    r: 10
+}
 const stoperAnimBundleBuilder = {
     /**
     * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
@@ -76,16 +75,16 @@ const stoperAnimBundleBuilder = {
         const sin60 = Math.sin(60 / 180 * Math.PI);
         const sin30 = Math.sin(30 / 180 * Math.PI);
         this.stoperVertices = new Float32Array([
-            -(stoperParams.width / 2), 300,
-            (stoperParams.width / 2), 300,
+            -(stoperParams.width / 2), stoperParams.height,
+            (stoperParams.width / 2), stoperParams.height,
             -(stoperParams.width / 2), 20,
             stoperParams.width / 2, 20,
             -47.625, 10,
             47.625, 10
         ]);
         this.stoperVerticesInside = new Float32Array([
-            (-63.5 + animConfig.borderThinkness), (300 - animConfig.borderThinkness),
-            (63.5 - animConfig.borderThinkness), (300 - animConfig.borderThinkness),
+            (-63.5 + animConfig.borderThinkness), (stoperParams.height - animConfig.borderThinkness),
+            (63.5 - animConfig.borderThinkness), (stoperParams.height - animConfig.borderThinkness),
             (-63.5 + animConfig.borderThinkness), (20 + animConfig.borderThinkness),
             (63.5 - animConfig.borderThinkness), (20 + animConfig.borderThinkness),
             (-47.625 + animConfig.borderThinkness), (10 + animConfig.borderThinkness * sin60 * sin30),
@@ -133,51 +132,6 @@ const stoperAnimBundleBuilder = {
         return this.stoperBundle;
     }
 }
-
-const dummyBarParams = {
-    length: 1000,
-    width: 80,
-    offset: -400,
-    y: -1300,
-    color : new Float32Array([0.8, 0.3, 0.2, 0.5])
-}
-const dummyBarAnimBundleBuilder = {
-    /**
-    * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
-    */
-    init() {
-        return this
-    },
-    buildVertices() {
-        this.dummyBarHeadVertice = new Float32Array([
-            (0 - dummyBarParams.length - dummyBarParams.offset) , dummyBarParams.y ,
-            (0 - dummyBarParams.offset) , dummyBarParams.y ,
-            (0 - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) ,
-            (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
-        ])
-    },
-    buildAnimObj(gl) {
-        this.dummyBarObj = AnimObjHelper.AnimObj(this.dummyBarHeadVertice, dummyBarParams.color, gl.TRIANGLE_STRIP, 2);
-    },
-    buildBundle() {
-        this.bundle = AnimObjHelper.AnimObjBundle([this.dummyBarObj])
-    },
-    build(gl) {
-        this.buildVertices();
-        this.buildAnimObj(gl);
-        this.buildBundle();
-        return this.bundle;
-    }
-}
-
-
-const dummyBarBundleBuilder = {}
-const dummyBarHeadVertice = new Float32Array([
-    (0 - dummyBarParams.length - dummyBarParams.offset) , dummyBarParams.y ,
-    (0 - dummyBarParams.offset) , dummyBarParams.y ,
-    (0 - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) ,
-    (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
-])
 
 const tudishParams = {
     borderHeight: 260,
@@ -227,7 +181,7 @@ const tudishAnimBundleBuilder = {
         this.rightTudishInside = AnimObjHelper.AnimObj(this.tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
     },
     buildBundle() {
-        this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.leftTudishInside, this.rightTudish, this.rightTudishInside], [0, 59, 0])
+        this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.leftTudishInside, this.rightTudish, this.rightTudishInside], [0, 59 + 140, 0])
     },
     build(gl) {
         this.buildVertices();
@@ -272,6 +226,42 @@ const moldAnimBundleBuilder = {
     },
     buildBundle() {
         this.bundle = moldPipe = AnimObjHelper.AnimObjBundle([this.leftMoldPipe, this.leftMoldPipeInside, this.rightMoldPipe, this.rightMoldPipeInside])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle;
+    }
+}
+
+const dummyBarParams = {
+    length: moldParams.gap * 2,
+    width: 80,
+    offset: -moldParams.gap,
+    y: -1300,
+    color : new Float32Array([0.8, 0.7, 0.7, 1])
+}
+const dummyBarAnimBundleBuilder = {
+    /**
+    * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
+    */
+    init() {
+        return this
+    },
+    buildVertices() {
+        this.dummyBarHeadVertice = new Float32Array([
+            (0 - dummyBarParams.length - dummyBarParams.offset) , dummyBarParams.y ,
+            (0 - dummyBarParams.offset) , dummyBarParams.y ,
+            (0 - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) ,
+            (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
+        ])
+    },
+    buildAnimObj(gl) {
+        this.dummyBarObj = AnimObjHelper.AnimObj(this.dummyBarHeadVertice, dummyBarParams.color, gl.TRIANGLE_FAN, 2);
+    },
+    buildBundle() {
+        this.bundle = AnimObjHelper.AnimObjBundle([this.dummyBarObj])
     },
     build(gl) {
         this.buildVertices();
@@ -349,10 +339,10 @@ const steelLiquidParams = {
     tudishHeight: tudishParams.height,
     // 冷凝管中的液体高度。从上到下开始算
     coolingPipe: 0,
-    ladleHeight: 60
+    ladleHeight: 0
 }
 const steelLiquidAnimBundleBuilder = {
-    init(height, liquidInModeHeight, liquidInLadleHeight = 150) {
+    init(height, liquidInModeHeight, liquidInLadleHeight = 0) {
         this.liquidHeight = height
         steelLiquidParams.tudishHeight = height
         this.liquidInMoldHeight = liquidInModeHeight
@@ -364,10 +354,10 @@ const steelLiquidAnimBundleBuilder = {
         const tan85 = Math.tan(a2r(85));
         const sin85 = Math.sin(a2r(85));
         this.steelLiquidInTudishVertices = new Float32Array([
-            -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
-            (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
-            -(tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height,
-            (tudishParams.width - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height
+            -(tudishParams.width-10 - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
+            (tudishParams.width-10 - ((tudishParams.borderHeight / sin80))), 50 + steelLiquidParams.tudishHeight + tudishParams.height,
+            -(tudishParams.width-10 - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height,
+            (tudishParams.width-10 - ((tudishParams.borderHeight / sin80))), 50 + tudishParams.height
         ])
 
         this.steelLiquidInMoldVertices = new Float32Array([
@@ -380,9 +370,9 @@ const steelLiquidAnimBundleBuilder = {
         this.steelLiquidInladleVertices = new Float32Array(
             [
                 -(ladleParams.width - ((ladleParams.borderHeight / sin85))), (steelLiquidParams.ladleHeight * tan85) + 59 + 2000,
-                (-(ladleParams.width - ((ladleParams.borderHeight / sin85)) - (steelLiquidParams.ladleHeight * tan85 - ladleParams.borderHeight) / tan85)), ladleParams.borderHeight + 59 + 2000,
+                (-(ladleParams.width - ((ladleParams.borderHeight / sin85)) - (ladleParams.height * tan85 - ladleParams.borderHeight) / tan85)), ladleParams.borderHeight + 59 + 2000,
                 (ladleParams.width - ((ladleParams.borderHeight / sin85))), (steelLiquidParams.ladleHeight * tan85) + 59 + 2000,
-                -(-(ladleParams.width - ((ladleParams.borderHeight / sin85)) - (steelLiquidParams.ladleHeight * tan85 - ladleParams.borderHeight) / tan85)), ladleParams.borderHeight + 59 + 2000,
+                -(-(ladleParams.width - ((ladleParams.borderHeight / sin85)) - (ladleParams.height * tan85 - ladleParams.borderHeight) / tan85)), ladleParams.borderHeight + 59 + 2000,
             ]
         )
         a = 3;
@@ -393,7 +383,7 @@ const steelLiquidAnimBundleBuilder = {
         this.steelLiquidInLadle = AnimObjHelper.AnimObj(this.steelLiquidInladleVertices, steelLiquidParams.color, gl.TRIANGLE_STRIP, 2)
     },
     buildBundle() {
-        this.bundle = AnimObjHelper.AnimObjBundle([this.steelLiquidInTudish, this.steelLiquidInMold])
+        this.bundle = AnimObjHelper.AnimObjBundle([this.steelLiquidInTudish, this.steelLiquidInMold, this.steelLiquidInLadle])
     },
     build(gl) {
         this.buildVertices();
