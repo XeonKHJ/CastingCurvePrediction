@@ -106,7 +106,7 @@ var chartCollectionViewModel = Vue.createApp({
             isStpPosVisible: true,
             isLvActVisible: true,
             isTudishWeightVisible: true,
-            isLadleWeightVisible: false
+            isLadleWeightVisible: true
         }
     },
     methods: {
@@ -308,7 +308,7 @@ function displayOrRefreshCastingChart(dataViewModel) {
             gridIndex: 0
         })
         ySeries.push({
-            name: 'Stoper pos',
+            name: '塞棒位置',
             data: dataViewModel.data.stpPos,
             type: 'line',
             gridIndex: 0,
@@ -318,15 +318,27 @@ function displayOrRefreshCastingChart(dataViewModel) {
     }
 
     if (chartCollectionViewModel.isLvActVisible) {
-        yAxises.push({
-            name: 'mm',
-            type: 'value',
-            min: -2,
-            gridIndex: 1
-        })
+
         ySeries.push({
-            name: 'Liquid level',
+            name: '液位',
             data: dataViewModel.data.liqLevel,
+            type: 'line',
+            gridIndex: 0,
+            xAxisIndex: 0,
+            yAxisIndex: 0
+        })
+    }
+
+    
+    if (chartCollectionViewModel.isLadleWeightVisible) {
+        yAxises.push({
+            type: 'value',
+            min: 0,
+            gridIndex: 1
+        });
+        ySeries.push({
+            name: '大包重量',
+            data: dataViewModel.data.ladleWeights,
             type: 'line',
             gridIndex: 1,
             xAxisIndex: 1,
@@ -342,7 +354,7 @@ function displayOrRefreshCastingChart(dataViewModel) {
             gridIndex: 2
         });
         ySeries.push({
-            name: 'Tudish weight',
+            name: '中包重量',
             data: dataViewModel.data.tudishWeights,
             type: 'line',
             gridIndex: 2,
@@ -351,17 +363,7 @@ function displayOrRefreshCastingChart(dataViewModel) {
         })
     }
 
-    // if (chartCollectionViewModel.isLadleWeightVisible) {
-    //     yAxises.push({
-    //         type: 'value',
-    //         min: 0
-    //     });
-    //     ySeries.push({
-    //         data: dataViewModel.data.ladleWeights,
-    //         yAxis: 3,
-    //         type: 'line'
-    //     })
-    // }
+
 
     if (ySeries.length == 0) {
         yAxises.push({
@@ -391,18 +393,18 @@ function displayOrRefreshCastingChart(dataViewModel) {
             {
                 top: '35%',
                 left: 'center',
-                text: '中包液位'
+                text: '中包重量'
             },
             {
                 top: '70%',
                 left: 'center',
-                text: '速度'
+                text: '大包重量'
             }
         ],
         tooltip: {
             trigger: 'axis',
             axisPointer: {
-                animation: true
+                animation: false
             }
         },
         xAxis: [
@@ -421,7 +423,7 @@ function displayOrRefreshCastingChart(dataViewModel) {
         ],
         yAxis: yAxises,
         legend: {
-            data: ['Stoper pos', 'Liquid level', `Tudish weight`],
+            data: ['塞棒位置', '液位', '中包重量','大包重量'],
             left: 10
         },
         grid: [
@@ -563,6 +565,9 @@ function resizeEverything() {
 
     canvas.height = canvasDiv.clientHeight - 10;
     canvas.width = canvasDiv.clientWidth - 10;
+
+    drawAnimation()
+
 }
 
 

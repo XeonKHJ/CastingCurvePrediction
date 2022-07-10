@@ -103,6 +103,7 @@
                             <span class="CloseTabSpan" onclick="javascript:onCloseTabButtonClicked(this)"
                                 v-bind:id="'chartTab'+chartViewModel.chartId"></span></span>
                     </li>
+                    <li><button id="playButton" type="button" class="btn-sm mx-2 btn-danger" @click="onPlayButtonClicked()">播放</button></li>
                 </ul>
             </div>
             <div class="echartMainDiv">
@@ -143,13 +144,14 @@
                     :key="chartViewModel.chartId">正确</button>
                 <button class="btn btn-danger m-2" v-for="(chartViewModel,index) in chartViewModels"
                     v-show="chartViewModel.isSelected && chartViewModel.chartId > 0"
-                    :key="chartViewModel.chartId">错误</button>
-                <button id="playButton" type="button" class="btn btn-danger m-2" @click="onPlayButtonClicked()">播放</button> -->
+                    :key="chartViewModel.chartId">错误</button> -->
+                
                 <!-- Need to split this shit into 3 part -->
                 <div v-for="(chartViewModel,index) in chartViewModels" v-show="chartViewModel.isSelected"
                     class="echartContentDiv" :key="chartViewModel.chartId"
                     v-bind:id="'echartContent' + chartViewModel.chartId">
                 </div>
+                
             </div>
         </div>
     </section>

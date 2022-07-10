@@ -287,7 +287,7 @@ const ladleParams = {
     width: 1500,
     height: 200,
     color: [0, 0, 0, 1.0],
-    gap: 200,
+    gap: 2000,
     gapPos: 20, // start from left
 }
 const ladleBuilder = {
@@ -308,22 +308,19 @@ const ladleBuilder = {
                 -(bottomWidth - ladleParams.gap / 2), ladleParams.borderHeight
             ]
         );
-        let toReverseTudishLeftVertices = new Float32Array(12);
+        // let toReverseTudishLeftVertices = new Float32Array(12);
 
-        toReverseTudishLeftVertices[8] = (bottomWidth / 2 - ladleParams.gap / 2)
-        toReverseTudishLeftVertices[10] = (bottomWidth / 2 - ladleParams.gap / 2)
+        // toReverseTudishLeftVertices[8] = (bottomWidth / 2 - ladleParams.gap / 2)
+        // toReverseTudishLeftVertices[10] = (bottomWidth / 2 - ladleParams.gap / 2)
         this.tudishRightVertices = verticeUtils.reverse(this.tudishLeftVertices);
-
-
-
         this.tudishLeftInsideVertices = new Float32Array(
             [
                 (-(ladleParams.width) + animConfig.borderThinkness / sin80), ((ladleParams.height * tan80) - animConfig.borderThinkness),
                 (-(ladleParams.width - ((ladleParams.borderHeight / sin80))) - animConfig.borderThinkness / sin80), ((ladleParams.height * tan80) - animConfig.borderThinkness),
                 (-(ladleParams.width - (ladleParams.height)) + animConfig.borderThinkness / sin80), (0 + animConfig.borderThinkness),
                 ((-(ladleParams.width - ((ladleParams.borderHeight / sin80)) - (ladleParams.height * tan80 - ladleParams.borderHeight) / tan80)) - animConfig.borderThinkness), (ladleParams.borderHeight - animConfig.borderThinkness),
-                (-(bottomWidth - ladleParams.gap) - animConfig.borderThinkness), (0 + animConfig.borderThinkness),
-                (-(bottomWidth - ladleParams.gap) - animConfig.borderThinkness), (ladleParams.borderHeight - animConfig.borderThinkness)
+                (-(bottomWidth - ladleParams.gap / 2) - animConfig.borderThinkness), (0 + animConfig.borderThinkness),
+                (-(bottomWidth - ladleParams.gap / 2) - animConfig.borderThinkness), (ladleParams.borderHeight - animConfig.borderThinkness)
             ]
         );
 
