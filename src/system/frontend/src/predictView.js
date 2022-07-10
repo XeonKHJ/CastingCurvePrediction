@@ -683,6 +683,7 @@ function moveAniSectionAndChartSectionSplitBarDiv(e)
     chartSection.style['width'] = (1 - percentage) * 100 + '%'
     const animationSection = document.getElementById('animationSection');
     animationSection.style['width'] = percentage * 100 + '%'
+    resizeEverything()
 }
 
 aniSectionAndChartSectionSplitter.init()
