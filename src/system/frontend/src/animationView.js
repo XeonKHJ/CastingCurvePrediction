@@ -17,7 +17,7 @@ const WebGpuWrapper = {
 }
 
 var AnimationController = {
-    isPlaying: true,
+    isPlaying: false,
     height: 2000,
     width: 1000,
     webGlContext: null,
