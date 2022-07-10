@@ -629,3 +629,60 @@ function loadTrainedModels() {
 }
 
 loadTrainedModels();
+
+const aniSectionAndChartSectionSplitter = {
+    init() {
+        let aniSectionAndChartSectionSplitBarDiv = document.getElementById("aniSectionAndChartSectionSplitBarDiv");
+        aniSectionAndChartSectionSplitBarDiv.onmousedown = (param) => {
+            console.log("down")
+            console.log(param)
+            // aniSectionAndChartSectionSplitBarDiv.onmousemove = (param) =>{
+            //     console.log("mouse move")
+            //     console.log(param)
+            // }
+            document.addEventListener('mouseup', mouseUpFromMovingAniSectionAndChartSectionSplitBarDiv);
+            document.addEventListener('mousemove', moveAniSectionAndChartSectionSplitBarDiv);
+        }
+
+
+        aniSectionAndChartSectionSplitBarDiv.ondrag = (e) => {
+
+
+        }
+
+        aniSectionAndChartSectionSplitBarDiv.onmouseup = (param) => {
+            // Remove all event listener here.
+
+            console.log("up")
+            console.log(param)
+            // aniSectionAndChartSectionSplitBarDiv.onmousemove = null;
+        }
+    }
+}
+
+function mouseUpFromMovingAniSectionAndChartSectionSplitBarDiv() {
+    console.log("mouseUp")
+    
+    document.removeEventListener("mousemove", moveAniSectionAndChartSectionSplitBarDiv)
+    document.removeEventListener("mouseup", mouseUpFromMovingAniSectionAndChartSectionSplitBarDiv)
+    resizeEverything()
+}
+
+function moveAniSectionAndChartSectionSplitBarDiv(e)
+{
+    console.log("moveDoms")
+    const percentage = e.clientX / document.documentElement.scrollWidth;
+    if (percentage == 0) {
+        resizeEverything()
+        return;
+    }
+    aniSectionAndChartSectionSplitBarDiv.style['right'] = (1 - percentage) * 100 + '%'
+    console.log(aniSectionAndChartSectionSplitBarDiv.style['right'])
+
+    const chartSection = document.getElementById("chartSection");
+    chartSection.style['width'] = (1 - percentage) * 100 + '%'
+    const animationSection = document.getElementById('animationSection');
+    animationSection.style['width'] = percentage * 100 + '%'
+}
+
+aniSectionAndChartSectionSplitter.init()
