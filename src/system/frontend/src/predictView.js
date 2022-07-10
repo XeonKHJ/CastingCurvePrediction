@@ -383,32 +383,6 @@ function displayOrRefreshCastingChart(dataViewModel) {
         return item[1];
     });
     option = {
-        // Make gradient line here
-        visualMap: [
-            {
-                show: false,
-                type: 'continuous',
-                seriesIndex: 0,
-                min: 0,
-                max: 300
-            },
-            {
-                show: false,
-                type: 'continuous',
-                seriesIndex: 1,
-                dimension: 0,
-                min: 0,
-                max: 300
-            },
-            {
-                show: false,
-                type: 'continuous',
-                seriesIndex: 2,
-                dimension: 0,
-                min: 0,
-                max: dateList.length - 1
-            }
-        ],
         title: [
             {
                 left: 'center',
@@ -428,7 +402,7 @@ function displayOrRefreshCastingChart(dataViewModel) {
         tooltip: {
             trigger: 'axis',
             axisPointer: {
-                animation: false
+                animation: true
             }
         },
         xAxis: [
@@ -475,15 +449,11 @@ function displayOrRefreshCastingChart(dataViewModel) {
             {
                 show: true,
                 realtime: true,
-                start: 30,
-                end: 70,
                 xAxisIndex: [0, 1, 2]
             },
             {
                 type: 'inside',
                 realtime: true,
-                start: 30,
-                end: 70,
                 xAxisIndex: [0, 1, 2]
             }
         ],
