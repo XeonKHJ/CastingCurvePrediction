@@ -1,7 +1,7 @@
 // Cross js file variables
 var context = {
-    translateData : null,
-    animationStartTime : null
+    translateData: null,
+    animationStartTime: null
 }
 
 // ViewModels section
@@ -101,8 +101,8 @@ var chartCollectionViewModel = Vue.createApp({
             ],
             currentId: 0,
             isStpPosVisible: true,
-            isLvActVisible: false,
-            isTudishWeightVisible: false,
+            isLvActVisible: true,
+            isTudishWeightVisible: true,
             isLadleWeightVisible: false
         }
     },
@@ -194,19 +194,16 @@ var chartCollectionViewModel = Vue.createApp({
         onChartDataContentChanged() {
             refreshCastingChart();
         },
-        onPlayButtonClicked()
-        {
+        onPlayButtonClicked() {
             curItem = this.getItemFromId(this.currentId)
 
-            if(curItem == null || curItem == undefined)
-            {
+            if (curItem == null || curItem == undefined) {
                 showError("得先有条线吧？")
             }
-            else
-            {
+            else {
                 playAnimation(curItem.data);
             }
-            
+
         }
     }
 }).mount("#chartSection");
@@ -295,57 +292,193 @@ function generatingCastingChart(dataViewModel) {
     //_animationStarted = true;
 }
 
+// function displayOrRefreshCastingChart(dataViewModel) {
+//     echart = chartManager.getChartByChartId(dataViewModel.chartId)
+//     yAxises = []
+//     ySeries = []
+//     if (chartCollectionViewModel.isStpPosVisible) {
+//         yAxises.push({
+//             type: 'value',
+//             min: -2
+//         })
+//         ySeries.push({
+//             data: dataViewModel.data.stpPos,
+//             yAxis: 0,
+//             type: 'line'
+//         })
+//     }
+
+//     if (chartCollectionViewModel.isLvActVisible) {
+//         yAxises.push({
+//             type: 'value',
+//             min: -2
+//         })
+//         ySeries.push({
+//             data: dataViewModel.data.liqLevel,
+//             yAxis: 1,
+//             type: 'line'
+//         })
+//     }
+
+//     if (chartCollectionViewModel.isTudishWeightVisible) {
+//         yAxises.push({
+//             type: 'value',
+//             min: 0
+//         });
+//         ySeries.push({
+//             data: dataViewModel.data.tudishWeights,
+//             yAxis: 2,
+//             type: 'line'
+//         })
+//     }
+
+//     if (chartCollectionViewModel.isLadleWeightVisible) {
+//         yAxises.push({
+//             type: 'value',
+//             min: 0
+//         });
+//         ySeries.push({
+//             data: dataViewModel.data.ladleWeights,
+//             yAxis: 3,
+//             type: 'line'
+//         })
+//     }
+
+//     if (ySeries.length == 0) {
+//         yAxises.push({
+//             type: 'value',
+//             min: -2
+//         })
+//         ySeries.push({
+//             data: [],
+//             yAxis: 0,
+//             type: 'line'
+//         })
+//     }
+
+//     var option = {
+//         visualMap: [
+//             {
+//                 show: false,
+//                 type: 'continuous',
+//                 seriesIndex: 0,
+//                 // min: 0,
+//                 // max: 400
+//             },
+//             {
+//                 show: false,
+//                 type: 'continuous',
+//                 seriesIndex: 1,
+//                 // dimension: 0,
+//                 // min: 0,
+//                 // max: dateList.length - 1
+//             }
+//         ],
+//         xAxis: [{
+//             type: 'category',
+//             data: dataViewModel.data.times
+//         }],
+//         yAxis: yAxises,
+//         series: ySeries,
+//         toolbox: {
+//             show: true,
+//             feature: {
+//                 myTool1: {
+//                     show: true,//是否显示    
+//                     title: '导出', //鼠标移动上去显示的文字    
+//                     icon: 'path://M525.4 721.2H330.9c-9 0-18.5-7.7-18.5-18.1V311c0-9 9.3-18.1 18.5-18.1h336.6c9.3 0 18.5 9.1 18.5 18.1v232.7c0 6 8.8 12.1 15 12.1 6.2 0 15-6 15-12.1V311c0-25.6-25.3-48.9-50.1-48.9h-335c-26.2 0-50.1 23.3-50.1 48.9v389.1c0 36.3 20 51.5 50.1 51.5h197.6c6.2 0 9.3-7.5 9.3-15.1 0-6-6.2-15.3-12.4-15.3zM378.8 580.6c-6.2 0-12.3 8.6-12.3 14.6s6.2 14.6 12.3 14.6h141.4c6.2 0 12.3-5.8 12.3-13.4 0.3-9.5-6.2-15.9-12.3-15.9H378.8z m251.6-91.2c0-6-6.2-14.6-12.3-14.6H375.7c-6.2 0-12.4 8.6-12.4 14.6s6.2 14.6 12.4 14.6h240.8c6.2 0.1 13.9-8.5 13.9-14.6z m-9.2-120.5H378.8c-6.2 0-12.3 8.6-12.3 14.6s6.2 14.6 12.3 14.6h240.8c7.7 0 13.9-8.6 13.9-14.6s-6.2-14.6-12.3-14.6z m119.4 376.6L709 714.1c9.2-12 14.6-27 14.6-43.2 0-39.4-32.1-71.4-71.8-71.4-39.7 0-71.8 32-71.8 71.4s32.1 71.4 71.8 71.4c16.3 0 31.3-5.4 43.4-14.5l31.6 31.5c3.8 3.8 10 3.8 13.8 0 3.8-3.8 3.8-10 0-13.8z m-88.8-23.6c-28.3 0-51.3-22.8-51.3-51s23-51 51.3-51c28.3 0 51.3 22.8 51.3 51s-23 51-51.3 51z', //图标    
+//                     onclick: function () {//点击事件,这里的option1是chart的option信息    
+//                         exportToCsv();
+//                     }
+//                 },
+//                 mark: { show: true },
+//                 dataView: {
+//                     show: true,
+//                     readOnly: false,
+//                     //修改数据视图格式
+//                     optionToContent: function (opt) {
+//                         console.log("fskdjflsd")
+//                     }
+//                 },
+//                 magicType: { show: true, type: ['line', 'bar'] },
+//                 restore: { show: true },
+//                 saveAsImage: { show: true },
+//                 dataZoom: {
+//                     show: true,
+//                 },
+//             }
+//         }
+//     };
+
+//     echart.setOption(option, true)
+// }
 function displayOrRefreshCastingChart(dataViewModel) {
     echart = chartManager.getChartByChartId(dataViewModel.chartId)
+
     yAxises = []
     ySeries = []
     if (chartCollectionViewModel.isStpPosVisible) {
         yAxises.push({
+            name: 'mm',
             type: 'value',
-            min: -2
+            min: -2,
+            gridIndex: 0
         })
         ySeries.push({
+            name: 'Stoper pos',
             data: dataViewModel.data.stpPos,
-            yAxis: 0,
-            type: 'line'
+            type: 'line',
+            gridIndex: 0,
+            xAxisIndex: 0,
+            yAxisIndex: 0
         })
     }
 
     if (chartCollectionViewModel.isLvActVisible) {
         yAxises.push({
+            name: 'mm',
             type: 'value',
-            min: -2
+            min: -2,
+            gridIndex: 1
         })
         ySeries.push({
+            name: 'Liquid level',
             data: dataViewModel.data.liqLevel,
-            yAxis: 1,
-            type: 'line'
+            type: 'line',
+            gridIndex: 1,
+            xAxisIndex: 1,
+            yAxisIndex: 1
         })
     }
 
     if (chartCollectionViewModel.isTudishWeightVisible) {
         yAxises.push({
+            name: 'mm',
             type: 'value',
-            min: 0
+            min: 0,
+            gridIndex: 2
         });
         ySeries.push({
+            name: 'Tudish weight',
             data: dataViewModel.data.tudishWeights,
-            yAxis: 2,
-            type: 'line'
+            type: 'line',
+            gridIndex: 2,
+            xAxisIndex: 2,
+            yAxisIndex: 2
         })
     }
 
-    if (chartCollectionViewModel.isLadleWeightVisible) {
-        yAxises.push({
-            type: 'value',
-            min: 0
-        });
-        ySeries.push({
-            data: dataViewModel.data.ladleWeights,
-            yAxis: 3,
-            type: 'line'
-        })
-    }
+    // if (chartCollectionViewModel.isLadleWeightVisible) {
+    //     yAxises.push({
+    //         type: 'value',
+    //         min: 0
+    //     });
+    //     ySeries.push({
+    //         data: dataViewModel.data.ladleWeights,
+    //         yAxis: 3,
+    //         type: 'line'
+    //     })
+    // }
 
     if (ySeries.length == 0) {
         yAxises.push({
@@ -359,13 +492,118 @@ function displayOrRefreshCastingChart(dataViewModel) {
         })
     }
 
-    var option = {
-        xAxis: {
-            type: 'category',
-            data: dataViewModel.data.times
-        },
+    const data = [["2000-06-05", 116], ["2000-06-06", 129], ["2000-06-07", 135], ["2000-06-08", 86], ["2000-06-09", 73], ["2000-06-10", 85], ["2000-06-11", 73], ["2000-06-12", 68], ["2000-06-13", 92], ["2000-06-14", 130], ["2000-06-15", 245], ["2000-06-16", 139], ["2000-06-17", 115], ["2000-06-18", 111], ["2000-06-19", 309], ["2000-06-20", 206], ["2000-06-21", 137], ["2000-06-22", 128], ["2000-06-23", 85], ["2000-06-24", 94], ["2000-06-25", 71], ["2000-06-26", 106], ["2000-06-27", 84], ["2000-06-28", 93], ["2000-06-29", 85], ["2000-06-30", 73], ["2000-07-01", 83], ["2000-07-02", 125], ["2000-07-03", 107], ["2000-07-04", 82], ["2000-07-05", 44], ["2000-07-06", 72], ["2000-07-07", 106], ["2000-07-08", 107], ["2000-07-09", 66], ["2000-07-10", 91], ["2000-07-11", 92], ["2000-07-12", 113], ["2000-07-13", 107], ["2000-07-14", 131], ["2000-07-15", 111], ["2000-07-16", 64], ["2000-07-17", 69], ["2000-07-18", 88], ["2000-07-19", 77], ["2000-07-20", 83], ["2000-07-21", 111], ["2000-07-22", 57], ["2000-07-23", 55], ["2000-07-24", 60]];
+    const dateList = data.map(function (item) {
+        return item[0];
+    });
+    const valueList = data.map(function (item) {
+        return item[1];
+    });
+    option = {
+        // Make gradient line here
+        visualMap: [
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 0,
+                min: 0,
+                max: 300
+            },
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 1,
+                dimension: 0,
+                min: 0,
+                max: 300
+            },
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 2,
+                dimension: 0,
+                min: 0,
+                max: dateList.length - 1
+            }
+        ],
+        title: [
+            {
+                left: 'center',
+                text: '塞棒位置'
+            },
+            {
+                top: '35%',
+                left: 'center',
+                text: '中包液位'
+            },
+            {
+                top: '70%',
+                left: 'center',
+                text: '速度'
+            }
+        ],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              animation: false
+            }
+          },
+        xAxis: [
+            {
+                data: dataViewModel.data.times,
+                gridIndex: 0
+            },
+            {
+                data: dataViewModel.data.times,
+                gridIndex: 1
+            },
+            {
+                data: dataViewModel.data.times,
+                gridIndex: 2
+            }
+        ],
         yAxis: yAxises,
+        legend: {
+            data: ['Stoper pos', 'Liquid level',`Tudish weight`],
+            left: 10
+          },
+        grid: [
+            {
+                bottom: '70%'
+            },
+            {
+                top: '32.5%',
+                bottom: '37.5%'
+            },
+            {
+                top: '65%',
+                bottom: '5%'
+            }
+        ],
         series: ySeries,
+        axisPointer: {
+            link: [
+              {
+                xAxisIndex: 'all'
+              }
+            ]
+          },
+          dataZoom: [
+            {
+              show: true,
+              realtime: true,
+              start: 30,
+              end: 70,
+              xAxisIndex: [0, 1,2]
+            },
+            {
+              type: 'inside',
+              realtime: true,
+              start: 30,
+              end: 70,
+              xAxisIndex: [0, 1,2]
+            }
+          ],
         toolbox: {
             show: true,
             feature: {
@@ -395,7 +633,6 @@ function displayOrRefreshCastingChart(dataViewModel) {
             }
         }
     };
-
     echart.setOption(option, true)
 }
 
