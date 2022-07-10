@@ -566,7 +566,7 @@ function resizeEverything() {
     canvas.height = canvasDiv.clientHeight - 10;
     canvas.width = canvasDiv.clientWidth - 10;
 
-    drawAnimation()
+    // drawAnimation()
 
 }
 

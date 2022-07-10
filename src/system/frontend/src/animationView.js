@@ -17,7 +17,7 @@ const WebGpuWrapper = {
 }
 
 var AnimationController = {
-    isPlaying: false,
+    isPlaying: true,
     isPlayEnable: false,
     height: 2000,
     width: 1000,
@@ -249,29 +249,12 @@ function initVertices(gl) {
         -88 , -910 
     ])
 
-    const dummyBarParams = {
-        length: 1000,
-        width: 80,
-        offset: -400,
-        y: -1300
-    }
-
-    const dummyBarHeadVertice = new Float32Array([
-        (0 - dummyBarParams.length - dummyBarParams.offset) , dummyBarParams.y ,
-        (0 - dummyBarParams.offset) , dummyBarParams.y ,
-        (0 - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) ,
-        (0 - dummyBarParams.length - dummyBarParams.offset) , (dummyBarParams.y - dummyBarParams.width) 
-    ])
-
 
     // Define colors
-    var tudishColor = new Float32Array([0, 0, 0, 1.0]);
     var coolingPipeColor = new Float32Array([0.8, 0.8, 0.8, 1.0]);
     var moldColor = new Float32Array([0.6, 0.6, 0.6, 1.0])
     var borderColor = new Float32Array([0, 0, 0, 1.0])
     var middleInwardColor = new Float32Array([0.5, 0.5, 0.5, 1.0])
-    var dummyBarColor = new Float32Array([0.8, 0.3, 0.2, 0.5])
-    var steelLiquidColor = new Float32Array([0.8, 0.3, 0.2, 1.0])
 
 
     leftCoolingPipe = AnimObjHelper.AnimObj(coolingPipeLeftVertices, borderColor, gl.TRIANGLE_FAN, 2);
@@ -301,7 +284,7 @@ function initVertices(gl) {
     middleUnknownRightHeadInside = AnimObjHelper.AnimObj(middleUnknownRightHeadVerticesInside, moldColor, gl.TRIANGLE_FAN, 2);
 
     middleInward = AnimObjHelper.AnimObj(middleInwardInsideVertice, middleInwardColor, gl.TRIANGLE_STRIP, 2);
-    dummybar = AnimObjHelper.AnimObj(dummyBarHeadVertice, dummyBarColor, gl.TRIANGLE_FAN, 2)
+    
 
     // Animation object bundles.
     const ladleObjBundle = ladleBuilder.init().build(gl)
@@ -330,12 +313,11 @@ function initVertices(gl) {
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
     middleUnknownObj = AnimObjHelper.AnimObjBundle([middleUnknownLeft, middleUnknownLeftInside, middleUnknownRight, middleUnknownRightInside, middleUnknownLeftHead, middleUnknownLeftHeadInside, middleUnknownRightHead, middleUnknownRightHeadInside])
     middleInwordObj = AnimObjHelper.AnimObjBundle([middleInward])
-    dummybarObj = AnimObjHelper.AnimObjBundle([dummybar])
-   
-    const moldPipeObjBundle = moldAnimBundleBuilder.init().build(gl)
-    
 
-    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummybarObj, ladleObjBundle]
+    const moldPipeObjBundle = moldAnimBundleBuilder.init().build(gl)
+    const dummyBarObjBundle = dummyBarAnimBundleBuilder.init().build(gl)
+
+    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummyBarObjBundle, ladleObjBundle]
 
 
 
