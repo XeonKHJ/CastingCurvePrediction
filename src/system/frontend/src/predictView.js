@@ -333,17 +333,21 @@ function displayOrRefreshCastingChart(dataViewModel) {
     if (chartCollectionViewModel.isLadleWeightVisible) {
         yAxises.push({
             type: 'value',
-            min: 0,
             gridIndex: 1
         });
+        totolLiquidWeight = dataViewModel.data.ladleWeights[0];
+        moldWeights = []
+        dataViewModel.data.ladleWeights.forEach((e, i) => {
+            moldWeights.push(totolLiquidWeight - e - dataViewModel.data.tudishWeights[i])
+        })
         ySeries.push({
-            name: '大包重量',
-            data: dataViewModel.data.ladleWeights,
+            name: '结晶器重量',
+            data: moldWeights,
             type: 'line',
             gridIndex: 1,
             xAxisIndex: 1,
             yAxisIndex: 1
-        })
+        });
     }
 
     if (chartCollectionViewModel.isTudishWeightVisible) {
@@ -360,6 +364,20 @@ function displayOrRefreshCastingChart(dataViewModel) {
             gridIndex: 2,
             xAxisIndex: 2,
             yAxisIndex: 2
+        })
+
+        yAxises.push({
+            type: 'value',
+            alignTicks : true,
+            gridIndex : 2
+        })
+        ySeries.push({
+            name: '大包重量',
+            data:dataViewModel.data.ladleWeights,
+            type: 'line',
+            gridIndex:2,
+            xAxisIndex: 2,
+            yAxisIndex:3,
         })
     }
 
@@ -381,17 +399,17 @@ function displayOrRefreshCastingChart(dataViewModel) {
         title: [
             {
                 left: 'center',
-                text: '塞棒位置'
+                text: '塞棒位置和钢液位置'
             },
             {
                 top: '35%',
                 left: 'center',
-                text: '中包重量'
+                text: '结晶器重量'
             },
             {
                 top: '70%',
                 left: 'center',
-                text: '大包重量'
+                text: '中包和大包重量'
             }
         ],
         tooltip: {
@@ -548,18 +566,12 @@ function resizeEverything() {
             break;
         }
     }
-
     var canvas = document.getElementById('animationCanvas');
     var canvasDiv = document.getElementById('animationDiv');
-    // canvas.Height = canvasDiv.Height;
-    //startAnimation()
-
-    console.log("(" + canvasDiv.clientHeight + "," + canvasDiv.clientWidth + ")")
-
     canvas.height = canvasDiv.clientHeight - 10;
     canvas.width = canvasDiv.clientWidth - 10;
 
-    // drawAnimation()
+    drawAnimation(onlyResize=true)
 
 }
 

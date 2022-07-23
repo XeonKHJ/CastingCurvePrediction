@@ -17,13 +17,18 @@ const WebGpuWrapper = {
 }
 
 var AnimationController = {
-    isPlaying: true,
+    isPlaying: false,
     isPlayEnable: false,
     height: 2000,
     width: 1000,
     webGlContext: null,
     session: null,
     renderFrame(gl) {
+        var canvasDiv = document.getElementById('animationDiv');
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        AnimationController.height = canvasDiv.clientHeight;
+        AnimationController.width = canvasDiv.clientWidth;
+
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -47,14 +52,22 @@ var AnimationController = {
     },
     startAnimation(data) {
         this.session = this.createSession(data, Date.now())
+        this.isPlayEnable = true
+        drawAnimation()
     },
     stopAnimation() {
         console.log("Stop play")
+        this.isPlaying = false;
+        this.isPlayEnable = false;
         this.session = null
     }
 }
 
-function drawAnimation() {
+function drawAnimation(onlyResize = false) {
+    if(AnimationController.isPlaying)
+    {
+        return;
+    }
     // Init webgl context.
     var canvas = document.getElementById('animationCanvas');
     var canvasDiv = document.getElementById('animationDiv');
@@ -69,17 +82,26 @@ function drawAnimation() {
     }
 
     var tick = function () {
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        AnimationController.height = canvasDiv.clientHeight;
-        AnimationController.width = canvasDiv.clientWidth;
         AnimationController.renderFrame(gl);
-        if (AnimationController.isPlaying) {
-            requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+        if(!onlyResize)
+        {
+            if (AnimationController.isPlayEnable) {
+                AnimationController.isPlaying = true;
+                requestAnimationFrame(tick, canvas); // Request that the browser ?calls tick
+            }
         }
     };
     tick();
 }
 
+function reRenderFrame(){
+    var canvas = document.getElementById('animationCanvas');
+    var canvasDiv = document.getElementById('animationDiv');
+    var gl = getWebGLContext(canvas);
+    canvas.height = canvasDiv.clientHeight;
+    canvas.width = canvasDiv.clientWidth;
+    AnimationController.renderFrame(gl)
+}
 
 function reverseVertices(verticesIn) {
     var verticesOut = new Float32Array(
