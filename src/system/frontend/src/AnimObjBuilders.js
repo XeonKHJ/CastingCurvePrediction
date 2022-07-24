@@ -392,3 +392,70 @@ const steelLiquidAnimBundleBuilder = {
         return this.bundle
     }
 }
+
+const doubleTudishParams = {
+    coolingPipeGap : 0,
+    bottomThickness : 290,
+    sidesThickness : 225,
+    // Including bottom's and sizes' thinkness.
+    bottomLength : 5314,
+    topLength : 5814,
+    totalHeight : 1580,
+    tanSlope(){
+        return ((this.topLength - this.bottomLength) / 2) / this.totalHeight
+    },
+    coolingPipeGapXPos : 2250
+}
+
+const doubleTudishAnimBundleBuilder = {
+    /**
+    * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
+    */
+    init() {
+        return this
+    },
+    buildVertices() {
+        const p = doubleTudishParams;
+        let tan80 = Math.tan(a2r(78));
+        let sin80 = Math.sin(a2r(78));
+        this.tudishLeftVertices = new Float32Array(
+            [
+                -p.topLength/2, p.totalHeight,
+                -(p.topLength/2 - p.sidesThickness), p.totalHeight,
+                -p.bottomLength/2, 0,
+                -((p.topLength/2 - (p.totalHeight - p.bottomThickness) * p.tanSlope()) - Math.pow(Math.pow(p.sidesThickness,2) + Math.pow(p.tanSlope() * p.sidesThickness, 2), 0.5)), p.bottomThickness,
+                0,0,
+                0, p.bottomThickness
+            ]
+        );
+        this.tudishRightVertices = verticeUtils.reverse(this.tudishLeftVertices);
+
+        // this.tudishLeftInsideVertices = new Float32Array(
+        //     [
+        //         (-(tudishParams.width) + animConfig.borderThinkness / sin80), ((tudishParams.height * tan80) - animConfig.borderThinkness),
+        //         (-(tudishParams.width - ((tudishParams.borderHeight / sin80))) - animConfig.borderThinkness / sin80), ((tudishParams.height * tan80) - animConfig.borderThinkness),
+        //         (-(tudishParams.width - (tudishParams.height)) + animConfig.borderThinkness / sin80), (0 + animConfig.borderThinkness),
+        //         ((-(tudishParams.width - ((tudishParams.borderHeight / sin80)) - (tudishParams.height * tan80 - tudishParams.borderHeight) / tan80)) - animConfig.borderThinkness), (tudishParams.borderHeight - animConfig.borderThinkness),
+        //         (-50 - animConfig.borderThinkness), (0 + animConfig.borderThinkness),
+        //         (-50 - animConfig.borderThinkness), (tudishParams.borderHeight - animConfig.borderThinkness)
+        //     ]
+        // );
+
+        // this.tudishRightInsideVertices = verticeUtils.reverse(this.tudishLeftInsideVertices);
+    },
+    buildAnimObj(gl) {
+        this.leftTudish = AnimObjHelper.AnimObj(this.tudishLeftVertices, tudishParams.color, gl.TRIANGLE_STRIP, 2);
+        // this.leftTudishInside = AnimObjHelper.AnimObj(this.tudishLeftInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2);
+        this.rightTudish = AnimObjHelper.AnimObj(this.tudishRightVertices, tudishParams.color, gl.TRIANGLE_STRIP, 2);
+        // this.rightTudishInside = AnimObjHelper.AnimObj(this.tudishRightInsideVertices, new Float32Array([0.8, 0.8, 0.8, 1]), gl.TRIANGLE_STRIP, 2)
+    },
+    buildBundle() {
+        this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.rightTudish], [0, 29 + 140, 0])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle;
+    }
+}

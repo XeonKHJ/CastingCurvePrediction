@@ -331,6 +331,8 @@ function initVertices(gl) {
     const liqLevelInLadle = AnimationController.session == null ? 0 : AnimationController.session.data.ladleWeights[deltaNo]  * 0.5
     const liqLevelInMold = 283 +  (AnimationController.session == null ? 0 : AnimationController.session.data.liqLevel[deltaNo])
     const steelLiquidObjBundle = steelLiquidAnimBundleBuilder.init(liqLevelInTudish, liqLevelInMold, liqLevelInLadle).build(gl)
+    const doubleTudishObjBundle = doubleTudishAnimBundleBuilder.init().build(gl)
+
 
     coolingObj = AnimObjHelper.AnimObjBundle([leftCoolingPipe, rightCoolingPipe, leftCoolingPipeInside, rightCoolingPipeInside, leftCoolingPipeBottom, leftCoolingPipeBottomInside, rightCoolingPipeBottom, rightCoolingPipeBottomInside, coolingPipeBreach, coolingPipeBreachInside])
     moldPipe = AnimObjHelper.AnimObjBundle([leftMoldPipe, leftMoldPipeInside, rightMoldPipe, rightMoldPipeInside])
@@ -340,7 +342,7 @@ function initVertices(gl) {
     const moldPipeObjBundle = moldAnimBundleBuilder.init().build(gl)
     const dummyBarObjBundle = dummyBarAnimBundleBuilder.init().build(gl)
 
-    var bundles = [steelLiquidObjBundle, middleInwordObj, tudishObjBundle, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummyBarObjBundle, ladleObjBundle]
+    var bundles = [doubleTudishObjBundle, steelLiquidObjBundle, middleInwordObj, stoperObjBundle, middleUnknownObj, moldPipeObjBundle, coolingObj, dummyBarObjBundle, ladleObjBundle]
 
 
 
