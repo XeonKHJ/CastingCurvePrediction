@@ -52,16 +52,104 @@ const verticeUtils = {
     }
 }
 
+// -------------------------------Params region--------------------------------------
+
+const doubleTudishParams = {
+    coolingPipeGap : 0,
+    bottomThickness : 290,
+    sidesThickness : 225,
+    // Including bottom's and sizes' thinkness.
+    bottomLength : 5314,
+    topLength : 5814,
+    totalHeight : 1580,
+    tanSlope(){
+        return ((this.topLength - this.bottomLength) / 2) / this.totalHeight
+    },
+    coolingPipeGapXPos : 2250
+}
+
 const stoperParams = {
     // 颜色
     color: new Float32Array([0.8, 0.8, 0.8, 1.0]),
     // 不包含下面半圆的塞棒长度
-    height: 1000,
+    height: 2000,
     width: 127,
     // 西方扇形部分的圆半径
     r: 10
 }
 const stoperAnimBundleBuilder = {
+    /**
+    * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
+    * @param offset {Float} 塞棒移动的距离
+    * @return 塞棒动画结构的建造器
+    */
+    init(offset) {
+        this.offset = offset
+        return this
+    },
+    buildVertices() {
+        const sin60 = Math.sin(60 / 180 * Math.PI);
+        const sin30 = Math.sin(30 / 180 * Math.PI);
+        this.stoperVertices = new Float32Array([
+            -(stoperParams.width / 2), stoperParams.height,
+            (stoperParams.width / 2), stoperParams.height,
+            -(stoperParams.width / 2), 20,
+            stoperParams.width / 2, 20,
+            -47.625, 10,
+            47.625, 10
+        ]);
+        this.stoperVerticesInside = new Float32Array([
+            (-63.5 + animConfig.borderThinkness), (stoperParams.height - animConfig.borderThinkness),
+            (63.5 - animConfig.borderThinkness), (stoperParams.height - animConfig.borderThinkness),
+            (-63.5 + animConfig.borderThinkness), (20 + animConfig.borderThinkness),
+            (63.5 - animConfig.borderThinkness), (20 + animConfig.borderThinkness),
+            (-47.625 + animConfig.borderThinkness), (10 + animConfig.borderThinkness * sin60 * sin30),
+            (47.625 - animConfig.borderThinkness), (10 + animConfig.borderThinkness * sin60 * sin30)
+        ]);
+
+        this.stoperBottomVertices = new Float32Array(104);
+        this.stoperBottomVertices[0] = 0;
+        this.stoperBottomVertices[1] = (47.625 + 10);
+        let index = 2;
+        let r = 47.625 * Math.sqrt(2);
+        for (i = -40; i <= -10; i++) {
+            this.stoperBottomVertices[index] = r * Math.cos(i * 2 * Math.PI / 100);
+            this.stoperBottomVertices[index + 1] = (r * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10);
+            index += 2;
+        }
+
+        this.stoperBottomVerticesInside = new Float32Array(104);
+        this.stoperBottomVerticesInside[0] = 0;
+        this.stoperBottomVerticesInside[1] = (47.625 + 10);
+        index = 2;
+        let rInside = 47.625 * Math.sqrt(2) - animConfig.borderThinkness;
+        for (i = -40; i <= -10; i++) {
+            this.stoperBottomVerticesInside[index] = rInside * Math.cos(i * 2 * Math.PI / 100);
+            this.stoperBottomVerticesInside[index + 1] = (rInside * Math.sin(i * 2 * Math.PI / 100) + 47.625 + 10);
+            index += 2;
+        }
+    },
+
+    buildAnimObj(gl) {
+        this.stoperObj = AnimObjHelper.AnimObj(this.stoperVertices, animConfig.defaultBorderColor, gl.TRIANGLE_STRIP, 2);
+        this.stoperInsideObj = AnimObjHelper.AnimObj(this.stoperVerticesInside, stoperParams.color, gl.TRIANGLE_STRIP, 2);
+        this.stoperBottom = AnimObjHelper.AnimObj(this.stoperBottomVertices, animConfig.defaultBorderColor, gl.TRIANGLE_FAN, 2);
+        this.stoperBottomInside = AnimObjHelper.AnimObj(this.stoperBottomVerticesInside, stoperParams.color, gl.TRIANGLE_FAN, 2);
+    },
+
+    buildBundle() {
+        this.stoperBundle = AnimObjHelper.AnimObjBundle([this.stoperObj, this.stoperInsideObj, this.stoperBottom, this.stoperBottomInside], [-doubleTudishParams.coolingPipeGapXPos, 430, 0])
+        this.stoperBundle.transMatrix = [this.stoperBundle.transMatrix[0], (this.offset + 460), this.stoperBundle.transMatrix[2]]
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.stoperBundle;
+    }
+}
+
+const secStoperAnimBundleBuilder = {
     /**
     * 该建造器的初始化函数，使用该构造器时要用改构造函数返回的实例。
     * @param offset {Float} 塞棒移动的距离
@@ -225,7 +313,7 @@ const moldAnimBundleBuilder = {
         this.rightMoldPipeInside = AnimObjHelper.AnimObj(this.moldRightVerticesInside, moldParams.color, gl.TRIANGLE_STRIP, 2);
     },
     buildBundle() {
-        this.bundle = moldPipe = AnimObjHelper.AnimObjBundle([this.leftMoldPipe, this.leftMoldPipeInside, this.rightMoldPipe, this.rightMoldPipeInside])
+        this.bundle = moldPipe = AnimObjHelper.AnimObjBundle([this.leftMoldPipe, this.leftMoldPipeInside, this.rightMoldPipe, this.rightMoldPipeInside], [-doubleTudishParams.coolingPipeGapXPos, 0, 0])
     },
     build(gl) {
         this.buildVertices();
@@ -393,19 +481,7 @@ const steelLiquidAnimBundleBuilder = {
     }
 }
 
-const doubleTudishParams = {
-    coolingPipeGap : 0,
-    bottomThickness : 290,
-    sidesThickness : 225,
-    // Including bottom's and sizes' thinkness.
-    bottomLength : 5314,
-    topLength : 5814,
-    totalHeight : 1580,
-    tanSlope(){
-        return ((this.topLength - this.bottomLength) / 2) / this.totalHeight
-    },
-    coolingPipeGapXPos : 2250
-}
+
 
 const doubleTudishAnimBundleBuilder = {
     /**
@@ -451,6 +527,99 @@ const doubleTudishAnimBundleBuilder = {
     },
     buildBundle() {
         this.bundle = AnimObjHelper.AnimObjBundle([this.leftTudish, this.rightTudish], [0, 29 + 140, 0])
+    },
+    build(gl) {
+        this.buildVertices();
+        this.buildAnimObj(gl);
+        this.buildBundle();
+        return this.bundle;
+    }
+}
+
+const coolingPipeParams = {
+    color : new Float32Array([0.8, 0.8, 0.8, 1.0])
+}
+const coolingPipeBundleBuilder = {
+    init() {
+        
+        return this
+    },
+    buildVertices() {
+        const p = coolingPipeParams;
+        this.coolingPipeLeftVertices = new Float32Array([
+            -40 , 0 ,
+            -120 , 0 ,
+            -120 , -44 ,
+            -110 , -44 ,
+            -90 , -400 ,
+            -90 , -700 ,
+            -32.5 , -700 
+        ]);
+        this.coolingPipeRightVertices = reverseVertices(this.coolingPipeLeftVertices);
+    
+        this.coolingPipeLeftVerticesInside = new Float32Array([
+            (-40 - animConfig.borderThinkness) , (0 - animConfig.borderThinkness) ,
+            (-120 + animConfig.borderThinkness) , (0 - animConfig.borderThinkness) ,
+            (-120 + animConfig.borderThinkness) , (-44 + animConfig.borderThinkness) ,
+            (-110 + ((Math.sqrt(Math.pow(356, 2) + Math.pow(10, 2)) - 10) * animConfig.borderThinkness / 356)) , (-44 + animConfig.borderThinkness) ,
+            (-90 + animConfig.borderThinkness) , (-400 + 10 / 356 * animConfig.borderThinkness) ,
+            (-90 + animConfig.borderThinkness) , (-700 + animConfig.borderThinkness) ,
+            (-32.5 - animConfig.borderThinkness) , (-700 + animConfig.borderThinkness) 
+        ]);
+    
+        this.coolingPipeRightVerticesInside = reverseVertices(this.coolingPipeLeftVerticesInside);
+    
+        this.coolingPipeBottomLeftVertices = new Float32Array([
+            -90 , -910 ,
+            -90 , -(800 - 100) ,
+            -32.5 , -(800 - 100) ,
+            -32.5 , -(910 - 100 + 50) ,
+            0, -(910 - 100 + 50) ,
+            0, -910 
+        ])
+    
+        this.coolingPipeBottomLeftVerticesInside = new Float32Array([
+            (-90 + animConfig.borderThinkness) , (-910 + animConfig.borderThinkness) ,
+            (-90 + animConfig.borderThinkness) , -(800 - 100 - animConfig.borderThinkness) ,
+            (-32.5 - animConfig.borderThinkness) , -(800 - 100 - animConfig.borderThinkness) ,
+            (-32.5 - animConfig.borderThinkness) , -(910 - 100 + 50 + animConfig.borderThinkness) ,
+            0, -(910 - 100 + 50 + animConfig.borderThinkness) ,
+            0, (-910 + animConfig.borderThinkness) 
+        ])
+    
+        this.coolingPipeBottomRightVertices = reverseVertices(this.coolingPipeBottomLeftVertices);
+        this.coolingPipeBottomRightVerticesInside = reverseVertices(this.coolingPipeBottomLeftVerticesInside)
+    
+        this.coolingPipeBreachVertices = new Float32Array([
+            -32.5 , -700 ,
+            32.5 , -700 ,
+            32.5 , -810 ,
+            -32.5 , -810 
+        ])
+    
+        this.coolingPipeBreachVerticesInside = new Float32Array([
+            (-32.5 + animConfig.borderThinkness) , (-700 - animConfig.borderThinkness) ,
+            (32.5 - animConfig.borderThinkness) , (-700 - animConfig.borderThinkness) ,
+            (32.5 - animConfig.borderThinkness) , (-810 + animConfig.borderThinkness) ,
+            (-32.5 + animConfig.borderThinkness) , (-810 + animConfig.borderThinkness) 
+        ])
+    },
+    buildAnimObj(gl) {
+        const p = coolingPipeParams;
+        this.leftCoolingPipe = AnimObjHelper.AnimObj(this.coolingPipeLeftVertices, animConfig.defaultBorderColor, gl.TRIANGLE_FAN, 2);
+        this.rightCoolingPipe = AnimObjHelper.AnimObj(this.coolingPipeRightVertices, animConfig.defaultBorderColor, gl.TRIANGLE_FAN, 2);
+        this.leftCoolingPipeInside = AnimObjHelper.AnimObj(this.coolingPipeLeftVerticesInside, p.color, gl.TRIANGLE_FAN, 2);
+        this.rightCoolingPipeInside = AnimObjHelper.AnimObj(this.coolingPipeRightVerticesInside, p.color, gl.TRIANGLE_FAN, 2);
+        this.leftCoolingPipeBottom = AnimObjHelper.AnimObj(this.coolingPipeBottomLeftVertices, animConfig.defaultBorderColor, gl.TRIANGLE_FAN, 2);
+        this.leftCoolingPipeBottomInside = AnimObjHelper.AnimObj(this.coolingPipeBottomLeftVerticesInside, p.color, gl.TRIANGLE_FAN, 2);
+        this.rightCoolingPipeBottom = AnimObjHelper.AnimObj(this.coolingPipeBottomRightVertices, animConfig.defaultBorderColor, gl.TRIANGLE_FAN, 2);
+        this.rightCoolingPipeBottomInside = AnimObjHelper.AnimObj(this.coolingPipeBottomRightVerticesInside, p.color, gl.TRIANGLE_FAN, 2);
+        this.coolingPipeBreach = AnimObjHelper.AnimObj(this.coolingPipeBreachVertices, new Float32Array([0, 0, 0, 1]), gl.TRIANGLE_FAN, 2);
+        this.coolingPipeBreachInside = AnimObjHelper.AnimObj(this.coolingPipeBreachVerticesInside, new Float32Array([1, 1, 1, 1]), gl.TRIANGLE_FAN, 2);
+    },
+    buildBundle() {
+        this.bundle = AnimObjHelper.AnimObjBundle([this.leftCoolingPipe, this.rightCoolingPipe, this.leftCoolingPipeInside, this.rightCoolingPipeInside, this.leftCoolingPipeBottom, this.leftCoolingPipeBottomInside, this.rightCoolingPipeBottom, this.rightCoolingPipeBottomInside, this.coolingPipeBreach, this.coolingPipeBreachInside],
+            [-doubleTudishParams.coolingPipeGapXPos, 0, 0])
     },
     build(gl) {
         this.buildVertices();
